@@ -122,14 +122,23 @@ class SiteController extends Controller
         }
 
         $model = new CreateEventForm();
+        $event = new Event();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $jsonData  = file_get_contents("http://maps.googleapis.com/maps/api/geocode/json?address=wien&sensor=true");
-            $data = json_decode($jsonData);
-            $xlat = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
-            $xlong = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};
+            $event->name = $model->name;
+            $event->description = $model->description;
+            $event->creationDate = time();
+            $event->eventDate = $model->eventDate;
+            if ($model->address !== "") {
+                $jsonData = file_get_contents("http://maps.googleapis.com/maps/api/geocode/json?address=" .
+                    $model->address . "&sensor=true");
 
-
-            return $this->render('createEvent-confirm', ['model' => $model, 'xlat' => $xlat]);
+                $data = json_decode($jsonData);
+                $event->address = $model->address;
+                $event->latitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
+                $event->longitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};
+            }
+            $event->save();
+            return $this->render('createEvent-confirm', ['model' => $model]);
         } else {
             return $this->render("createEvent", ["model" => $model]);
         }

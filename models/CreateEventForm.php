@@ -12,7 +12,8 @@ class CreateEventForm extends Model {
 
     public function rules() {
         return [
-            [["name"], "required"]
+            ['name', 'required'],
+            [['address', 'description'], 'safe'],
         ];
     }
 }
