@@ -57,4 +57,22 @@ return array (
       '@yii/faker' => $vendorDir . '/yiisoft/yii2-faker',
     ),
   ),
+  'amnah/yii2-user' => 
+  array (
+    'name' => 'amnah/yii2-user',
+    'version' => '2.1.0.0-alpha4',
+    'alias' => 
+    array (
+      '@amnah/yii2/user' => $vendorDir . '/amnah/yii2-user',
+    ),
+  ),
+  'yiisoft/yii2-authclient' => 
+  array (
+    'name' => 'yiisoft/yii2-authclient',
+    'version' => '2.0.0.0',
+    'alias' => 
+    array (
+      '@yii/authclient' => $vendorDir . '/yiisoft/yii2-authclient',
+    ),
+  ),
 );

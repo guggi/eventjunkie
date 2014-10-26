@@ -39,10 +39,16 @@ AppAsset::register($this);
                     ['label' => 'About', 'url' => ['/site/about']],
                     ['label' => 'Contact', 'url' => ['/site/contact']],*/
                     ['label' => 'Create event', 'url' => ['/site/create-event']],
-                    Yii::$app->user->isGuest ?
+                    /*Yii::$app->user->isGuest ?
                         ['label' => 'Login', 'url' => ['/user/login']] :
                         ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
                             'url' => ['/site/logout'],
+                            'linkOptions' => ['data-method' => 'post']],*/
+                    ['label' => 'User', 'url' => ['/user']],
+                    Yii::$app->user->isGuest ?
+                        ['label' => 'Login', 'url' => ['/user/login']] :
+                        ['label' => 'Logout (' . Yii::$app->user->displayName . ')',
+                            'url' => ['/user/logout'],
                             'linkOptions' => ['data-method' => 'post']],
                 ],
             ]);

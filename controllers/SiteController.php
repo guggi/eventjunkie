@@ -73,7 +73,7 @@ class SiteController extends Controller
             'pagination' => $pagination,]);
     }
 
-    public function actionLogin()
+    /*public function actionLogin()
     {
         if (!\Yii::$app->user->isGuest) {
             return $this->goHome();
@@ -95,7 +95,7 @@ class SiteController extends Controller
 
         return $this->goHome();
     }
-
+*/
     public function actionContact()
     {
         $model = new ContactForm();
