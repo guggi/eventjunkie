@@ -40,7 +40,7 @@ AppAsset::register($this);
                     ['label' => 'Contact', 'url' => ['/site/contact']],*/
                     ['label' => 'Create event', 'url' => ['/site/create-event']],
                     Yii::$app->user->isGuest ?
-                        ['label' => 'Login', 'url' => ['/site/login']] :
+                        ['label' => 'Login', 'url' => ['/user/login']] :
                         ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
                             'url' => ['/site/logout'],
                             'linkOptions' => ['data-method' => 'post']],
