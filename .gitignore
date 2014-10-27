@@ -28,3 +28,6 @@ phpunit.phar
 /runtime
 /web/assets
 
+# Composer
+/vendor
+
