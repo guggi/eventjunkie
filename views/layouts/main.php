@@ -38,13 +38,15 @@ AppAsset::register($this);
 /*                    ['label' => 'Home', 'url' => ['/site/index']],
                     ['label' => 'About', 'url' => ['/site/about']],
                     ['label' => 'Contact', 'url' => ['/site/contact']],*/
-                    ['label' => 'Create event', 'url' => ['/site/create-event']],
+                    ['label' => 'Create event',  'url' =>  Yii::$app->user->isGuest ?  \Yii::$app->request->BaseUrl.'/index.php?r=user/login' :  \Yii::$app->request->BaseUrl.'/index.php?r=site/create-event' ],
                     /*Yii::$app->user->isGuest ?
                         ['label' => 'Login', 'url' => ['/user/login']] :
                         ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
                             'url' => ['/site/logout'],
                             'linkOptions' => ['data-method' => 'post']],*/
-                    ['label' => 'User', 'url' => ['/user']],
+                   ['label' => 'Register', 'url' => ['/user/register'], 'visible'=>  Yii::$app->user->isGuest ? true : false],
+
+                //  ['label' => 'User', 'url' => ['/user']],
                     Yii::$app->user->isGuest ?
                         ['label' => 'Login', 'url' => ['/user/login']] :
                         ['label' => 'Logout (' . Yii::$app->user->displayName . ')',
