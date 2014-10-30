@@ -24,10 +24,10 @@ phpunit.phar
 /phpunit.xml
 
 # Yii
-/config/db.php
-/runtime
-/web/assets
+config/db.php
+runtime
+web/assets
 
 # Composer
-/vendor
+vendor
 

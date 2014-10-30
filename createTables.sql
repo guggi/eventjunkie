@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS event (
     longitude DECIMAL(17,14),
     eventDate TIMESTAMP,
     description VARCHAR(200),
+    p
     CONSTRAINT pk_event PRIMARY KEY(id)
 );
 
