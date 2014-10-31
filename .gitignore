@@ -25,7 +25,6 @@ phpunit.phar
 
 # Yii
 config/db.php
-db.php
 runtime/
 web/assets/
 

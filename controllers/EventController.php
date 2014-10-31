@@ -2,58 +2,41 @@
 
 namespace app\controllers;
 
-use app\models\SearchEventForm;
 use Yii;
-use yii\filters\AccessControl;
-use yii\web\Controller;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
-use app\models\CreateEventForm;
-use yii\data\Pagination;
 use app\models\Event;
+use yii\data\ActiveDataProvider;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 
-class SiteController extends Controller
+use yii\data\Pagination;
+use app\models\SearchEventForm;
+use app\models\CreateEventForm;
+
+/**
+ * EventController implements the CRUD actions for Event model.
+ */
+class EventController extends Controller
 {
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'logout' => ['post'],
+                    'delete' => ['post'],
                 ],
             ],
         ];
     }
 
-    public function actions()
-    {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
-    }
-
+    /**
+     * Lists all Event models.
+     * @return mixed
+     */
     public function actionIndex()
     {
- /*       $query = Event::find();
+        $query = Event::find();
 
         $pagination = new Pagination([
             'defaultPageSize' => 10,
@@ -70,54 +53,88 @@ class SiteController extends Controller
 
         return $this->render('index', ['searchModel' => $searchModel,
             'eventList' => $eventList,
-            'pagination' => $pagination,]); */
-	$this->redirect(\Yii::$app->request->BaseUrl.'/index.php?r=event/index');
+            'pagination' => $pagination,]);
     }
 
-    /*public function actionLogin()
+    /**
+     * Displays a single Event model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionView($id)
     {
-        if (!\Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+    /**
+     * Creates a new Event model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        $model = new Event();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('login', [
+            return $this->render('create', [
                 'model' => $model,
             ]);
         }
     }
 
-    public function actionLogout()
+    /**
+     * Updates an existing Event model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdate($id)
     {
-        Yii::$app->user->logout();
+        $model = $this->findModel($id);
 
-        return $this->goHome();
-    }
-*/
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('contact', [
+            return $this->render('update', [
                 'model' => $model,
             ]);
         }
     }
 
-    public function actionAbout()
+    /**
+     * Deletes an existing Event model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDelete($id)
     {
-        return $this->render('about');
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
     }
 
-/*
-    public function actionCreateEvent()
+    /**
+     * Finds the Event model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Event the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Event::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+ public function actionCreateEvent()
     {
         if (Yii::$app->user->isGuest) {
             return $this->goHome();
@@ -151,5 +168,4 @@ class SiteController extends Controller
         }
 
     }
-*/
 }

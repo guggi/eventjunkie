@@ -5,14 +5,14 @@ use yii\widgets\LinkPager;
 use kartik\widgets\RangeInput;
 use kartik\widgets\DateTimePicker;
 /* @var $this yii\web\View */
-$this->title = 'EventJunkie';
+$this->title = 'EventJunkie - Event wall';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-
 <div class="site-index">
-<!--
+
     <div class="body-content">
         <h1><?= Html::encode($this->title) ?></h1>
+<br>
         <div class="row">
             <div class="col-md-3">
                 <h4>Search event</h4>
@@ -63,23 +63,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php ActiveForm::end(); ?>
 
             </div>
+	    <!-- Google maps ------>
             <div class="col-md-7">
                 <div class="col-md-12">
-                    <div class="span12 map_searchEvent" id="map";></div>
+                    <div class="span12 map_searchEvent" id="map"></div>
                 <hr>
             </div>
+	    <!--------------------->
 
             <div class="col-md-12">
 
                 <?php $jsonMarkerList = []; ?>
-
+		
                 <?php foreach ($eventList as $event): ?>
                     <?php $jsonMarkerList[] = ["latitude" => $event->latitude,
                         "longitude" => $event->longitude] ?>
-
                     <div class="col-md-6">
                         <div class="list-group">
-                            <a href="#" class="list-group-item">
+                            <a href="<?php echo \Yii::$app->request->BaseUrl.'/index.php?r=event/view&id='.$event->id; ?>" class="list-group-item">
                                 <h4 class="list-group-item-heading"><?= Html::encode($event->name) ?></h4>
                                 <p class="list-group-item-text pull-left">
                                 </p>
@@ -111,7 +112,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         </a>
                                     </div>
                                 </div>-->
-<!--
             </div>
 
             <div class="col-md-12">
@@ -181,5 +181,4 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 </div>
--->
 </div>
