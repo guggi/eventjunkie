@@ -14,6 +14,11 @@ AppAsset::register($this);
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
+
+
+<link rel="icon" href="<?php  echo \Yii::$app->request->BaseUrl.'/favicon.png' ?>" type="image/x-icon">
+
+
     <meta charset="<?= Yii::$app->charset ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
@@ -35,9 +40,8 @@ AppAsset::register($this);
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
-/*                    ['label' => 'Home', 'url' => ['/site/index']],
-                    ['label' => 'About', 'url' => ['/site/about']],
-                    ['label' => 'Contact', 'url' => ['/site/contact']],*/
+		    ['label' => 'Info', 'url' => ['/site/about']],
+		    ['label' => 'Contact', 'url' => ['/site/contact']],
                     ['label' => 'Create event',  'url' =>  Yii::$app->user->isGuest ?  \Yii::$app->request->BaseUrl.'/index.php?r=user/login' :  \Yii::$app->request->BaseUrl.'/index.php?r=event/create-event' ],
                     /*Yii::$app->user->isGuest ?
                         ['label' => 'Login', 'url' => ['/user/login']] :
@@ -67,8 +71,8 @@ AppAsset::register($this);
 
     <footer class="footer">
         <div class="container">
-            <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
-            <p class="pull-right"><?= Yii::powered() ?></p>
+            <p class="pull-left">&copy; EventJunkie <?= date('Y') ?></p>
+            <!-- <p class="pull-right"><?= Yii::powered() ?></p> -->
         </div>
     </footer>
 
