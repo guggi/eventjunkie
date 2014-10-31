@@ -25,9 +25,9 @@ phpunit.phar
 
 # Yii
 config/db.php
-runtime
-web/assets
+runtime/
+web/assets/
 
 # Composer
-vendor
+vendor/
 
