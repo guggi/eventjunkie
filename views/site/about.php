@@ -2,11 +2,12 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-$this->title = 'About';
+$this->title = 'Event Junkie';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-about">
     <h1><?= Html::encode($this->title) ?></h1>
+<br>
 
     <p>
         This is the About page. You may modify the following file to customize its content:
