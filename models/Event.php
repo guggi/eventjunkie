@@ -43,8 +43,8 @@ class Event extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'clicks'], 'integer'],
-            [['creation_date', 'start_date', 'end_date'], 'safe'],
-            [['name', 'address'], 'required'],
+            [['creation_date', 'end_date'], 'safe'],
+            [['name', 'address', 'start_date'], 'required'],
             [['latitude', 'longitude'], 'number'],
             [['name', 'address'], 'string', 'max' => 50],
             [['image'], 'string', 'max' => 100],

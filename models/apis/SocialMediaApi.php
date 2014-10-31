@@ -1,20 +1,31 @@
 <?php
 
+namespace app\models\apis;
+
 class SocialMediaApi {
-    private $socialmedia = [
-        ['images' => []],
-        ['comments' => []],
-    ];
+    private $socialmedia;
+
+    public function __construct() {
+        $this->socialmedia = [
+            ['images' => []],
+            ['comments' => []],
+        ];
+    }
+
 
     public function loadSocialMedia($link) {
-        $type = getSocialMediaType($link);
+        $type = $this->getSocialMediaType($link);
         if ($type === 'flickr') {
             $flickrApi = new FlickrApi($link);
-            //$this->socialmedia["images" ] => $flickrApi->getGalleryPhotos();
+            if (isset($this->socialmedia['images'])) {
+                array_merge(array($this->socialmedia['images']), $flickrApi->getGalleryPhotos());
+            } else {
+                $this->socialmedia['images'] = $flickrApi->getGalleryPhotos();
+            }
         }
     }
 
-    public function getSocialMediaType($link) {
+    private function getSocialMediaType($link) {
         if (strpos($link,'www.facebook.com/events') !== false) {
             return 'facebook';
         } else if (strpos($link,'www.flickr.com/photos/flickr/galleries') !== false) {

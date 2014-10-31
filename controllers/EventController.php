@@ -2,16 +2,15 @@
 
 namespace app\controllers;
 
+use app\models\apis\SocialMediaApi;
 use Yii;
 use app\models\Event;
-use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\data\Pagination;
 use app\models\SearchEventForm;
-use app\models\CreateEventForm;
 
 /**
  * EventController implements the CRUD actions for Event model.
@@ -63,8 +62,13 @@ class EventController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $socialmediapi = new SocialMediaApi();
+        $socialmediapi->loadSocialMedia($model->flickr);
+        $socialmedia = $socialmediapi->getSocialMedia();
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model, 'socialmedia' => $socialmedia
         ]);
     }
 
@@ -75,7 +79,7 @@ class EventController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Event();
+        /*$model = new Event();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -83,6 +87,35 @@ class EventController extends Controller
             return $this->render('create', [
                 'model' => $model,
             ]);
+        }*/
+
+        if (Yii::$app->user->isGuest) {
+            $this->redirect(\Yii::$app->request->BaseUrl.'/index.php?r=user/login');
+        }
+
+        $model = new Event();
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->user_id = Yii::$app->user->id;
+            $model->creation_date = time();
+            $model->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
+            if ($model->address !== "") {
+                $parsed_address = str_replace(" ", "+", $model->address);
+                $jsonData = file_get_contents("http://maps.googleapis.com/maps/api/geocode/json?address=" .
+                    $parsed_address . "&sensor=true");
+                $data = json_decode($jsonData);
+                if ($data->{'status'} != "OK") {
+                    Yii::$app->session->setFlash('error', 'Address doesn\'t exist.');
+                    return $this->render("create", ["model" => $model]);
+                }
+                $model->latitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
+                $model->longitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};
+            }
+            $model->clicks = 0;
+            $model->save();
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('create', ['model' => $model]);
         }
     }
 
@@ -134,10 +167,10 @@ class EventController extends Controller
         }
     }
 
- public function actionCreateEvent()
+/* public function actionCreateEvent()
     {
         if (Yii::$app->user->isGuest) {
-            return $this->goHome();
+            $this->redirect(\Yii::$app->request->BaseUrl.'/index.php?r=user/login');
         }
 
         $model = new CreateEventForm();
@@ -167,5 +200,5 @@ class EventController extends Controller
             return $this->render("createEvent", ["model" => $model]);
         }
 
-    }
+    }*/
 }
