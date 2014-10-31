@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="site-index">
 
     <div class="body-content">
-        <h1><?= Html::encode($this->title) ?></h1>
+     <!--   <h1><?= Html::encode($this->title) ?></h1> -->
 <br>
         <div class="row">
             <div class="col-md-3">
@@ -178,7 +178,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
         </div>
     </div>
-
 
 </div>
 </div>
