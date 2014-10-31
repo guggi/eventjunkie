@@ -1,0 +1,171 @@
+<?php
+
+namespace app\controllers;
+
+use Yii;
+use app\models\Event;
+use yii\data\ActiveDataProvider;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+
+use yii\data\Pagination;
+use app\models\SearchEventForm;
+use app\models\CreateEventForm;
+
+/**
+ * EventController implements the CRUD actions for Event model.
+ */
+class EventController extends Controller
+{
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['post'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Lists all Event models.
+     * @return mixed
+     */
+    public function actionIndex()
+    {
+        $query = Event::find();
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 10,
+            'totalCount' => $query->count(),
+        ]);
+
+        $eventList = $query->orderBy('start_date')
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+
+        $searchModel = new SearchEventForm();
+
+        return $this->render('index', ['searchModel' => $searchModel,
+            'eventList' => $eventList,
+            'pagination' => $pagination,]);
+    }
+
+    /**
+     * Displays a single Event model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    /**
+     * Creates a new Event model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        $model = new Event();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    /**
+     * Updates an existing Event model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
+    }
+
+    /**
+     * Deletes an existing Event model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Finds the Event model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Event the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Event::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+ public function actionCreateEvent()
+    {
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $model = new CreateEventForm();
+        $event = new Event();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $event->user_id = Yii::$app->user->id;
+            $event->name = $model->name;
+            $event->description = $model->description;
+            $event->creation_date = time();
+            $event->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
+            if ($model->address !== "") {
+                $parsed_address = str_replace(" ", "+", $model->address);
+                $jsonData = file_get_contents("http://maps.googleapis.com/maps/api/geocode/json?address=" .
+                    $parsed_address . "&sensor=true");
+                $data = json_decode($jsonData);
+                if ($data->{'status'} != "OK") {
+                    Yii::$app->session->setFlash('error', 'Address doesn\'t exist.');
+                    return $this->render("createEvent", ["model" => $model]);
+                }
+                $event->address = $model->address;
+                $event->latitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
+                $event->longitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};
+            }
+            $event->save();
+            return $this->render('createEvent-confirm', ['model' => $model]);
+        } else {
+            return $this->render("createEvent", ["model" => $model]);
+        }
+
+    }
+}

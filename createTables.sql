@@ -42,7 +42,7 @@ CREATE INDEX profile_user_id ON profile (user_id);
 
 CREATE TABLE IF NOT EXISTS event (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    user_id INT UNSIGNED NOT NULL,
+    user_id INT NOT NULL,
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     name VARCHAR(50) NOT NULL,
     address VARCHAR(50) NOT NULL,

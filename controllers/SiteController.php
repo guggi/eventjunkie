@@ -53,7 +53,7 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $query = Event::find();
+ /*       $query = Event::find();
 
         $pagination = new Pagination([
             'defaultPageSize' => 10,
@@ -70,7 +70,8 @@ class SiteController extends Controller
 
         return $this->render('index', ['searchModel' => $searchModel,
             'eventList' => $eventList,
-            'pagination' => $pagination,]);
+            'pagination' => $pagination,]); */
+	$this->redirect(\Yii::$app->request->BaseUrl.'/index.php?r=event/index');
     }
 
     public function actionEvent($id)
@@ -123,6 +124,7 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
+/*
     public function actionCreateEvent()
     {
         if (Yii::$app->user->isGuest) {
@@ -157,4 +159,5 @@ class SiteController extends Controller
         }
 
     }
+*/
 }
