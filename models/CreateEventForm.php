@@ -7,13 +7,15 @@ use yii\base\Model;
 class CreateEventForm extends Model {
     public $name;
     public $address;
-    public $eventDate;
+    public $start_date;
+    public $end_date;
+    public $image;
     public $description;
 
     public function rules() {
         return [
-            ['name', 'required'],
-            [['address', 'description'], 'safe'],
+            [['name', 'address', 'start_date'], 'required'],
+            [['description'], 'safe'],
         ];
     }
 }

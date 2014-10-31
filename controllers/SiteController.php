@@ -60,7 +60,7 @@ class SiteController extends Controller
             'totalCount' => $query->count(),
         ]);
 
-        $eventList = $query->orderBy('eventDate')
+        $eventList = $query->orderBy('start_date')
             ->offset($pagination->offset)
             ->limit($pagination->limit)
             ->all();
@@ -124,15 +124,20 @@ class SiteController extends Controller
         $model = new CreateEventForm();
         $event = new Event();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $event->user_id = Yii::$app->user->id;
             $event->name = $model->name;
             $event->description = $model->description;
-            $event->creationDate = time();
-            $event->eventDate = $model->eventDate;
+            $event->creation_date = time();
+            $event->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
             if ($model->address !== "") {
+                $parsed_address = str_replace(" ", "+", $model->address);
                 $jsonData = file_get_contents("http://maps.googleapis.com/maps/api/geocode/json?address=" .
-                    $model->address . "&sensor=true");
-
+                    $parsed_address . "&sensor=true");
                 $data = json_decode($jsonData);
+                if ($data->{'status'} != "OK") {
+                    Yii::$app->session->setFlash('error', 'Address doesn\'t exist.');
+                    return $this->render("createEvent", ["model" => $model]);
+                }
                 $event->address = $model->address;
                 $event->latitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
                 $event->longitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};

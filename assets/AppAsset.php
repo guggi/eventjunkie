@@ -19,13 +19,11 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
-        'css/leaflet.css',
         'css/map.css',
     ];
     public $js = [
-	'js/leaflet.js',
-	'http://maps.googleapis.com/maps/api/js?key=AIzaSyBVuvVdwoGEdklNPxn16eWphp211jt4LeA&sensor=true',
-	'js/map.js',
+        'http://maps.googleapis.com/maps/api/js?key=AIzaSyBVuvVdwoGEdklNPxn16eWphp211jt4LeA&sensor=true',
+        'js/map.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

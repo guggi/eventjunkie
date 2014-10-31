@@ -35,6 +35,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         If you have business inquiries or other questions, please fill out the following form to contact us. Thank you.
     </p>
+        <div class="col-md-8">
+            <div class="span12" id="map">test</div>
+        </div>
 
     <div class="row">
         <div class="col-lg-5">

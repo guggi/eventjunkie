@@ -15,6 +15,10 @@ return array(
     'yii\\bootstrap\\' => array($vendorDir . '/yiisoft/yii2-bootstrap'),
     'yii\\authclient\\' => array($vendorDir . '/yiisoft/yii2-authclient'),
     'yii\\' => array($vendorDir . '/yiisoft/yii2'),
+    'kartik\\widgets\\' => array($vendorDir . '/kartik-v/yii2-widgets'),
+    'kartik\\plugins\\rating\\' => array($vendorDir . '/kartik-v/bootstrap-star-rating'),
+    'kartik\\plugins\\fileinput\\' => array($vendorDir . '/kartik-v/bootstrap-fileinput'),
+    'kartik\\' => array($vendorDir . '/kartik-v/dependent-dropdown'),
     'cebe\\markdown\\' => array($vendorDir . '/cebe/markdown'),
     'amnah\\yii2\\user\\' => array($vendorDir . '/amnah/yii2-user'),
 );
