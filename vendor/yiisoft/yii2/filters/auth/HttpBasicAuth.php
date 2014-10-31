@@ -31,7 +31,7 @@ class HttpBasicAuth extends AuthMethod
     /**
      * @var string the HTTP authentication realm
      */
-    public $realm = 'api';
+    public $realm = 'apis';
     /**
      * @var callable a PHP callable that will authenticate the user with the HTTP basic auth information.
      * The callable receives a username and a password as its parameters. It should return an identity object

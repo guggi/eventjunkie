@@ -87,6 +87,6 @@
   // ALERT DATA-API
   // ==============
 
-  $(document).on('click.bs.alert.data-api', dismiss, Alert.prototype.close)
+  $(document).on('click.bs.alert.data-apis', dismiss, Alert.prototype.close)
 
 }(jQuery);

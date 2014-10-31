@@ -147,7 +147,7 @@
   // COLLAPSE DATA-API
   // =================
 
-  $(document).on('click.bs.collapse.data-api', '[data-toggle="collapse"]', function (e) {
+  $(document).on('click.bs.collapse.data-apis', '[data-toggle="collapse"]', function (e) {
     var href
     var $this   = $(this)
     var target  = $this.attr('data-target')

@@ -15,7 +15,7 @@ use yii\authclient\OAuth2;
  * In order to use Google OAuth you must create a project at <https://console.developers.google.com/project>
  * and setup its credentials at <https://console.developers.google.com/project/[yourProjectId]/apiui/credential>.
  * In order to enable using scopes for retrieving user attributes, you should also enable Google+ API at
- * <https://console.developers.google.com/project/[yourProjectId]/apiui/api/plus>
+ * <https://console.developers.google.com/project/[yourProjectId]/apiui/apis/plus>
  *
  * Example application configuration:
  *

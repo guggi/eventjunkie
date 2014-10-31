@@ -73,6 +73,14 @@ class SiteController extends Controller
             'pagination' => $pagination,]);
     }
 
+    public function actionEvent($id)
+    {
+        $query = Event::findOne($id);
+
+        return $this->render('event', [
+            'event' => $query]);
+    }
+
     /*public function actionLogin()
     {
         if (!\Yii::$app->user->isGuest) {
@@ -131,7 +139,7 @@ class SiteController extends Controller
             $event->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
             if ($model->address !== "") {
                 $parsed_address = str_replace(" ", "+", $model->address);
-                $jsonData = file_get_contents("http://maps.googleapis.com/maps/api/geocode/json?address=" .
+                $jsonData = file_get_contents("http://maps.googleapis.com/maps/apis/geocode/json?address=" .
                     $parsed_address . "&sensor=true");
                 $data = json_decode($jsonData);
                 if ($data->{'status'} != "OK") {

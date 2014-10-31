@@ -33,7 +33,7 @@ use yii\authclient\OAuth1;
  * ~~~
  *
  * @see https://dev.twitter.com/apps/new
- * @see https://dev.twitter.com/docs/api
+ * @see https://dev.twitter.com/docs/apis
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -43,11 +43,11 @@ class Twitter extends OAuth1
     /**
      * @inheritdoc
      */
-    public $authUrl = 'https://api.twitter.com/oauth/authorize';
+    public $authUrl = 'https://apis.twitter.com/oauth/authorize';
     /**
      * @inheritdoc
      */
-    public $requestTokenUrl = 'https://api.twitter.com/oauth/request_token';
+    public $requestTokenUrl = 'https://apis.twitter.com/oauth/request_token';
     /**
      * @inheritdoc
      */
@@ -55,7 +55,7 @@ class Twitter extends OAuth1
     /**
      * @inheritdoc
      */
-    public $accessTokenUrl = 'https://api.twitter.com/oauth/access_token';
+    public $accessTokenUrl = 'https://apis.twitter.com/oauth/access_token';
     /**
      * @inheritdoc
      */
@@ -63,7 +63,7 @@ class Twitter extends OAuth1
     /**
      * @inheritdoc
      */
-    public $apiBaseUrl = 'https://api.twitter.com/1.1';
+    public $apiBaseUrl = 'https://apis.twitter.com/1.1';
 
 
     /**
