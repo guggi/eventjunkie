@@ -42,8 +42,8 @@ CREATE INDEX profile_user_id ON profile (user_id);
 
 CREATE TABLE IF NOT EXISTS event (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_id INT UNSIGNED NOT NULL, /* geht bei mir nur unsigned */
+    creation_date TIMESTAMP,
     name VARCHAR(50) NOT NULL,
     address VARCHAR(50) NOT NULL,
     latitude DECIMAL(17,14),
@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS event (
     CONSTRAINT pk_event PRIMARY KEY(id),
     CONSTRAINT fk_event_user_id FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
+
 
 DROP TABLE event;
 

@@ -8,6 +8,7 @@ use kartik\widgets\DateTimePicker;
 $this->title = 'EventJunkie - Event wall';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="site-index">
 
     <div class="body-content">
@@ -94,9 +95,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 <?php endforeach; ?>
 
-                <script>
-                    var jsonMarkerList = JSON.parse('<?php echo json_encode($jsonMarkerList) ?>');
-                </script>
                 <!--
                                 <div class="col-md-6">
                                     <div class="list-group">
@@ -182,3 +180,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 </div>
 </div>
+
+<script>
+    var jsonMarkerList = JSON.parse('<?php echo json_encode($jsonMarkerList) ?>');
+</script>
