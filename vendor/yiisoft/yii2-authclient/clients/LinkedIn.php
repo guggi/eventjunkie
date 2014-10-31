@@ -54,7 +54,7 @@ class LinkedIn extends OAuth2
     /**
      * @inheritdoc
      */
-    public $apiBaseUrl = 'https://api.linkedin.com/v1';
+    public $apiBaseUrl = 'https://apis.linkedin.com/v1';
 
 
     /**

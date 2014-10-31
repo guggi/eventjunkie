@@ -13,7 +13,7 @@ class SearchEventForm extends Model {
 
     public function rules() {
         return [
-           // [["name"], "required"]
+           //[["name"], "save"]
         ];
     }
 }

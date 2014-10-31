@@ -86,8 +86,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </p>
                                 <p class="list-group-item-text">
                                     <?= Html::encode(date("d.m.Y G:i", strtotime($event->start_date))) ?><br>
-                                    <?= Html::encode($event->address) ?><br>
-                                    added by Author <small>on Date</small>
+                                    <b><?= Html::encode($event->address) ?></b><br>
+                                    <small>added by <?= Html::encode($event->user_id) ?> on <?= Html::encode(date("d.m.Y G:i", strtotime($event->creation_date))) ?></small>
                                 </p>
                             </a>
                         </div>

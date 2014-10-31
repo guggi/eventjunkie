@@ -22,7 +22,7 @@ class AppAsset extends AssetBundle
         'css/map.css',
     ];
     public $js = [
-        'http://maps.googleapis.com/maps/api/js?key=AIzaSyBVuvVdwoGEdklNPxn16eWphp211jt4LeA&sensor=true',
+        'http://maps.googleapis.com/maps/api/js?key=AIzaSyAGzEVkc-m4M2FG_eLgjTamsowmn594fWQ&sensor=true',
         'js/map.js',
     ];
     public $depends = [

@@ -37,28 +37,38 @@ AppAsset::register($this);
                     'class' => 'navbar-inverse navbar-fixed-top',
                 ],
             ]);
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav navbar-right'],
-                'items' => [
-		    ['label' => 'Info', 'url' => ['/site/about']],
-		    ['label' => 'Contact', 'url' => ['/site/contact']],
-                    ['label' => 'Create event',  'url' =>  Yii::$app->user->isGuest ?  \Yii::$app->request->BaseUrl.'/index.php?r=user/login' :  \Yii::$app->request->BaseUrl.'/index.php?r=event/create-event' ],
-                    /*Yii::$app->user->isGuest ?
-                        ['label' => 'Login', 'url' => ['/user/login']] :
-                        ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
-                            'url' => ['/site/logout'],
-                            'linkOptions' => ['data-method' => 'post']],*/
-                   ['label' => 'Register', 'url' => ['/user/register'], 'visible'=>  Yii::$app->user->isGuest ? true : false],
+        echo Nav::widget([
+            'options' => ['class' => 'navbar-nav navbar-left'],
+            'items' => [
+                ['label' => 'Info', 'url' => ['/site/about']],
+                ['label' => 'Contact', 'url' => ['/site/contact']],
+            ],
+        ]);
+
+        echo Nav::widget([
+            'options' => ['class' => 'navbar-nav navbar-right'],
+            'items' => [
+                /*                    ['label' => 'Home', 'url' => ['/site/index']],
+                                    ['label' => 'About', 'url' => ['/site/about']],
+                                    ['label' => 'Contact', 'url' => ['/site/contact']],*/
+                ['label' => 'Create event',  'url' =>  Yii::$app->user->isGuest ?  \Yii::$app->request->BaseUrl.'/index.php?r=user/login' :  \Yii::$app->request->BaseUrl.'/index.php?r=event/create' ],
+
+                /*Yii::$app->user->isGuest ?
+                    ['label' => 'Login', 'url' => ['/user/login']] :
+                    ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
+                        'url' => ['/site/logout'],
+                        'linkOptions' => ['data-method' => 'post']],*/
+                ['label' => 'Register', 'url' => ['/user/register'], 'visible'=>  Yii::$app->user->isGuest ? true : false],
 
                 //  ['label' => 'User', 'url' => ['/user']],
-                    Yii::$app->user->isGuest ?
-                        ['label' => 'Login', 'url' => ['/user/login']] :
-                        ['label' => 'Logout (' . Yii::$app->user->displayName . ')',
-                            'url' => ['/user/logout'],
-                            'linkOptions' => ['data-method' => 'post']],
-                ],
-            ]);
-            NavBar::end();
+                Yii::$app->user->isGuest ?
+                    ['label' => 'Login', 'url' => ['/user/login']] :
+                    ['label' => 'Logout (' . Yii::$app->user->displayName . ')',
+                        'url' => ['/user/logout'],
+                        'linkOptions' => ['data-method' => 'post']],
+            ],
+        ]);
+        NavBar::end();
         ?>
 
         <div class="container">
