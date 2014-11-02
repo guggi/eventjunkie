@@ -30,4 +30,5 @@ web/assets/
 
 # Composer
 vendor/
+!vendor/amnah
 

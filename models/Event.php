@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\validators\DateValidator;
 
 /**
  * This is the model class for table "event".
@@ -44,6 +45,7 @@ class Event extends \yii\db\ActiveRecord
         return [
             [['user_id', 'clicks'], 'integer'],
             [['creation_date', 'end_date'], 'safe'],
+            [['start_date', 'end_date'], 'isValidDate'],
             [['name', 'address', 'start_date'], 'required'],
             [['latitude', 'longitude'], 'number'],
             [['name', 'address'], 'string', 'max' => 50],
@@ -75,6 +77,14 @@ class Event extends \yii\db\ActiveRecord
             'clicks' => 'Clicks',
             'description' => 'Description',
         ];
+    }
+
+    public function isValidDate($attribute, $params)
+    {
+        if(!strtotime($this->$attribute))
+        {
+            $this->addError($attribute, $attribute . ' has wrong format');
+        }
     }
 
     /**

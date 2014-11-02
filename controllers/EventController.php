@@ -97,23 +97,33 @@ class EventController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->user_id = Yii::$app->user->id;
-            $model->creation_date = time();
             $model->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
-            if ($model->address !== "") {
-                $parsed_address = str_replace(" ", "+", $model->address);
-                $jsonData = file_get_contents("http://maps.googleapis.com/maps/api/geocode/json?address=" .
-                    $parsed_address . "&sensor=true");
+
+            if (date('Y-m-d H:i:s', strtotime($model->end_date)) == "1970-01-01 00:00:00") {
+                $model->end_date = date('Y-m-d H:i:s', strtotime($model->start_date));
+            } else {
+                $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
+            }
+
+            if ($model->address !== '') {
+                $parsed_address = str_replace(' ', '+', $model->address);
+                $jsonData = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address=' .
+                    $parsed_address . '&sensor=true');
                 $data = json_decode($jsonData);
-                if ($data->{'status'} != "OK") {
+                if ($data->{'status'} != 'OK') {
                     Yii::$app->session->setFlash('error', 'Address doesn\'t exist.');
-                    return $this->render("create", ["model" => $model]);
+                    return $this->render('create', ['model' => $model]);
                 }
                 $model->latitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
                 $model->longitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};
             }
             $model->clicks = 0;
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                return $this->render('create', ['model' => $model]);
+            }
         } else {
             return $this->render('create', ['model' => $model]);
         }
@@ -129,7 +139,29 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
+
+            if (date('Y-m-d H:i:s', strtotime($model->end_date)) == "1970-01-01 00:00:00") {
+                $model->end_date = date('Y-m-d H:i:s', strtotime($model->start_date));
+            } else {
+                $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
+            }
+
+            if ($model->address !== '') {
+                $parsed_address = str_replace(' ', '+', $model->address);
+                $jsonData = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address=' .
+                    $parsed_address . '&sensor=true');
+                $data = json_decode($jsonData);
+                if ($data->{'status'} != 'OK') {
+                    Yii::$app->session->setFlash('error', 'Address doesn\'t exist.');
+                    return $this->render('create', ['model' => $model]);
+                }
+                $model->latitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
+                $model->longitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};
+            }
+
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [

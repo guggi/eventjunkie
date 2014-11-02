@@ -59,6 +59,7 @@ AppAsset::register($this);
                         'url' => ['/site/logout'],
                         'linkOptions' => ['data-method' => 'post']],*/
                 ['label' => 'Register', 'url' => ['/user/register'], 'visible'=>  Yii::$app->user->isGuest ? true : false],
+                ['label' => Yii::$app->user->displayName, 'url' => ['/user/account'], 'visible'=>  !Yii::$app->user->isGuest ? true : false],
 
                 //  ['label' => 'User', 'url' => ['/user']],
                 Yii::$app->user->isGuest ?

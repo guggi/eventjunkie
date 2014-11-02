@@ -7,17 +7,24 @@ function init() {
 }
 
 function initMap() {
+    var zoom = 12;
     var latitude = 48.2081743;
     var longitude = 16.3738189;
 
     if (typeof jsonMarkerList !== "undefined") {
-        latitude = jsonMarkerList[0].latitude;
-        longitude = jsonMarkerList[0].longitude;
+        if (typeof jsonMarkerList[0] !== "undefined") {
+            latitude = jsonMarkerList[0].latitude;
+            longitude = jsonMarkerList[0].longitude;
+        }
+    }
+
+    if (typeof streetZoom !== "undefined") {
+        zoom = streetZoom;
     }
 
     geocoder = new google.maps.Geocoder();
     mapOptions = {
-        zoom: 12,
+        zoom: zoom,
         center: new google.maps.LatLng(latitude, longitude),
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
