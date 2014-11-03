@@ -16,44 +16,53 @@ class GoaBaseWidget extends Widget{
 
     public function init(){
         parent::init();
+	$firstParam = true;
 	//add country to the $_GET parameters
         if ($this->country !== null) {
-            $this->path = $this->path."&country=".$this->country;
+	    if($firstParam){ $this->path = $this->path."?country=".$this->country; $firstParam = false;}
+            else $this->path = $this->path."&country=".$this->country;
         } 
 
 	//add geo location to the $_GET parameters
         if ($this->geoloc !== null) {
-            $this->path = $this->path."&geoloc=".$this->geoloc;
+	    if($firstParam){ $this->path = $this->path."&geoloc=".$this->geoloc; $firstParam = false;}
+            else $this->path = $this->path."&geoloc=".$this->geoloc;
         } 
 
 	//add parameter near by 120km to the $_GET parameters
 	if ($this->ll !== null) {
-            $this->path = $this->path."&ll=".$this->ll;
+	    if($firstParam){ $this->path = $this->path."&ll=".$this->ll; $firstParam = false; }
+            else $this->path = $this->path."&ll=".$this->ll;
         } 
 
 	//add party number limit to the $_GET parameters
 	if ($this->limit !== null) {
-            $this->path = $this->path."&limit=".$this->limit;
+	    if($firstParam){ $this->path = $this->path."&limit=".$this->limit; $firstParam = false;}
+            else $this->path = $this->path."&limit=".$this->limit;
         } 
 
-//	$session = \Yii::$app->session;
+/*	$session = \Yii::$app->session;
 	// open a session
-//	$session->open();
+	$session->open();
 
-//	if(  isset($session['goaParties'])==false ){
-		// Read the json file contents into a string variable,
-		//$str_data = file_get_contents($this->path);
-		$str_data = file_get_contents("https://www.goabase.net/party/api/json/");
-		//and parse the string into a data structure
-		$goaParties = json_decode($str_data,true);
+	if(  isset($session['goaParties'])==false ){
 		//$session['goaParties'] = $goaParties;
-
 /*	}else{//if session var is already set
 		$goaParties = $session['goaParties'];
 	} */
 
 	//if id is not set display whole party list
-	if( !isset($this->id) )$this->display($goaParties);
+	if( !isset($this->id) ){
+		// Read the json file contents into a string variable,
+		//$str_data = file_get_contents("https://www.goabase.net/party/api/json/");
+		$str_data = file_get_contents($this->path);
+
+		//and parse the string into a data structure
+		$goaParties = json_decode($str_data,true);
+
+		$this->display($goaParties);
+
+	}
 	else{//display party with specified id
 		// Read the json file contents into a string variable,
 		$str_data = file_get_contents("https://www.goabase.net/party/api/json/".$this->id);
@@ -61,6 +70,7 @@ class GoaBaseWidget extends Widget{
 		$party = json_decode($str_data,true);
 		$this->displayParty($party);
 	}
+
     }
 
     public function run(){
@@ -87,7 +97,7 @@ class GoaBaseWidget extends Widget{
     public function display($partyList){
 
 	echo "<div class='col-md-12'>";
-	for($i=0; $i< $this->limit; $i++){
+	for($i=0; $i < count($partyList['partylist']); $i++){
 
                  echo "<div class='col-md-6' style='width:200px;height:320px;overflow-y:auto;'>";
                        echo "<div class='list-group' style='height:250px;'>";

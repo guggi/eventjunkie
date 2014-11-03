@@ -4,7 +4,7 @@ namespace app\controllers;
 
 class GoabaseController extends \yii\web\Controller
 {
-    public function actionIndex($country="", $geoloc="", $limit=50)
+    public function actionIndex($country="Austria", $geoloc=NULL, $limit=50)
     {
 	$data['country'] = $country;
 	$data['geoloc'] = $geoloc;

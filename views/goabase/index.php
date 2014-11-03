@@ -9,9 +9,10 @@ $this->title = 'EventJunkie - Goabase';
 
 <?php
 echo $country ." , ".$geoloc;
+
 ?>
 
 <br>
 
-<?= GoaBaseWidget::widget(['country' => $country], ['geoloc' => $geoloc], ['limit' => $limit]) ?>
+<?= GoaBaseWidget::widget(['country' => $country, 'geoloc'=>$geoloc, 'limit' => $limit] ) ?>
 </p>
