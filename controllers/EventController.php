@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 
 use yii\data\Pagination;
 use app\models\SearchEventForm;
+use yii\web\UploadedFile;
 
 /**
  * EventController implements the CRUD actions for Event model.
@@ -119,7 +120,13 @@ class EventController extends Controller
             }
             $model->clicks = 0;
 
+            // image
+            $image = UploadedFile::getInstance($model, 'image');
+            $model->image = Yii::$app->security->generateRandomString() . '.' . $image->extension;
+            $path = 'images/' . $model->image;
+
             if ($model->save()) {
+                $image->saveAs($path);
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 return $this->render('create', ['model' => $model]);
@@ -148,6 +155,7 @@ class EventController extends Controller
                 $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
             }
 
+            // google map
             if ($model->address !== '') {
                 $parsed_address = str_replace(' ', '+', $model->address);
                 $jsonData = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address=' .
@@ -161,8 +169,17 @@ class EventController extends Controller
                 $model->longitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};
             }
 
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+            // image
+            $image = UploadedFile::getInstance($model, 'image');
+            $model->image = Yii::$app->security->generateRandomString() . '.' . $image->extension;
+            $path = 'images/' . $model->image;
+
+            if ($model->save()) {
+                $image->saveAs($path);
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                return $this->render('update', ['model' => $model]);
+            }
         } else {
             return $this->render('update', [
                 'model' => $model,

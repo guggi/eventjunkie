@@ -29,6 +29,7 @@ use yii\validators\DateValidator;
  */
 class Event extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -50,6 +51,8 @@ class Event extends \yii\db\ActiveRecord
             [['latitude', 'longitude'], 'number'],
             [['name', 'address'], 'string', 'max' => 50],
             [['image'], 'string', 'max' => 100],
+            [['image'], 'safe'],
+            [['image'], 'file', 'extensions'=>'jpg, gif, png'],
             [['facebook', 'twitter', 'goabase', 'flickr', 'description'], 'string', 'max' => 1000]
         ];
     }

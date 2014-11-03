@@ -21,6 +21,7 @@ use yii\bootstrap\ActiveForm;
             <?php } ?>
 
             <?php $form = ActiveForm::begin([
+                'options' => ['enctype'=>'multipart/form-data'],
                 'layout' => 'default',
                 'fieldConfig' => [
                     'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
@@ -55,7 +56,6 @@ use yii\bootstrap\ActiveForm;
     ]) ?>
 
     <?= $form->field($model, 'image')->widget(FileInput::className(), [
-        'options' => ['accept' => 'image/*'],
         'pluginOptions' => [
             'showUpload' => false
         ]
