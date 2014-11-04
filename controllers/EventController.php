@@ -122,11 +122,13 @@ class EventController extends Controller
 
             // image
             $image = UploadedFile::getInstance($model, 'image');
-            $model->image = Yii::$app->security->generateRandomString() . '.' . $image->extension;
-            $path = 'images/' . $model->image;
+            if ($image !== null) {
+                $model->image = Yii::$app->security->generateRandomString() . '.' . $image->extension;
+                $path = 'images/' . $model->image;
+                $image->saveAs($path);
+            }
 
             if ($model->save()) {
-                $image->saveAs($path);
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 return $this->render('create', ['model' => $model]);
@@ -171,11 +173,13 @@ class EventController extends Controller
 
             // image
             $image = UploadedFile::getInstance($model, 'image');
-            $model->image = Yii::$app->security->generateRandomString() . '.' . $image->extension;
-            $path = 'images/' . $model->image;
+            if ($image !== null) {
+                $model->image = Yii::$app->security->generateRandomString() . '.' . $image->extension;
+                $path = 'images/' . $model->image;
+                $image->saveAs($path);
+            }
 
             if ($model->save()) {
-                $image->saveAs($path);
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 return $this->render('update', ['model' => $model]);

@@ -46,14 +46,14 @@ class Event extends \yii\db\ActiveRecord
         return [
             [['user_id', 'clicks'], 'integer'],
             [['creation_date', 'end_date'], 'safe'],
-            [['start_date', 'end_date'], 'isValidDate'],
-            [['name', 'address', 'start_date'], 'required'],
+            [['start_date', 'end_date'], 'isValidDate'], // TODO start_date in der vergangenheit, end_date nach start_date
+            [['name', 'address', 'start_date'], 'required'], //TODO address hier validieren
             [['latitude', 'longitude'], 'number'],
             [['name', 'address'], 'string', 'max' => 50],
             [['image'], 'string', 'max' => 100],
             [['image'], 'safe'],
-            [['image'], 'file', 'extensions'=>'jpg, gif, png'],
-            [['facebook', 'twitter', 'goabase', 'flickr', 'description'], 'string', 'max' => 1000]
+            [['image'], 'file', 'extensions'=>'jpg, gif, png'], //todo filegröße
+            [['facebook', 'twitter', 'goabase', 'flickr', 'description'], 'string', 'max' => 1000] //hier validieren
         ];
     }
 
