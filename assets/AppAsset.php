@@ -20,6 +20,8 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/site.css',
         'css/map.css',
+        'css/bootstrap-social.css',
+        '//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css',
     ];
     public $js = [
         'http://maps.googleapis.com/maps/api/js?key=AIzaSyAGzEVkc-m4M2FG_eLgjTamsowmn594fWQ&sensor=true',

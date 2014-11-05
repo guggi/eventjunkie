@@ -2,8 +2,10 @@
 
 namespace app\models;
 
+use amnah\yii2\user\models\User;
 use Yii;
-use yii\validators\DateValidator;
+use yii\db\ActiveRecord;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "event".
@@ -20,15 +22,15 @@ use yii\validators\DateValidator;
  * @property string $image
  * @property string $facebook
  * @property string $twitter
- * @property string $goabase
  * @property string $flickr
  * @property integer $clicks
  * @property string $description
  *
  * @property User $user
  */
-class Event extends \yii\db\ActiveRecord
+class Event extends ActiveRecord
 {
+    public $upload_image;
 
     /**
      * @inheritdoc
@@ -50,9 +52,10 @@ class Event extends \yii\db\ActiveRecord
             [['name', 'address', 'start_date'], 'required'], //TODO address hier validieren
             [['latitude', 'longitude'], 'number'],
             [['name', 'address'], 'string', 'max' => 50],
+            [['address'], 'setGeoLocation'],
             [['image'], 'string', 'max' => 100],
-            [['image'], 'safe'],
-            [['image'], 'file', 'extensions'=>'jpg, gif, png'], //todo filegröße
+            [['upload_image'], 'safe'],
+            [['upload_image'], 'file', 'extensions'=>'jpg, gif, png'], //todo filegröße
             [['facebook', 'twitter', 'flickr', 'description'], 'string', 'max' => 1000] //hier validieren
         ];
     }
@@ -83,9 +86,27 @@ class Event extends \yii\db\ActiveRecord
 
     public function isValidDate($attribute, $params)
     {
-        if(!strtotime($this->$attribute))
-        {
+        if(!strtotime($this->$attribute)) {
             $this->addError($attribute, $attribute . ' has wrong format');
+        }
+    }
+
+    /*
+     * Validate address and set latitude and longitude via Google-Api.
+     */
+    public function setGeoLocation($attribute, $param)
+    {
+        if ($this->$attribute !== '') {
+            $parsed_address = str_replace(' ', '+', $this->$attribute);
+            $jsonData = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address=' .
+                $parsed_address . '&sensor=true');
+            $data = json_decode($jsonData);
+            if ($data->{'status'} != 'OK') {
+                $this->addError($attribute, $attribute . ' ' . $this->$attribute . ' doesn\'t exist.');
+                return;
+            }
+            $this->latitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
+            $this->longitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};
         }
     }
 
@@ -95,5 +116,55 @@ class Event extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * Get path of image.
+     *
+     * @return string or null
+     */
+    public function getImagePath()
+    {
+        if (isset($this->upload_image)) {
+            return Yii::$app->params['imagePath'] . $this->image;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get upload instance.
+     *
+     * @return string or null
+     */
+    public function uploadImage() {
+        if ($upload_image = UploadedFile::getInstance($this, 'upload_image')) {
+            $this->image = Yii::$app->security->generateRandomString() . '.' . $upload_image->extension;
+        }
+
+        return $upload_image;
+    }
+
+    /**
+     * Delete image.
+     *
+     * @return boolean the status of deletion
+     */
+    public function deleteImage($delete_image) {
+        if (!$delete_image) {
+            return false;
+        }
+
+        $file = Yii::$app->params['imagePath'] . $delete_image;
+
+        if (empty($file) || !file_exists($file)) {
+            return false;
+        }
+
+        if (!unlink($file)) {
+            return false;
+        }
+
+        return true;
     }
 }

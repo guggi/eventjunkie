@@ -3,8 +3,9 @@
 namespace app\models;
 
 use yii\base\Model;
+use app\models\Event;
 
-class SearchEventForm extends Model {
+class SearchEventForm extends Event {
     public $name;
     public $address;
     public $from_date;

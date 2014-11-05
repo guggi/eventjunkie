@@ -93,5 +93,17 @@ a.desc:after {
 .thumbnail-image {
     height: 80px;
     width: 80px;
-  
+}
+
+.table.table-borderless td, .table.table-borderless th {
+    border: 0 !important;
+}
+
+.table.table-borderless {
+    margin-bottom: 0px;
+}
+
+.tiny, tiny {
+    color: #999;
+    font-size: small;
 }

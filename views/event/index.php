@@ -12,8 +12,8 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="site-index">
 
     <div class="body-content">
-     <!--   <h1><?= Html::encode($this->title) ?></h1> -->
-<br>
+        <!--   <h1><?= Html::encode($this->title) ?></h1> -->
+        <br>
         <div class="row">
             <div class="col-md-3">
                 <h4>Search event</h4>
@@ -57,30 +57,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]) ?>
 
                 <?= $form->field($searchModel, 'type')->checkboxList([
-                    0 => 'Site',
-                    1 => 'Goabase']
+                        0 => 'Site',
+                        1 => 'Goabase']
                 )?>
 
 
                 <div class="form-group">
-                    <?= Html::submitButton('Search event', ['class' => 'btn btn-primary']) ?>
+                    <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>
 
             </div>
-	    <!-- Google maps ------>
-            <div class="col-md-7">
-                <div class="col-md-12">
-                    <div class="span12 map_searchEvent" id="map"></div>
-                <hr>
-            </div>
-	    <!--------------------->
 
-            <div class="col-md-12">
+            <div class="col-md-7">
+                <!-- Google maps ------>
+                <div class="span12 map_searchEvent" id="map"></div>
+                <!--------------------->
+
+                <hr>
 
                 <?php $jsonMarkerList = []; ?>
-		
+
                 <?php foreach ($eventList as $event): ?>
                     <?php $jsonMarkerList[] = ["latitude" => $event->latitude,
                         "longitude" => $event->longitude] ?>
@@ -91,12 +89,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <p class="list-group-item-text pull-left">
                                 </p>
                                 <?php if ($event->image) { ?>
-                                <img class="thumbnail-image" src="images/<?= Html::encode($event->image) ?>"><br>
+                                    <img class="thumbnail-image" src="images/<?= Html::encode($event->image) ?>"><br>
                                 <?php } ?>
                                 <p class="list-group-item-text">
                                     <strong>Start: </strong><?= Html::encode(date("d.m.Y G:i", strtotime($event->start_date))) ?><br>
                                     <?= Html::encode($event->address) ?><br>
-                                    <small>Author<?= Html::encode($event->user_id) ?> (<?= Html::encode(date("d.m.Y G:i", strtotime($event->creation_date))) ?>)</small>
+                                    <small><?= Html::encode($event->user_id) ?> (<?= Html::encode(date("d.m.Y G:i", strtotime($event->creation_date))) ?>)</small>
                                 </p>
                             </a>
                         </div>
@@ -118,14 +116,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                         </a>
                                     </div>
                                 </div>-->
-            </div>
 
-            <div class="col-md-12">
                 <?= LinkPager::widget(['pagination' => $pagination]) ?>
             </div>
-        </div>
-        <div class="col-md-2">
-            <div class="col-md-12">
+            <div class="col-md-2">
                 <h4>Top events</h4>
 
                 <?php $i = 0; ?>
@@ -152,8 +146,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php endforeach; ?>
 
-            </div>
-            <div class="col-md-12">
                 <h4>New events</h4>
 
                 <?php $i = 0; ?>
@@ -181,11 +173,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php endforeach; ?>
 
             </div>
-
         </div>
-    </div>
 
-</div>
+    </div>
 </div>
 
 <script>

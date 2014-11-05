@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
                 <div class="form-group">
-                    <?= Html::submitButton('Search event', ['class' => 'btn btn-primary']) ?>
+                    <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>

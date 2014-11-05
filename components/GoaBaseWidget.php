@@ -175,10 +175,8 @@ class GoaBaseWidget extends Widget{
 	<br>
 	<br>
 	     <!-----Goolge-Maps----->
-	     <div class="col-md-12" style='position:relative;left:-3%;'>
 		  <div class="span12 map_searchEvent" id="map"></div>
 		   <hr>
-	     </div>
 	<br>
 	<?php echo "<b>Info: </b>".$party['party']['textMore']; ?>
 	<br>
