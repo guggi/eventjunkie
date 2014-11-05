@@ -66,8 +66,6 @@ use yii\bootstrap\ActiveForm;
 
     <?= $form->field($model, 'twitter')->textInput(['maxlength' => 1000]) ?>
 
-    <?= $form->field($model, 'goabase')->textInput(['maxlength' => 1000]) ?>
-
     <?= $form->field($model, 'flickr')->textInput(['maxlength' => 1000]) ?>
 
     <?= $form->field($model, 'description')->textInput(['maxlength' => 1000])->textarea(['rows' => 6]) ?>

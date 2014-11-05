@@ -53,7 +53,7 @@ class Event extends \yii\db\ActiveRecord
             [['image'], 'string', 'max' => 100],
             [['image'], 'safe'],
             [['image'], 'file', 'extensions'=>'jpg, gif, png'], //todo filegröße
-            [['facebook', 'twitter', 'goabase', 'flickr', 'description'], 'string', 'max' => 1000] //hier validieren
+            [['facebook', 'twitter', 'flickr', 'description'], 'string', 'max' => 1000] //hier validieren
         ];
     }
 
@@ -75,7 +75,6 @@ class Event extends \yii\db\ActiveRecord
             'image' => 'Image',
             'facebook' => 'Facebook',
             'twitter' => 'Twitter',
-            'goabase' => 'Goabase',
             'flickr' => 'Flickr',
             'clicks' => 'Clicks',
             'description' => 'Description',

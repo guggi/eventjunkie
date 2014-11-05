@@ -53,7 +53,6 @@ CREATE TABLE IF NOT EXISTS event (
     image VARCHAR(100),
     facebook VARCHAR(1000),
     twitter VARCHAR(1000),
-    goabase VARCHAR(1000),
     flickr VARCHAR(1000),
     clicks INT UNSIGNED DEFAULT 0,
     description VARCHAR(1000),

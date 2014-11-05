@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($searchModel, 'name') ?>
                 <?= $form->field($searchModel, 'address') ?>
-                <?= $form->field($searchModel, 'distance')->widget(RangeInput::classname(), [
+                <?= $form->field($searchModel, 'radius')->widget(RangeInput::classname(), [
                     'value' => 1,
                     'options' => ['readonly' => false],
                     'html5Options' => ['min' => 0, 'max' => 50],
@@ -55,6 +55,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         'todayHighlight' => true
                     ]
                 ]) ?>
+
+                <?= $form->field($searchModel, 'type')->checkboxList([
+                    0 => 'Site',
+                    1 => 'Goabase']
+                )?>
 
 
                 <div class="form-group">
