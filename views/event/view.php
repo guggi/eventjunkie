@@ -11,9 +11,15 @@ $this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?php
-$jsonMarkerList[0] = ['latitude' => $model->latitude, 'longitude' => $model->longitude]
-?>
+<?php $jsonMarkerList[0] = [
+"id" => $model->id,
+"name" => $model->name,
+"start_date" => $model->start_date,
+"end_date" => $model->end_date,
+"address" => $model->address,
+"latitude" => $model->latitude,
+"longitude" => $model->longitude
+] ?>
 
 <div class="event-view">
 
@@ -22,6 +28,7 @@ $jsonMarkerList[0] = ['latitude' => $model->latitude, 'longitude' => $model->lon
     <div class="row">
         <div class="col-md-8">
 
+            <!-- update / delete -->
             <?php
             if ($model->user_id === Yii::$app->user->id) {
                 ?>
@@ -36,8 +43,16 @@ $jsonMarkerList[0] = ['latitude' => $model->latitude, 'longitude' => $model->lon
                     ]) ?>
                 </p>
             <?php } ?>
-            <img class="img-responsive" src="images/<?= Html::encode($model->image) ?>" alt="">
+
+            <!-- image -->
+            <?php if ($model->image) { ?>
+            <img class="img-responsive" src="<?= \Yii::$app->request->getBaseUrl() . Yii::$app->params['imagePath'] .
+            Html::encode($model->image) ?>">
+            <?php } ?>
+
             <hr>
+
+            <!-- data -->
             <p>
                 <strong>Organizer:</strong>
                 <?= Html::encode($model->user_id) ?> <tiny><?= Html::encode(date("d.m.Y G:i", strtotime($model->creation_date))) ?></tiny>
@@ -54,52 +69,55 @@ $jsonMarkerList[0] = ['latitude' => $model->latitude, 'longitude' => $model->lon
                 <strong>Address:</strong>
                 <?= Html::encode($model->address) ?>
             </p>
+
             <hr>
 
+            <!-- google map -->
             <div class="span12 map_searchEvent" id="map"></div>
 
             <hr>
+
+            <!-- description -->
             <p><strong>Description:</strong></p>
             <p><?= Html::encode($model->description) ?></p>
 
+            <hr>
 
-
-
-            <?= ""/* DetailView::widget([
-                    'model' => $model,
-                    'options' => ['class' => 'table borderless'],
-                    'attributes' => [
-                        'creation_date',
-                        'address',
-                        'start_date',
-                        'end_date',
-                        'image',
-                        'facebook',
-                        'twitter',
-                        'flickr',
-                        'clicks',
-                        'description',
-                    ],
-                ]) */?>
-
+            <!-- clicks -->
+            <p class="text-center"><?= Html::encode($model->clicks) ?> Clicks</p>
 
             <hr>
 
             <!-- Only show if event is linked with either facebook, flickr or twitter -->
             <?php if ($model->facebook || $model->flickr || $model->twitter) { ?>
 
-            <p class="tiny text-center">Linked with:
-                <a class="btn btn-social-icon btn-twitter">
-                    <i class="fa fa-twitter"></i>
-                </a>
-            </p>
+                <p class="tiny text-center">Linked with:
+                    <?php if ($model->facebook) { ?>
+                        <a class="btn btn-social-icon btn-facebook">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    <?php } ?>
+                    <?php if ($model->flickr) { ?>
+                        <a class="btn btn-social-icon btn-flickr" href="<?= $model->flickr ?>">
+                            <i class="fa fa-flickr"></i>
+                        </a>
+                    <?php } ?>
+                    <?php if ($model->twitter) { ?>
+                        <a class="btn btn-social-icon btn-twitter">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    <?php } ?>
+                </p>
 
             <?php } ?>
             <!-- -->
 
             <hr>
 
+
             <h4>Comments</h4>
+
+            <!-- comments from linked sites -->
             <?php
             for ($i = 0; $i < 5; $i++) { ?>
                 <div class="panel panel-default">
@@ -112,13 +130,11 @@ $jsonMarkerList[0] = ['latitude' => $model->latitude, 'longitude' => $model->lon
                     </div></div>
             <?php } ?>
 
-
-
-
         </div>
 
         <div class="col-md-4">
 
+            <!-- images from linked sites -->
             <?php
             if (isset($socialmedia['images'])) { ?>
 
@@ -127,7 +143,7 @@ $jsonMarkerList[0] = ['latitude' => $model->latitude, 'longitude' => $model->lon
                     <div class="col-md-6">
                         <a href="<?= $socialmedia_image['original'] ?>"><img src="<?= $socialmedia_image['thumbnail'] ?>" alt="img" /> </a>
                     </div>
-                <?php endforeach; ?>>
+                <?php endforeach; ?>
             <?php } ?>
 
         </div>

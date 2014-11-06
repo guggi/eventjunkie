@@ -80,11 +80,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php $jsonMarkerList = []; ?>
 
                 <?php foreach ($eventList as $event): ?>
-                    <?php $jsonMarkerList[] = ["latitude" => $event->latitude,
-                        "longitude" => $event->longitude] ?>
+                    <!-- Marker for Google Map -->
+                    <?php $jsonMarkerList[] = [
+                        "id" => $event->id,
+                        "name" => $event->name,
+                        "start_date" => $event->start_date,
+                        "end_date" => $event->end_date,
+                        "address" => $event->address,
+                        "latitude" => $event->latitude,
+                        "longitude" => $event->longitude
+                    ] ?>
                     <div class="col-md-6">
                         <div class="list-group">
-                            <a href="<?php echo \Yii::$app->request->BaseUrl.'/index.php?r=event/view&id='.$event->id; ?>" class="list-group-item">
+                            <a href="<?php echo \Yii::$app->request->getBaseUrl().'/index.php?r=event/view&id='.$event->id; ?>" class="list-group-item">
                                 <h3 class="list-group-item-heading"><?= Html::encode($event->name) ?></h3>
                                 <p class="list-group-item-text pull-left">
                                 </p>
@@ -101,22 +109,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 <?php endforeach; ?>
 
-                <!--
-                                <div class="col-md-6">
-                                    <div class="list-group">
-                                        <a href="#" class="list-group-item">
-                                            <h4 class="list-group-item-heading">List group item heading</h4>
-                                            <p class="list-group-item-text pull-left"> ewrewer
-                                            </p>
-                                            <p class="list-group-item-text">
-                                                Date<br>
-                                                Location<br>
-                                                added by Author <small>on Date</small>
-                                            </p>
-                                        </a>
-                                    </div>
-                                </div>-->
-
                 <?= LinkPager::widget(['pagination' => $pagination]) ?>
             </div>
             <div class="col-md-2">
@@ -124,12 +116,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php $i = 0; ?>
 
-                <?php foreach ($eventList as $event): ?>
-                    <?php
-                    if ($i++ == 3) {
-                        break;
-                    }
-                    ?>
+                <?php foreach ($topList as $event): ?>
 
                     <div class="list-group">
                         <a href="<?php echo \Yii::$app->request->BaseUrl.'/index.php?r=event/view&id='.$event->id; ?>" class="list-group-item">
@@ -150,12 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php $i = 0; ?>
 
-                <?php foreach ($eventList as $event): ?>
-                    <?php
-                    if ($i++ == 3) {
-                        break;
-                    }
-                    ?>
+                <?php foreach ($newList as $event): ?>
 
                     <div class="list-group">
                         <a href="<?php echo \Yii::$app->request->BaseUrl.'/index.php?r=event/view&id='.$event->id; ?>" class="list-group-item">

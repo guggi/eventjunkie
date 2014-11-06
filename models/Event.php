@@ -47,8 +47,8 @@ class Event extends ActiveRecord
     {
         return [
             [['user_id', 'clicks'], 'integer'],
-            [['creation_date', 'end_date'], 'safe'],
-            [['start_date', 'end_date'], 'isValidDate'], // TODO start_date in der vergangenheit, end_date nach start_date
+            [['end_date'], 'safe'],
+            [['start_date', 'end_date'], 'isValidDate'],
             [['start_date'], 'isValidStartDate'],
             [['end_date'], 'isValidEndDate'],
             [['name', 'address', 'start_date'], 'required'],
@@ -57,8 +57,9 @@ class Event extends ActiveRecord
             [['address'], 'setGeoLocation'],
             [['image'], 'string', 'max' => 100],
             [['upload_image'], 'safe'],
-            [['upload_image'], 'file', 'extensions'=>'jpg, gif, png'], //todo filegröße
-            [['facebook', 'twitter', 'flickr', 'description'], 'string', 'max' => 1000] //hier validieren
+            [['upload_image'], 'file', 'extensions' => 'jpg, gif, png'], //todo filegröße
+            [['facebook', 'twitter', 'flickr', 'description'], 'string', 'max' => 1000], //todo hier validieren
+            [['facebook', 'twitter', 'flickr'], 'isValidUrl'],
         ];
     }
 
@@ -70,7 +71,6 @@ class Event extends ActiveRecord
         return [
             'id' => 'ID',
             'user_id' => 'User ID',
-            'creation_date' => 'Creation Date',
             'name' => 'Name',
             'address' => 'Address',
             'latitude' => 'Latitude',
@@ -95,16 +95,30 @@ class Event extends ActiveRecord
 
     public function isValidStartDate($attribute, $params)
     {
-        if(strtotime($this->$attribute) < time()) {
+        if (strtotime($this->$attribute) < time() && strtotime($this->$attribute) < strtotime($this->creation_date)) {
             $this->addError($attribute, $attribute . ' must be after today');
         }
     }
 
     public function isValidEndDate($attribute, $params)
     {
-        if(strtotime($this->$attribute) < strtotime($this->start_date)) {
+        if (strtotime($this->$attribute) < strtotime($this->start_date)) {
             $this->addError($attribute, $attribute . ' must be after Start Date');
         }
+    }
+
+    public function isValidUrl($attribute, $params)
+    {
+        $flickr_regex = '/(http|https)?(:)?(\/\/)?(w*\.)?flickr\.com\/photos([^?]*)/';
+        $check_head = curl_init($this->$attribute);
+        curl_setopt($check_head, CURLOPT_NOBODY, true);
+        curl_exec($check_head);
+
+        if (!preg_match($flickr_regex, $this->$attribute) && (curl_getinfo($check_head, CURLINFO_HTTP_CODE) !== '200')) {
+            $this->addError($attribute, 'Not a valid Url.');
+        }
+
+        curl_close($check_head);
     }
 
     /*
@@ -153,7 +167,8 @@ class Event extends ActiveRecord
      *
      * @return string or null
      */
-    public function uploadImage() {
+    public function uploadImage()
+    {
         if ($upload_image = UploadedFile::getInstance($this, 'upload_image')) {
             $this->image = Yii::$app->security->generateRandomString() . '.' . $upload_image->extension;
         }
@@ -166,7 +181,8 @@ class Event extends ActiveRecord
      *
      * @return boolean the status of deletion
      */
-    public function deleteImage($delete_image) {
+    public function deleteImage($delete_image)
+    {
         if (!$delete_image) {
             return false;
         }

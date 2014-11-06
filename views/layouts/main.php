@@ -16,7 +16,7 @@ AppAsset::register($this);
 <head>
 
 
-<link rel="icon" href="<?php  echo \Yii::$app->request->BaseUrl.'/favicon.png' ?>" type="image/x-icon">
+<link rel="icon" href="<?php  echo \Yii::$app->request->getBaseUrl() .'/favicon.png' ?>" type="image/x-icon">
 
 
     <meta charset="<?= Yii::$app->charset ?>"/>

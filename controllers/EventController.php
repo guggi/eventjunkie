@@ -43,17 +43,24 @@ class EventController extends Controller
             'totalCount' => $query->count(),
         ]);
 
+        // Event List ordered by date
         $eventList = $query->orderBy('start_date')
             ->offset($pagination->offset)
             ->limit($pagination->limit)
             ->all();
+
+        // Top Events
+        $topList = $query->orderBy(['clicks' => SORT_DESC])->limit(3)->all();
+
+        // New Events
+        $newList = $query->orderBy(['creation_date' => SORT_DESC])->limit(3)->all();
 
 
         $searchModel = new SearchEventForm();
 
         return $this->render('index', ['searchModel' => $searchModel,
             'eventList' => $eventList,
-            'pagination' => $pagination,]);
+            'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);
     }
 
     /**
@@ -64,14 +71,17 @@ class EventController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        if (!Yii::$app->session->get('socialmedia'.$id)) {
-            $socialmediapi = new SocialMediaApi();
-            $socialmediapi->loadSocialMedia($model->flickr);
-            Yii::$app->session->set('socialmedia'.$id, $socialmediapi->getSocialMedia());
+        if (!Yii::$app->cache->get('socialmedia' . $id)) {
+            $socialMediaApi = new SocialMediaApi();
+            $socialMediaApi->loadSocialMedia($model->flickr);
+            Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia());
         }
 
+        ++$model->clicks;
+        $model->update();
+
         return $this->render('view', [
-            'model' => $model, 'socialmedia' => Yii::$app->session->get('socialmedia'.$id)
+            'model' => $model, 'socialmedia' => Yii::$app->cache->get('socialmedia' . $id)
         ]);
     }
 
@@ -82,7 +92,6 @@ class EventController extends Controller
      */
     public function actionCreate()
     {
-
         if (Yii::$app->user->isGuest) {
             $this->redirect(\Yii::$app->request->BaseUrl . '/index.php?r=user/login');
         }
@@ -143,11 +152,12 @@ class EventController extends Controller
                 $model->image = $old_image;
             }
 
-            if ($model->save()) {
+            if ($model->update() !== false) {
                 if ($image !== null) { // delete old and overwrite
                     $model->deleteImage($old_image);
                     $image->saveAs($model->getImagePath());
                 }
+                Yii::$app->cache->delete('socialmedia' . $id); // delete cache of this event
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 return $this->render('update', ['model' => $model]);

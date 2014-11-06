@@ -4,6 +4,7 @@ namespace app\models\apis;
 
 class SocialMediaApi {
     private $socialmedia;
+    private $flickr_regex = '/(http|https)?(:)?(\/\/)?(w*\.)?flickr\.com\/photos([^?]*)/';
 
     public function __construct() {
         $this->socialmedia = [
@@ -12,26 +13,17 @@ class SocialMediaApi {
         ];
     }
 
-
     public function loadSocialMedia($link) {
-        $type = $this->getSocialMediaType($link);
-        if ($type === 'flickr') {
+        $images = [];
+        if (preg_match($this->flickr_regex, $link)) {
             $flickrApi = new FlickrApi($link);
-            if (isset($this->socialmedia['images'])) {
-                array_merge(array($this->socialmedia['images']), $flickrApi->getGalleryPhotos());
-            } else {
-                $this->socialmedia['images'] = $flickrApi->getGalleryPhotos();
-            }
+            $images = $flickrApi->getPhotos();
         }
-    }
 
-    private function getSocialMediaType($link) {
-        if (strpos($link,'www.facebook.com/events') !== false) {
-            return 'facebook';
-        } else if (strpos($link,'www.flickr.com/photos/flickr/galleries') !== false) {
-            return 'flickr';
+        if (isset($this->socialmedia['images'])) {
+            array_merge($this->socialmedia['images'], $images);
         } else {
-            return false;
+            $this->socialmedia['images'] = $images;
         }
     }
 
