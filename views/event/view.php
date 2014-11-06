@@ -36,7 +36,7 @@ $jsonMarkerList[0] = ['latitude' => $model->latitude, 'longitude' => $model->lon
                     ]) ?>
                 </p>
             <?php } ?>
-            <img class="img-responsive" src="/images/<?= Html::encode($model->image) ?>" alt="">
+            <img class="img-responsive" src="images/<?= Html::encode($model->image) ?>" alt="">
             <hr>
             <p>
                 <strong>Organizer:</strong>
@@ -45,8 +45,10 @@ $jsonMarkerList[0] = ['latitude' => $model->latitude, 'longitude' => $model->lon
             <p>
                 <strong>Date:</strong>
                 <?= date("d.m.Y G:i",
-                    strtotime($model->start_date)) ?> <?= $model->start_date !== $model->end_date ?
-                    Html::encode(- date("d.m.Y G:i", strtotime($model->end_date))) : "" ?>
+                    strtotime($model->start_date)) ?>
+                <?= $model->start_date !== $model->end_date ? "-" : ""?>
+                <?= $model->start_date !== $model->end_date ?
+                    Html::encode(date("d.m.Y G:i", strtotime($model->end_date))) : "" ?>
             </p>
             <p>
                 <strong>Address:</strong>

@@ -64,12 +64,14 @@ class EventController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        $socialmediapi = new SocialMediaApi();
-        $socialmediapi->loadSocialMedia($model->flickr);
-        $socialmedia = $socialmediapi->getSocialMedia();
+        if (!Yii::$app->session->get('socialmedia'.$id)) {
+            $socialmediapi = new SocialMediaApi();
+            $socialmediapi->loadSocialMedia($model->flickr);
+            Yii::$app->session->set('socialmedia'.$id, $socialmediapi->getSocialMedia());
+        }
 
         return $this->render('view', [
-            'model' => $model, 'socialmedia' => $socialmedia
+            'model' => $model, 'socialmedia' => Yii::$app->session->get('socialmedia'.$id)
         ]);
     }
 

@@ -49,7 +49,9 @@ class Event extends ActiveRecord
             [['user_id', 'clicks'], 'integer'],
             [['creation_date', 'end_date'], 'safe'],
             [['start_date', 'end_date'], 'isValidDate'], // TODO start_date in der vergangenheit, end_date nach start_date
-            [['name', 'address', 'start_date'], 'required'], //TODO address hier validieren
+            [['start_date'], 'isValidStartDate'],
+            [['end_date'], 'isValidEndDate'],
+            [['name', 'address', 'start_date'], 'required'],
             [['latitude', 'longitude'], 'number'],
             [['name', 'address'], 'string', 'max' => 50],
             [['address'], 'setGeoLocation'],
@@ -86,8 +88,22 @@ class Event extends ActiveRecord
 
     public function isValidDate($attribute, $params)
     {
-        if(!strtotime($this->$attribute)) {
+        if (!strtotime($this->$attribute)) {
             $this->addError($attribute, $attribute . ' has wrong format');
+        }
+    }
+
+    public function isValidStartDate($attribute, $params)
+    {
+        if(strtotime($this->$attribute) < time()) {
+            $this->addError($attribute, $attribute . ' must be after today');
+        }
+    }
+
+    public function isValidEndDate($attribute, $params)
+    {
+        if(strtotime($this->$attribute) < strtotime($this->start_date)) {
+            $this->addError($attribute, $attribute . ' must be after Start Date');
         }
     }
 
@@ -102,7 +118,7 @@ class Event extends ActiveRecord
                 $parsed_address . '&sensor=true');
             $data = json_decode($jsonData);
             if ($data->{'status'} != 'OK') {
-                $this->addError($attribute, $attribute . ' ' . $this->$attribute . ' doesn\'t exist.');
+                $this->addError($attribute, $attribute . ' ' . $this->$attribute . ' doesn\'t exist');
                 return;
             }
             $this->latitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
