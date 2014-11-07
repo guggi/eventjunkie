@@ -10,6 +10,16 @@ use yii\bootstrap\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
+<?php $jsonMarkerList[0] = [
+    "id" => $model->id,
+    "name" => $model->name,
+    "start_date" => $model->start_date,
+    "end_date" => $model->end_date,
+    "address" => $model->address,
+    "latitude" => $model->latitude,
+    "longitude" => $model->longitude
+] ?>
+
 <div class="event-form">
 
     <div class="row">
@@ -36,7 +46,10 @@ use yii\bootstrap\ActiveForm;
             ]); ?>
 
             <?= $form->field($model, 'name') ?>
-            <?= $form->field($model, 'address') ?>
+            <?= $form->field($model, 'address')->textInput([
+                'onchange' => 'codeAddress()',
+                'onkeyup' => 'codeAddress()',
+            ])?>
             <?= $form->field($model, 'start_date')->widget(DateTimePicker::classname(),[
                 'options' => ['placeholder' => date('d.m.Y G:i', time())],
                 'convertFormat' => true,
@@ -97,3 +110,8 @@ use yii\bootstrap\ActiveForm;
     </div>
 
 </div>
+
+<script>
+    var jsonMarkerList = JSON.parse('<?php echo json_encode($jsonMarkerList) ?>');
+    var streetZoom = 15;
+</script>

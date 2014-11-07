@@ -36,7 +36,24 @@ class EventController extends Controller
      */
     public function actionIndex()
     {
-        $query = Event::find();
+        $searchModel = new SearchEventForm();
+
+        if ($searchModel->load(Yii::$app->request->get()) && $searchModel->validate()) { // search form
+            $query = Event::find()->where(['like', 'name', $searchModel->name]);
+            if (isset($searchModel->latitude)) {
+                $query = $query->andWhere('acos(sin('.$searchModel->latitude . ') * sin(Latitude) + cos('.$searchModel->latitude . ') * cos(Latitude) * cos(Longitude - ('.$searchModel->longitude . '))) * 6371 <= ' .
+                $searchModel->radius);
+            }
+            echo $searchModel->latitude;
+            if ($searchModel->from_date !== "") {
+                $query = $query->andWhere(['>=', 'UNIX_TIMESTAMP(start_date)', strtotime($searchModel->from_date)]);
+            }
+            if ($searchModel->to_date !== "") {
+                $query = $query->andWhere(['<=', 'UNIX_TIMESTAMP(start_date)', strtotime($searchModel->to_date)]);
+            }
+        } else { // normal index call
+            $query = Event::find()->where(['>=', 'UNIX_TIMESTAMP(start_date)', time()]);
+        }
 
         $pagination = new Pagination([
             'defaultPageSize' => 10,
@@ -49,18 +66,18 @@ class EventController extends Controller
             ->limit($pagination->limit)
             ->all();
 
+        //var_dump($eventList);
         // Top Events
         $topList = $query->orderBy(['clicks' => SORT_DESC])->limit(3)->all();
 
         // New Events
         $newList = $query->orderBy(['creation_date' => SORT_DESC])->limit(3)->all();
 
+        //if (!$searchModel->load(Yii::$app->request->get()))
+            return $this->render('index', ['searchModel' => $searchModel,
+                'eventList' => $eventList,
+                'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);
 
-        $searchModel = new SearchEventForm();
-
-        return $this->render('index', ['searchModel' => $searchModel,
-            'eventList' => $eventList,
-            'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);
     }
 
     /**

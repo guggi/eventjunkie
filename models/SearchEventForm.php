@@ -6,16 +6,17 @@ use yii\base\Model;
 use app\models\Event;
 
 class SearchEventForm extends Event {
-    public $name;
-    public $address;
     public $from_date;
     public $to_date;
-    public $radius;
-    public $type;
+    public $radius = 0;
+    public $type = [0,1];
 
     public function rules() {
         return [
-           //[["name"], "save"]
+            [['name', 'address'], 'string', 'max' => 50],
+            [['address'], 'setGeoLocation'],
+            [['radius'], 'integer'],
+            [['from_date', 'to_date'], 'isValidDate'],
         ];
     }
 

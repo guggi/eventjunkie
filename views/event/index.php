@@ -19,6 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h4>Search event</h4>
                 <?php $form = ActiveForm::begin([
                     'layout' => 'default',
+                    'method' => 'get',
                     'fieldConfig' => [
                         'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
                         'horizontalCssClasses' => [
@@ -34,7 +35,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($searchModel, 'name') ?>
                 <?= $form->field($searchModel, 'address') ?>
                 <?= $form->field($searchModel, 'radius')->widget(RangeInput::classname(), [
-                    'value' => 1,
                     'options' => ['readonly' => false],
                     'html5Options' => ['min' => 0, 'max' => 50],
                     'addon' => ['append' => ['content' => 'km']]
