@@ -3,6 +3,7 @@
 $params = require(__DIR__ . '/params.php');
 
 $config = [
+    'timeZone' => 'Europe/Berlin',
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],

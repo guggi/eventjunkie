@@ -1,23 +1,29 @@
 <?php
-/* @var $panel yii\debug\panels\RequestPanel */
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
-use yii\helpers\Html;
-use yii\web\Response;
+namespace yii\web;
 
-$statusCode = $panel->data['statusCode'];
-if ($statusCode === null) {
-    $statusCode = 200;
+/**
+ * ConflictHttpException represents a "Conflict" HTTP exception with status code 409
+ *
+ * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.10
+ * @author Dan Schmidt <danschmidt5189@gmail.com>
+ * @since 2.0
+ */
+class ConflictHttpException extends HttpException
+{
+    /**
+     * Constructor.
+     * @param string $message error message
+     * @param integer $code error code
+     * @param \Exception $previous The previous exception used for the exception chaining.
+     */
+    public function __construct($message = null, $code = 0, \Exception $previous = null)
+    {
+        parent::__construct(409, $message, $code, $previous);
+    }
 }
-if ($statusCode >= 200 && $statusCode < 300) {
-    $class = 'label-success';
-} elseif ($statusCode >= 300 && $statusCode < 400) {
-    $class = 'label-info';
-} else {
-    $class = 'label-important';
-}
-$statusText = Html::encode(isset(Response::$httpStatuses[$statusCode]) ? Response::$httpStatuses[$statusCode] : '');
-?>
-<div class="yii-debug-toolbar-block">
-    <a href="<?= $panel->getUrl() ?>" title="Status code: <?= $statusCode ?> <?= $statusText ?>">Status <span class="label <?= $class ?>"><?= $statusCode ?></span></a>
-    <a href="<?= $panel->getUrl() ?>">Action <span class="label"><?= $panel->data['action'] ?></span></a>
-</div>

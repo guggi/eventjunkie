@@ -49,7 +49,7 @@ class Event extends ActiveRecord
             [['user_id', 'clicks'], 'integer'],
             [['end_date'], 'safe'],
             [['start_date', 'end_date'], 'isValidDate'],
-            [['start_date'], 'isValidStartDate'],
+            [['start_date'], 'isValidStartDate'], //todo entweder das start_date richtig validieren oder so lassen
             [['end_date'], 'isValidEndDate'],
             [['name', 'address', 'start_date'], 'required'],
             [['latitude', 'longitude'], 'number'],
@@ -57,7 +57,8 @@ class Event extends ActiveRecord
             [['address'], 'setGeoLocation'],
             [['image'], 'string', 'max' => 100],
             [['upload_image'], 'safe'],
-            [['upload_image'], 'file', 'extensions' => 'jpg, gif, png'], //todo filegröße
+            [['upload_image'], 'file', 'extensions' => 'jpg, gif, png', 'maxSize' => 2097152, 'tooBig' =>
+            'Image size cannot be larger then 2MB.'],
             [['facebook', 'twitter', 'flickr', 'description'], 'string', 'max' => 1000], //todo hier validieren
             [['facebook', 'twitter', 'flickr'], 'isValidUrl'],
         ];
@@ -95,8 +96,8 @@ class Event extends ActiveRecord
 
     public function isValidStartDate($attribute, $params)
     {
-        if (strtotime($this->$attribute) < time() && strtotime($this->$attribute) < strtotime($this->creation_date)) {
-            $this->addError($attribute, $attribute . ' must be after today');
+        if (strtotime($this->$attribute) <= 0) {
+            $this->addError($attribute, $attribute . ' must be after '. date('Y-m-d H:i:s', 0));
         }
     }
 
