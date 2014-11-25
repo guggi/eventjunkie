@@ -47,7 +47,7 @@ class Event extends ActiveRecord
     {
         return [
             [['user_id', 'clicks'], 'integer'],
-            [['end_date'], 'safe'],
+            //[['end_date'], 'safe'],
             [['start_date', 'end_date'], 'isValidDate'],
             [['start_date'], 'isValidStartDate'], //todo entweder das start_date richtig validieren oder so lassen
             [['end_date'], 'isValidEndDate'],
@@ -89,7 +89,7 @@ class Event extends ActiveRecord
 
     public function isValidDate($attribute, $params)
     {
-        if (!strtotime($this->$attribute)) {
+        if (!strtotime($this->$attribute) && strtotime($this->$attribute) != 0) {
             $this->addError($attribute, $attribute . ' has wrong format');
         }
     }
@@ -103,8 +103,15 @@ class Event extends ActiveRecord
 
     public function isValidEndDate($attribute, $params)
     {
-        if (strtotime($this->$attribute) < strtotime($this->start_date)) {
+        //$this->addError($attribute, $attribute . ' must be after Start Date'. strtotime($this->$attribute));
+        if (strtotime($this->$attribute) > 0 && strtotime($this->$attribute) < strtotime($this->start_date)) {
             $this->addError($attribute, $attribute . ' must be after Start Date');
+        }
+
+        if (strtotime($this->$attribute) === 0) {
+            $this->$attribute = date('Y-m-d H:i:s', strtotime($this->start_date));
+        } else {
+            $this->$attribute = date('Y-m-d H:i:s', strtotime($this->$attribute));
         }
     }
 

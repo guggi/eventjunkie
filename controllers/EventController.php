@@ -118,12 +118,7 @@ class EventController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->user_id = Yii::$app->user->id;
             $model->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
-
-            if (date('Y-m-d H:i:s', strtotime($model->end_date)) == "1970-01-01 00:00:00") {
-                $model->end_date = date('Y-m-d H:i:s', strtotime($model->start_date));
-            } else {
-                $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
-            }
+            $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
 
             $model->clicks = 0;
 
@@ -155,12 +150,7 @@ class EventController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
-
-            if (date('Y-m-d H:i:s', strtotime($model->end_date)) == "1970-01-01 00:00:00") {
-                $model->end_date = date('Y-m-d H:i:s', strtotime($model->start_date));
-            } else {
-                $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
-            }
+            $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
 
             // image
             $image = $model->uploadImage();
@@ -180,6 +170,8 @@ class EventController extends Controller
                 return $this->render('update', ['model' => $model]);
             }
         } else {
+            $model->start_date = date('d.m.Y G:i', strtotime($model->start_date));
+            $model->end_date = date('d.m.Y G:i', strtotime($model->end_date));
             return $this->render('update', [
                 'model' => $model,
             ]);
