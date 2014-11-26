@@ -3,8 +3,10 @@
 namespace app\controllers;
 
 use app\models\apis\SocialMediaApi;
+use app\models\SocialMedia;
 use Yii;
 use app\models\Event;
+use yii\base\Model;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -55,6 +57,8 @@ class EventController extends Controller
             $query = Event::find()->where(['>=', 'UNIX_TIMESTAMP(start_date)', time()]);
         }
 
+        $query = $query->joinWith('user');
+
         $pagination = new Pagination([
             'defaultPageSize' => 10,
             'totalCount' => $query->count(),
@@ -66,17 +70,15 @@ class EventController extends Controller
             ->limit($pagination->limit)
             ->all();
 
-        //var_dump($eventList);
         // Top Events
         $topList = $query->orderBy(['clicks' => SORT_DESC])->limit(3)->all();
 
         // New Events
         $newList = $query->orderBy(['creation_date' => SORT_DESC])->limit(3)->all();
 
-        //if (!$searchModel->load(Yii::$app->request->get()))
-            return $this->render('index', ['searchModel' => $searchModel,
-                'eventList' => $eventList,
-                'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);
+        return $this->render('index', ['searchModel' => $searchModel,
+            'eventList' => $eventList,
+            'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);
 
     }
 
@@ -88,9 +90,13 @@ class EventController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
+        $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
+        //Yii::$app->cache->delete('socialmedia' . $id);
         if (!Yii::$app->cache->get('socialmedia' . $id)) {
             $socialMediaApi = new SocialMediaApi();
-            $socialMediaApi->loadSocialMedia($model->flickr);
+            foreach ($socialMediaModels as $socialMediaModel) {
+                $socialMediaApi->loadSocialMedia($socialMediaModel);
+            }
             Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia());
         }
 
@@ -98,7 +104,8 @@ class EventController extends Controller
         $model->update();
 
         return $this->render('view', [
-            'model' => $model, 'socialmedia' => Yii::$app->cache->get('socialmedia' . $id)
+            'model' => $model, 'socialmedia' => Yii::$app->cache->get('socialmedia' . $id),
+            'socialMediaModels' => $socialMediaModels,
         ]);
     }
 
@@ -115,7 +122,32 @@ class EventController extends Controller
 
         $model = new Event();
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+        if (!$model->num_socialMedia) {
+            $model->num_socialMedia = 1;
+        }
+
+        $socialMediaModels = [];
+
+        for ($i = 0; $i < $model->num_socialMedia; $i++) {
+            $socialMediaModels[] = new SocialMedia();
+        }
+
+        $postData = Yii::$app->request->post();
+        $valid = true;
+
+        if ($model->load($postData) && $model->validate()) {
+            foreach ($socialMediaModels as $socialMediaModel) {
+                if ($socialMediaModel->load($postData) && $socialMediaModel->validate()) {
+                    var_dump($socialMediaModel->url);
+                } else {
+                    $valid = false;
+                }
+            }
+        } else {
+            $valid = false;
+        }
+
+        if ($valid) {
             $model->user_id = Yii::$app->user->id;
             $model->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
             $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
@@ -128,12 +160,20 @@ class EventController extends Controller
                 if ($image !== null) {
                     $image->saveAs($model->getImagePath());
                 }
-                return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                return $this->render('create', ['model' => $model]);
+
+                foreach ($socialMediaModels as $socialMediaModel) {
+                    if ($socialMediaModel->url === '') {
+                        //$socialMediaModel->delete();
+                    } else {
+                        $socialMediaModel->event_id = $model->id;
+                        $socialMediaModel->save();
+                    }
+                }
+
+                //return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
-            return $this->render('create', ['model' => $model]);
+            return $this->render('create', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
         }
     }
 
@@ -146,9 +186,34 @@ class EventController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
+
+        if (!$model->num_socialMedia) {
+            $model->num_socialMedia = 1;
+        }
+
+        for ($i = 0; $i < $model->num_socialMedia; $i++) {
+            $socialMediaModels[] = new SocialMedia();
+        }
+
+        $postData = Yii::$app->request->post();
+        $valid = true;
+
         $old_image = $model->image;
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+        if ($model->load($postData) && $model->validate()) {
+            foreach ($socialMediaModels as $socialMediaModel) {
+                if ($socialMediaModel->load($postData) && $socialMediaModel->validate()) {
+
+                } else {
+                    $valid = false;
+                }
+            }
+        } else {
+            $valid = false;
+        }
+
+        if ($valid) {
             $model->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
             $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
 
@@ -164,6 +229,14 @@ class EventController extends Controller
                     $model->deleteImage($old_image);
                     $image->saveAs($model->getImagePath());
                 }
+                foreach ($socialMediaModels as $socialMediaModel) {
+                    if ($socialMediaModel->url === '') {
+                        $socialMediaModel->delete();
+                    } else {
+                        $socialMediaModel->event_id = $model->id;
+                        $socialMediaModel->save();
+                    }
+                }
                 Yii::$app->cache->delete('socialmedia' . $id); // delete cache of this event
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
@@ -172,10 +245,9 @@ class EventController extends Controller
         } else {
             $model->start_date = date('d.m.Y G:i', strtotime($model->start_date));
             $model->end_date = date('d.m.Y G:i', strtotime($model->end_date));
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+
         }
+        return $this->render('update', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
     }
 
     /**
@@ -208,17 +280,3 @@ class EventController extends Controller
         }
     }
 }
-
-/*
-            if ($model->address !== '') {
-                $parsed_address = str_replace(' ', '+', $model->address);
-                $jsonData = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address=' .
-                    $parsed_address . '&sensor=true');
-                $data = json_decode($jsonData);
-                if ($data->{'status'} != 'OK') {
-                    Yii::$app->session->setFlash('error', 'Address doesn\'t exist.');
-                    return $this->render('create', ['model' => $model]);
-                }
-                $model->latitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lat'};
-                $model->longitude = $data->{'results'}[0]->{'geometry'}->{'location'}->{'lng'};
-            }*/

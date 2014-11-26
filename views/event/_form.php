@@ -90,11 +90,16 @@ use yii\bootstrap\ActiveForm;
                 ?>
             <?php } ?>
 
-            <?= $form->field($model, 'facebook')->textInput(['maxlength' => 1000]) ?>
-
-            <?= $form->field($model, 'twitter')->textInput(['maxlength' => 1000]) ?>
-
-            <?= $form->field($model, 'flickr')->textInput(['maxlength' => 1000]) ?>
+            <?php if (isset($socialMediaModels)) {
+                foreach ($socialMediaModels as $key => $value) { ?>
+                    <?php if ($key === 0) { ?>
+                        <?= $form->field($socialMediaModels[$key], 'url')->textInput(['maxlength' => 500]) ?>
+                    <?php } else { ?>
+                        <?= $form->field($socialMediaModels[$key], 'url')->textInput(['maxlength' => 500])->label('') ?>
+                    <?php } ?>
+                    <?= $key ?>
+                <?php } ?>
+            <?php } ?>
 
             <?= $form->field($model, 'description')->textInput(['maxlength' => 1000])->textarea(['rows' => 6]) ?>
 

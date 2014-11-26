@@ -102,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <p class="list-group-item-text">
                                     <strong>Start: </strong><?= Html::encode(date("d.m.Y G:i", strtotime($event->start_date))) ?><br>
                                     <?= Html::encode($event->address) ?><br>
-                                    <small><?= Html::encode($event->user_id) ?> (<?= Html::encode(date("d.m.Y G:i", strtotime($event->creation_date))) ?>)</small>
+                                    <small><?= Html::encode($event->user["username"]) ?> (<?= Html::encode(date("d.m.Y G:i", strtotime($event->creation_date))) ?>)</small>
                                 </p>
                             </a>
                         </div>
@@ -114,8 +114,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-md-2">
                 <h4>Top events</h4>
 
-                <?php $i = 0; ?>
-
                 <?php foreach ($topList as $event): ?>
 
                     <div class="list-group">
@@ -126,7 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <p class="list-group-item-text">
                                 <strong>Start: </strong><?= Html::encode(date("d.m.Y G:i", strtotime($event->start_date))) ?><br>
                                 <?= Html::encode($event->address) ?><br>
-                                <small>Author<?= Html::encode($event->user_id) ?> (<?= Html::encode(date("d.m.Y G:i", strtotime($event->creation_date))) ?>)</small>
+                                <small><?= Html::encode($event->user["username"]) ?> (<?= Html::encode(date("d.m.Y G:i", strtotime($event->creation_date))) ?>)</small>
                             </p>
                         </a>
                     </div>
@@ -134,8 +132,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php endforeach; ?>
 
                 <h4>New events</h4>
-
-                <?php $i = 0; ?>
 
                 <?php foreach ($newList as $event): ?>
 
@@ -147,7 +143,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <p class="list-group-item-text">
                                 <strong>Start: </strong><?= Html::encode(date("d.m.Y G:i", strtotime($event->start_date))) ?><br>
                                 <?= Html::encode($event->address) ?><br>
-                                <small>Author<?= Html::encode($event->user_id) ?> (<?= Html::encode(date("d.m.Y G:i", strtotime($event->creation_date))) ?>)</small>
+                                <small><?= Html::encode($event->user["username"]) ?> (<?= Html::encode(date("d.m.Y G:i", strtotime($event->creation_date))) ?>)</small>
                             </p>
                         </a>
                     </div>

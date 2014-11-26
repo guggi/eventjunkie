@@ -89,27 +89,29 @@ $this->params['breadcrumbs'][] = $this->title;
             <hr>
 
             <!-- Only show if event is linked with either facebook, flickr or twitter -->
-            <?php if ($model->facebook || $model->flickr || $model->twitter) { ?>
+            <?php if ($socialMediaModels) { ?>
 
                 <p class="tiny text-center">Linked with:
-                    <?php if ($model->facebook) { ?>
+                    <?php foreach ($socialMediaModels as $socialMediaModel) {?>
+                    <?php if ($socialMediaModel->site_name === 'facebook') {?>
                         <a class="btn btn-social-icon btn-facebook">
                             <i class="fa fa-facebook"></i>
                         </a>
                     <?php } ?>
-                    <?php if ($model->flickr) { ?>
-                        <a class="btn btn-social-icon btn-flickr" href="<?= $model->flickr ?>">
+                    <?php if ($socialMediaModel->site_name === 'flickr') {?>
+                        <a class="btn btn-social-icon btn-flickr" href="<?= $socialMediaModel->url ?>">
                             <i class="fa fa-flickr"></i>
                         </a>
                     <?php } ?>
-                    <?php if ($model->twitter) { ?>
+                    <?php if ($socialMediaModel->site_name === 'twitter') {?>
                         <a class="btn btn-social-icon btn-twitter">
                             <i class="fa fa-twitter"></i>
                         </a>
                     <?php } ?>
+                    <?php } ?>
                 </p>
 
-            <?php } ?>
+            <?php }?>
             <!-- -->
 
             <hr>

@@ -4,7 +4,6 @@ namespace app\models\apis;
 
 class SocialMediaApi {
     private $socialmedia;
-    private $flickr_regex = '/(http|https)?(:)?(\/\/)?(w*\.)?flickr\.com\/photos([^?]*)/';
 
     public function __construct() {
         $this->socialmedia = [
@@ -15,8 +14,8 @@ class SocialMediaApi {
 
     public function loadSocialMedia($link) {
         $images = [];
-        if (preg_match($this->flickr_regex, $link)) {
-            $flickrApi = new FlickrApi($link);
+        if ($link->site_name === 'flickr') {
+            $flickrApi = new FlickrApi($link->url);
             $images = $flickrApi->getPhotos();
         }
 

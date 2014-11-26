@@ -6,24 +6,27 @@ use Yii;
 
 class FlickrApi {
     private $api_key;
-    private $link;
+    private $url;
     private $images = [];
 
-    function __construct($link) {
+    function __construct($url) {
         $this->api_key = 'e9eef2cb072ac056df7140676c49683b';
-        $this->link = $link;
+        $this->url = $url;
     }
 
     /*
-     * Checks the type of link gallery/set/...
+     * Checks the type of url gallery/set/...
      */
     public function getPhotos() {
         $gallery_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/flickr\/galleries\/([^?]*)/';
         $set_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/(([0-9]*\@N[0-9][0-9])|(flickr))\/sets\/([0-9]*)\/?/';
-        if (preg_match($gallery_regex, $this->link)) {
+        $photo_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/[^\/ ]*\/[0-9]*\/in\/([^?]*)/';
+        if (preg_match($gallery_regex, $this->url)) {
             $this->getGalleryPhotos();
-        } else if (preg_match($set_regex, $this->link)){
+        } else if (preg_match($set_regex, $this->url)){
             $this->getSetPhotos();
+        } else if (preg_match($photo_regex, $this->url)) {
+            $this->getSinglePhoto();
         }
         return $this->images;
     }
@@ -46,13 +49,14 @@ class FlickrApi {
         $json = file_get_contents('https://api.flickr.com/services/rest/?' .
             'method=flickr.urls.lookupGallery&' .
             'api_key=' . $this->api_key . '&' .
-            'url=' . $this->link . '&format=json&nojsoncallback=1');
+            'url=' . $this->url . '&format=json&nojsoncallback=1');
         $data = json_decode($json);
         if ($data->{'stat'} === 'fail') {
             throw new \InvalidArgumentException('Invalid Flickr Gallery');
         }
         return $data->{'gallery'}->{'id'};
     }
+
 
     /*
      * Return all gallery photos with their id.
@@ -79,6 +83,9 @@ class FlickrApi {
         return $photos;
     }
 
+    /*
+     * Calls set functions.
+     */
     public function getSetPhotos() {
         $id = $this->getSetId();
         $photos = $this->getSetPhotosId($id);
@@ -87,18 +94,20 @@ class FlickrApi {
         }
     }
 
+    /*
+     * Get set id from url.
+     */
     public function getSetId() {
         $id_regex = '/[0-9]{9,}/';
-        preg_match($id_regex, $this->link, $match);
+        preg_match($id_regex, $this->url, $match);
         if (!$match) {
             throw new \InvalidArgumentException('Invalid Flickr Set');
         }
-
         return $match[0];
     }
 
     /*
-     * Return all gallery photos with their id.
+     * Return all set photos with their id.
      */
     public function getSetPhotosId($id) {
         $json = file_get_contents('https://api.flickr.com/services/rest/?' .
@@ -123,6 +132,27 @@ class FlickrApi {
     }
 
     /*
+     * Calls single photo functions.
+     */
+    public function getSinglePhoto() {
+        $id = $this->getPhotoId();
+        $this->getPhoto($id);
+    }
+
+    /*
+     * Get photo id from url.
+     */
+    public function getPhotoId() {
+        $id_regex = '/[0-9]{11,}/';
+        preg_match($id_regex, $this->url, $match);
+        if (!$match) {
+            throw new \InvalidArgumentException('Invalid Flickr Photo');
+        }
+
+        return $match[0];
+    }
+
+    /*
      * Extract the Photo-Url by the photo id.
      */
     public function getPhoto($id) {
@@ -134,5 +164,4 @@ class FlickrApi {
         array_push($this->images, ['original' => $data->{'sizes'}->{'size'}[sizeof($data->{'sizes'}->{'size'})-1]->{'source'},
             'thumbnail' => $data->{'sizes'}->{'size'}[1]->{'source'}]);
     }
-
 } 
