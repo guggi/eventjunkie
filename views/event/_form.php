@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\widgets\DateTimePicker;
 use kartik\widgets\FileInput;
 use yii\bootstrap\ActiveForm;
+use wbraganca\dynamicform\DynamicFormWidget;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Event */
@@ -19,6 +20,8 @@ use yii\bootstrap\ActiveForm;
     "latitude" => $model->latitude,
     "longitude" => $model->longitude
 ] ?>
+
+<script src="/js/socialmedia.js" language="Javascript" type="text/javascript"></script>
 
 <div class="event-form">
 
@@ -65,7 +68,7 @@ use yii\bootstrap\ActiveForm;
                 'pluginOptions' => [
                     'format' => 'd.m.Y G:i',
                     'todayHighlight' => true
-                ]
+                ],
             ]) ?>
 
             <?php if ($model->image) { ?>
@@ -91,15 +94,15 @@ use yii\bootstrap\ActiveForm;
             <?php } ?>
 
             <?php if (isset($socialMediaModels)) {
-                foreach ($socialMediaModels as $key => $value) { ?>
+                foreach ($socialMediaModels as $key=>$socialMediaModel) { ?>
                     <?php if ($key === 0) { ?>
-                        <?= $form->field($socialMediaModels[$key], 'url')->textInput(['maxlength' => 500]) ?>
+                        <?= $form->field($socialMediaModel, '['.$key.']url')->textInput(['maxlength' => 500]) ?>
                     <?php } else { ?>
-                        <?= $form->field($socialMediaModels[$key], 'url')->textInput(['maxlength' => 500])->label('') ?>
+                        <?= $form->field($socialMediaModel, '['.$key.']url')->textInput(['maxlength' => 500])->label('') ?>
                     <?php } ?>
-                    <?= $key ?>
                 <?php } ?>
             <?php } ?>
+
 
             <?= $form->field($model, 'description')->textInput(['maxlength' => 1000])->textarea(['rows' => 6]) ?>
 

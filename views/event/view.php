@@ -12,13 +12,13 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $jsonMarkerList[0] = [
-"id" => $model->id,
-"name" => $model->name,
-"start_date" => $model->start_date,
-"end_date" => $model->end_date,
-"address" => $model->address,
-"latitude" => $model->latitude,
-"longitude" => $model->longitude
+    "id" => $model->id,
+    "name" => $model->name,
+    "start_date" => $model->start_date,
+    "end_date" => $model->end_date,
+    "address" => $model->address,
+    "latitude" => $model->latitude,
+    "longitude" => $model->longitude
 ] ?>
 
 <div class="event-view">
@@ -46,8 +46,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <!-- image -->
             <?php if ($model->image) { ?>
-            <img class="img-responsive" src="<?= \Yii::$app->request->getBaseUrl() . Yii::$app->params['imagePath'] .
-            Html::encode($model->image) ?>">
+                <img class="img-responsive" src="<?= \Yii::$app->request->getBaseUrl() . Yii::$app->params['imagePath'] .
+                Html::encode($model->image) ?>">
             <?php } ?>
 
             <hr>
@@ -93,21 +93,21 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <p class="tiny text-center">Linked with:
                     <?php foreach ($socialMediaModels as $socialMediaModel) {?>
-                    <?php if ($socialMediaModel->site_name === 'facebook') {?>
-                        <a class="btn btn-social-icon btn-facebook">
-                            <i class="fa fa-facebook"></i>
-                        </a>
-                    <?php } ?>
-                    <?php if ($socialMediaModel->site_name === 'flickr') {?>
-                        <a class="btn btn-social-icon btn-flickr" href="<?= $socialMediaModel->url ?>">
-                            <i class="fa fa-flickr"></i>
-                        </a>
-                    <?php } ?>
-                    <?php if ($socialMediaModel->site_name === 'twitter') {?>
-                        <a class="btn btn-social-icon btn-twitter">
-                            <i class="fa fa-twitter"></i>
-                        </a>
-                    <?php } ?>
+                        <?php if ($socialMediaModel->site_name === 'facebook') {?>
+                            <a class="btn btn-social-icon btn-facebook">
+                                <i class="fa fa-facebook"></i>
+                            </a>
+                        <?php } ?>
+                        <?php if ($socialMediaModel->site_name === 'flickr') {?>
+                            <a class="btn btn-social-icon btn-flickr" href="<?= $socialMediaModel->url ?>">
+                                <i class="fa fa-flickr"></i>
+                            </a>
+                        <?php } ?>
+                        <?php if ($socialMediaModel->site_name === 'twitter') {?>
+                            <a class="btn btn-social-icon btn-twitter">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        <?php } ?>
                     <?php } ?>
                 </p>
 
@@ -139,13 +139,25 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- images from linked sites -->
             <?php
             if (isset($socialmedia['images'])) { ?>
-
+                <div class="col-md-12">
                 <?php
-                foreach ($socialmedia['images'] as $socialmedia_image): ?>
+                $i = 0;
+                foreach ($socialmedia['images'] as $socialmedia_image) { ?>
                     <div class="col-md-6">
                         <a href="<?= $socialmedia_image['original'] ?>"><img src="<?= $socialmedia_image['thumbnail'] ?>" alt="img" /> </a>
                     </div>
-                <?php endforeach; ?>
+                    <?php
+                    $i++;
+                    if ($i > 0 && ($i % 2 === 0)) { ?>
+                        </div>
+                         <div class="col-md-12">
+                             <br>
+                         </div>
+                        <div class="col-md-12">
+                    <?php }?>
+
+                <?php } ?>
+                </div>
             <?php } ?>
 
         </div>

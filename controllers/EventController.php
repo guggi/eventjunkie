@@ -6,7 +6,9 @@ use app\models\apis\SocialMediaApi;
 use app\models\SocialMedia;
 use Yii;
 use app\models\Event;
+use yii\base\Exception;
 use yii\base\Model;
+use yii\db\IntegrityException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -20,6 +22,7 @@ use yii\web\UploadedFile;
  */
 class EventController extends Controller
 {
+
     public function behaviors()
     {
         return [
@@ -44,7 +47,7 @@ class EventController extends Controller
             $query = Event::find()->where(['like', 'name', $searchModel->name]);
             if (isset($searchModel->latitude)) {
                 $query = $query->andWhere('acos(sin('.$searchModel->latitude . ') * sin(Latitude) + cos('.$searchModel->latitude . ') * cos(Latitude) * cos(Longitude - ('.$searchModel->longitude . '))) * 6371 <= ' .
-                $searchModel->radius);
+                    $searchModel->radius);
             }
             echo $searchModel->latitude;
             if ($searchModel->from_date !== "") {
@@ -91,16 +94,11 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
         $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
-        //Yii::$app->cache->delete('socialmedia' . $id);
-        if (!Yii::$app->cache->get('socialmedia' . $id)) {
-            $socialMediaApi = new SocialMediaApi();
-            foreach ($socialMediaModels as $socialMediaModel) {
-                $socialMediaApi->loadSocialMedia($socialMediaModel);
-            }
-            Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia());
-        }
+        Yii::$app->cache->delete('socialmedia' . $id);
+        $this->findSocialMedia($id, $socialMediaModels);
 
         ++$model->clicks;
+
         $model->update();
 
         return $this->render('view', [
@@ -122,32 +120,19 @@ class EventController extends Controller
 
         $model = new Event();
 
-        if (!$model->num_socialMedia) {
-            $model->num_socialMedia = 1;
-        }
-
         $socialMediaModels = [];
+
+        if (!$model->num_socialMedia) {
+            $model->num_socialMedia = 5;
+        }
 
         for ($i = 0; $i < $model->num_socialMedia; $i++) {
             $socialMediaModels[] = new SocialMedia();
         }
 
         $postData = Yii::$app->request->post();
-        $valid = true;
 
-        if ($model->load($postData) && $model->validate()) {
-            foreach ($socialMediaModels as $socialMediaModel) {
-                if ($socialMediaModel->load($postData) && $socialMediaModel->validate()) {
-                    var_dump($socialMediaModel->url);
-                } else {
-                    $valid = false;
-                }
-            }
-        } else {
-            $valid = false;
-        }
-
-        if ($valid) {
+        if ($model->load($postData) && $model->validate() && Model::loadMultiple($socialMediaModels, $postData) && Model::validateMultiple($socialMediaModels)) {
             $model->user_id = Yii::$app->user->id;
             $model->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
             $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
@@ -161,20 +146,22 @@ class EventController extends Controller
                     $image->saveAs($model->getImagePath());
                 }
 
+                $this->findSocialMedia($model->id, $socialMediaModels);
                 foreach ($socialMediaModels as $socialMediaModel) {
                     if ($socialMediaModel->url === '') {
-                        //$socialMediaModel->delete();
+                        $socialMediaModel->delete();
                     } else {
                         $socialMediaModel->event_id = $model->id;
-                        $socialMediaModel->save();
+                        try {
+                            $socialMediaModel->save();
+                        } catch (IntegrityException $e) {
+                        }
                     }
                 }
-
-                //return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['view', 'id' => $model->id]);
             }
-        } else {
-            return $this->render('create', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
         }
+        return $this->render('create', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
     }
 
     /**
@@ -189,7 +176,7 @@ class EventController extends Controller
         $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
 
         if (!$model->num_socialMedia) {
-            $model->num_socialMedia = 1;
+            $model->num_socialMedia = 5;
         }
 
         for ($i = 0; $i < $model->num_socialMedia; $i++) {
@@ -197,23 +184,10 @@ class EventController extends Controller
         }
 
         $postData = Yii::$app->request->post();
-        $valid = true;
 
         $old_image = $model->image;
 
-        if ($model->load($postData) && $model->validate()) {
-            foreach ($socialMediaModels as $socialMediaModel) {
-                if ($socialMediaModel->load($postData) && $socialMediaModel->validate()) {
-
-                } else {
-                    $valid = false;
-                }
-            }
-        } else {
-            $valid = false;
-        }
-
-        if ($valid) {
+        if ($model->load($postData) && $model->validate() && Model::loadMultiple($socialMediaModels, $postData) && Model::validateMultiple($socialMediaModels)) {
             $model->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
             $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
 
@@ -229,18 +203,23 @@ class EventController extends Controller
                     $model->deleteImage($old_image);
                     $image->saveAs($model->getImagePath());
                 }
+
+                Yii::$app->cache->delete('socialmedia' . $id); // delete cache of this event
+                $this->findSocialMedia($id, $socialMediaModels);
                 foreach ($socialMediaModels as $socialMediaModel) {
                     if ($socialMediaModel->url === '') {
                         $socialMediaModel->delete();
                     } else {
                         $socialMediaModel->event_id = $model->id;
-                        $socialMediaModel->save();
+                        try {
+                            if ($socialMediaModel->save()) {
+                            }
+                        } catch (IntegrityException $e) {
+                        }
                     }
                 }
-                Yii::$app->cache->delete('socialmedia' . $id); // delete cache of this event
+
                 return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                return $this->render('update', ['model' => $model]);
             }
         } else {
             $model->start_date = date('d.m.Y G:i', strtotime($model->start_date));
@@ -279,4 +258,35 @@ class EventController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    /**
+     * Checks if socialmedia is in the cache, else loads social media content.
+     */
+    public function findSocialMedia($id, $socialMediaModels) {
+        if (!Yii::$app->cache->get('socialmedia' . $id)) {
+            $socialMediaApi = new SocialMediaApi();
+            foreach ($socialMediaModels as $key => $socialMediaModel) {
+                try {
+                    $socialMediaApi->loadSocialMedia($socialMediaModels[$key]);
+                } catch (\InvalidArgumentException $e) {
+                }
+            }
+            Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia());
+        }
+    }
 }
+
+/*
+$valid = true;
+
+if ($model->load($postData) && Model::loadMultiple($socialMediaModels, $postData) && Model::validateMultiple([$model], $socialMediaModels)) {
+    foreach ($socialMediaModels as $socialMediaModel) {
+        if ($socialMediaModel->load($postData) && $socialMediaModel->validate()) {
+
+        } else {
+            $valid = false;
+        }
+    }
+} else {
+    $valid = false;
+}*/

@@ -3,7 +3,9 @@
 namespace app\models;
 
 use amnah\yii2\user\models\User;
+use app\models\apis\SocialMediaApi;
 use Yii;
+use yii\base\Exception;
 use yii\db\ActiveRecord;
 use yii\web\UploadedFile;
 
@@ -58,10 +60,19 @@ class SocialMedia extends ActiveRecord
         curl_setopt($check_head, CURLOPT_NOBODY, true);
         curl_exec($check_head);
 
+        // check if the url matches the regex and if the site exists
         if (!preg_match($flickr_regex, $this->$attribute) && (curl_getinfo($check_head, CURLINFO_HTTP_CODE) !== '200')) {
             $this->addError($attribute, 'Not a valid Url.');
         } else {
             $this->site_name = 'flickr';
+        }
+
+        // check if the url returns valid images
+        $socialMediaApi = new SocialMediaApi();
+        try {
+            $socialMediaApi->validateSocialMedia($this);
+        } catch (\InvalidArgumentException $e) {
+            $this->addError($attribute, 'Not a valid Url.');
         }
 
         curl_close($check_head);

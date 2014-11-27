@@ -17,7 +17,7 @@ class FlickrApi {
     /*
      * Checks the type of url gallery/set/...
      */
-    public function getPhotos() {
+    public function getImages() {
         $gallery_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/flickr\/galleries\/([^?]*)/';
         $set_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/(([0-9]*\@N[0-9][0-9])|(flickr))\/sets\/([0-9]*)\/?/';
         $photo_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/[^\/ ]*\/[0-9]*\/in\/([^?]*)/';
@@ -51,7 +51,8 @@ class FlickrApi {
             'api_key=' . $this->api_key . '&' .
             'url=' . $this->url . '&format=json&nojsoncallback=1');
         $data = json_decode($json);
-        if ($data->{'stat'} === 'fail') {
+
+        if (!isset($data->{'stat'}) || $data->{'stat'} === 'fail') {
             throw new \InvalidArgumentException('Invalid Flickr Gallery');
         }
         return $data->{'gallery'}->{'id'};

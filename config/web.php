@@ -48,6 +48,9 @@ $config = [
             'class' => 'amnah\yii2\user\Module',
             // set custom module properties here ...
         ],
+        'gridview' => [
+            'class' => '\kartik\grid\Module'
+        ],
     ],
     'params' => $params,
 ];

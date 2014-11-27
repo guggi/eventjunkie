@@ -43,7 +43,7 @@ CREATE INDEX profile_user_id ON profile (user_id);
 CREATE TABLE IF NOT EXISTS event (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     user_id INT UNSIGNED NOT NULL, /* geht bei mir nur unsigned */
-    creation_date TIMESTAMP,
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     name VARCHAR(50) NOT NULL,
     address VARCHAR(50) NOT NULL,
     latitude DECIMAL(17,14),
