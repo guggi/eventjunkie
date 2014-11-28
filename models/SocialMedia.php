@@ -56,16 +56,31 @@ class SocialMedia extends ActiveRecord
 
     public function isValidUrl($attribute) {
         $flickr_regex = '/(http|https)?(:)?(\/\/)?(w*\.)?flickr\.com\/photos([^?]*)/';
+        $twitter_regex = '/(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/[a-zA-Z0-9\_\-]*\?src=hash/';
+        $hashtag_regex = '/(\#)?[a-zA-Z0-9\_\-]*/';
         $check_head = curl_init($this->$attribute);
         curl_setopt($check_head, CURLOPT_NOBODY, true);
         curl_exec($check_head);
 
-        // check if the url matches the regex and if the site exists
-        if (!preg_match($flickr_regex, $this->$attribute) && (curl_getinfo($check_head, CURLINFO_HTTP_CODE) !== '200')) {
-            $this->addError($attribute, 'Not a valid Url.');
+        if ((curl_getinfo($check_head, CURLINFO_HTTP_CODE) === 200)) {
+            if (preg_match($flickr_regex, $this->$attribute)) {
+                $this->site_name = 'flickr';
+            } else if (preg_match($twitter_regex, $this->$attribute)) {
+                $this->site_name = 'twitter';
+            }
         } else {
-            $this->site_name = 'flickr';
+            if (preg_match($hashtag_regex, $this->$attribute)) {
+                $this->site_name = 'twitter';
+                /*if (substr($this->url, 0, 1) === '#') {
+                    $this->url = substr($this->url, 1);
+                }
+                $hashtag = $this->url;
+                //$this->url = 'https://twitter.com/hashtag/' . $hashtag . '?src=hash';*/
+            } else {
+                $this->addError($attribute, 'Not a valid Url.');
+            }
         }
+
 
         // check if the url returns valid images
         $socialMediaApi = new SocialMediaApi();

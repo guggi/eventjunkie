@@ -1,0 +1,20 @@
+<?php
+namespace app\models\oauth;
+
+use yii\authclient\OAuth2;
+
+class TwitterOauth extends OAuth2 {
+
+    public $authUrl = 'https://api.twitter.com/oauth2/authorize';
+    public $tokenUrl = 'https://api.twitter.com/oauth2/token';
+    public $requestTokenUrl = 'https://api.twitter.com/oauth/request_token';
+    public $requestTokenMethod = 'POST';
+    public $accessTokenUrl = 'https://api.twitter.com/oauth/access_token';
+    public $accessTokenMethod = 'POST';
+    public $apiBaseUrl = 'https://api.twitter.com/1.1';
+
+    protected function initUserAttributes()
+    {
+        return $this->api('account/verify_credentials.json', 'GET');
+    }
+}

@@ -2,6 +2,7 @@
 
 namespace app\models\apis;
 
+use Exception;
 use Yii;
 
 class FlickrApi {
@@ -10,24 +11,30 @@ class FlickrApi {
     private $images = [];
 
     function __construct($url) {
-        $this->api_key = 'e9eef2cb072ac056df7140676c49683b';
+        $this->api_key = Yii::$app->params['flickrApiKey'];
         $this->url = $url;
     }
 
     /*
      * Checks the type of url gallery/set/...
      */
-    public function getImages() {
-        $gallery_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/flickr\/galleries\/([^?]*)/';
-        $set_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/(([0-9]*\@N[0-9][0-9])|(flickr))\/sets\/([0-9]*)\/?/';
-        $photo_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/[^\/ ]*\/[0-9]*\/in\/([^?]*)/';
-        if (preg_match($gallery_regex, $this->url)) {
-            $this->getGalleryPhotos();
-        } else if (preg_match($set_regex, $this->url)){
-            $this->getSetPhotos();
-        } else if (preg_match($photo_regex, $this->url)) {
-            $this->getSinglePhoto();
+    public function getImages()
+    {
+        try {
+            $gallery_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/flickr\/galleries\/([^?]*)/';
+            $set_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/(([0-9]*\@N[0-9][0-9])|(flickr))\/sets\/([0-9]*)\/?/';
+            $photo_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/[^\/ ]*\/[0-9]*\/in\/([^?]*)/';
+            if (preg_match($gallery_regex, $this->url)) {
+                $this->getGalleryPhotos();
+            } else if (preg_match($set_regex, $this->url)) {
+                $this->getSetPhotos();
+            } else if (preg_match($photo_regex, $this->url)) {
+                $this->getSinglePhoto();
+            }
+        } catch (Exception $e) {
+            throw new \InvalidArgumentException('Invalid Flickr Url');
         }
+
         return $this->images;
     }
 
@@ -52,9 +59,9 @@ class FlickrApi {
             'url=' . $this->url . '&format=json&nojsoncallback=1');
         $data = json_decode($json);
 
-        if (!isset($data->{'stat'}) || $data->{'stat'} === 'fail') {
+        /*if (!isset($data->{'stat'}) || $data->{'stat'} === 'fail') {
             throw new \InvalidArgumentException('Invalid Flickr Gallery');
-        }
+        }*/
         return $data->{'gallery'}->{'id'};
     }
 
@@ -101,9 +108,9 @@ class FlickrApi {
     public function getSetId() {
         $id_regex = '/[0-9]{9,}/';
         preg_match($id_regex, $this->url, $match);
-        if (!$match) {
+        /*if (!$match) {
             throw new \InvalidArgumentException('Invalid Flickr Set');
-        }
+        }*/
         return $match[0];
     }
 
@@ -146,9 +153,9 @@ class FlickrApi {
     public function getPhotoId() {
         $id_regex = '/[0-9]{11,}/';
         preg_match($id_regex, $this->url, $match);
-        if (!$match) {
+        /*if (!$match) {
             throw new \InvalidArgumentException('Invalid Flickr Photo');
-        }
+        }*/
 
         return $match[0];
     }
@@ -162,7 +169,10 @@ class FlickrApi {
             '&api_key=' . $this->api_key . '&' .
             'photo_id=' . $id . '&format=json&nojsoncallback=1');
         $data = json_decode($json);
-        array_push($this->images, ['original' => $data->{'sizes'}->{'size'}[sizeof($data->{'sizes'}->{'size'})-1]->{'source'},
-            'thumbnail' => $data->{'sizes'}->{'size'}[1]->{'source'}]);
+        array_push($this->images,
+            [
+                'original' => $data->{'sizes'}->{'size'}[sizeof($data->{'sizes'}->{'size'})-1]->{'source'},
+                'thumbnail' => $data->{'sizes'}->{'size'}[1]->{'source'}
+            ]);
     }
 } 

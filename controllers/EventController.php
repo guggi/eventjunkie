@@ -9,6 +9,7 @@ use app\models\Event;
 use yii\base\Exception;
 use yii\base\Model;
 use yii\db\IntegrityException;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -32,7 +33,17 @@ class EventController extends Controller
                     'delete' => ['post'],
                 ],
             ],
-        ];
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'update', 'delete'],
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],];
     }
 
     /**
@@ -114,10 +125,6 @@ class EventController extends Controller
      */
     public function actionCreate()
     {
-        if (Yii::$app->user->isGuest) {
-            $this->redirect(\Yii::$app->request->BaseUrl . '/index.php?r=user/login');
-        }
-
         $model = new Event();
 
         $socialMediaModels = [];
@@ -173,10 +180,15 @@ class EventController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+
+        if ($model->user_id !== Yii::$app->user->id) {
+            return $this->redirect(['view', 'id' => $id]);
+        }
+
         $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
 
         if (!$model->num_socialMedia) {
-            $model->num_socialMedia = 5;
+            $model->num_socialMedia = 1;
         }
 
         for ($i = 0; $i < $model->num_socialMedia; $i++) {
@@ -227,6 +239,27 @@ class EventController extends Controller
 
         }
         return $this->render('update', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
+    }
+
+
+    /**
+     * Adds new field.
+     * @return mixed
+     */
+    public function actionAddField()
+    {
+        //todo funktioniert nicht
+        $postData = Yii::$app->request->post();
+        $model = new Event();
+        $socialMediaModels = [];
+        $model->load($postData);
+        Model::loadMultiple($socialMediaModels, $postData);
+        $socialMediaModels[] = new SocialMedia();
+        if ($model->isNewRecord) {
+            return $this->render('create', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
+        } else {
+            return $this->render('update', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
+        }
     }
 
     /**

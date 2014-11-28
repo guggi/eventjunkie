@@ -255,4 +255,13 @@ return array (
       '@kartik/widgets' => $vendorDir . '/kartik-v/yii2-widgets',
     ),
   ),
+  'demogorgorn/yii2-ajax-submit-button' => 
+  array (
+    'name' => 'demogorgorn/yii2-ajax-submit-button',
+    'version' => '9999999-dev',
+    'alias' => 
+    array (
+      '@demogorgorn/ajax' => $vendorDir . '/demogorgorn/yii2-ajax-submit-button',
+    ),
+  ),
 );

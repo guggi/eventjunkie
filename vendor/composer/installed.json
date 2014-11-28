@@ -2182,5 +2182,93 @@
             "widget",
             "yii2"
         ]
+    },
+    {
+        "name": "demogorgorn/yii2-ajax-submit-button",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/demogorgorn/yii2-ajax-submit-button.git",
+            "reference": "9604578615c02ae74f3980a9db1cc6fcb2e19a61"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/demogorgorn/yii2-ajax-submit-button/zipball/9604578615c02ae74f3980a9db1cc6fcb2e19a61",
+            "reference": "9604578615c02ae74f3980a9db1cc6fcb2e19a61",
+            "shasum": ""
+        },
+        "require": {
+            "yiisoft/yii2": "*"
+        },
+        "time": "2014-06-13 19:59:19",
+        "type": "yii2-extension",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "demogorgorn\\ajax\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Oleg Martemjanov",
+                "email": "demogorgorn@gmail.com",
+                "homepage": "http://foreign.by"
+            }
+        ],
+        "description": "AjaxSubmitButton renders an ajax button which is very similar to ajaxSubmitButton from Yii1.",
+        "homepage": "https://github.com/demogorgorn/yii2-ajax-submit-button",
+        "keywords": [
+            "ajax",
+            "button",
+            "extension",
+            "submit",
+            "widget"
+        ]
+    },
+    {
+        "name": "j7mbo/twitter-api-php",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/J7mbo/twitter-api-php.git",
+            "reference": "ab76f1c1e6bf83f0a257216cbaf9932b7cc19a3f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/J7mbo/twitter-api-php/zipball/ab76f1c1e6bf83f0a257216cbaf9932b7cc19a3f",
+            "reference": "ab76f1c1e6bf83f0a257216cbaf9932b7cc19a3f",
+            "shasum": ""
+        },
+        "time": "2013-10-03 10:04:59",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "files": [
+                "TwitterAPIExchange.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GNU Public License"
+        ],
+        "authors": [
+            {
+                "name": "James Mallison",
+                "homepage": "https://github.com/j7mbo/twitter-api-php"
+            }
+        ],
+        "description": "Simple PHP Wrapper for Twitter API v1.1 calls",
+        "homepage": "https://github.com/j7mbo/twitter-api-php",
+        "keywords": [
+            "api",
+            "php",
+            "twitter"
+        ]
     }
 ]

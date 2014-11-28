@@ -1,10 +1,10 @@
 <?php
 
+use demogorgorn\ajax\AjaxSubmitButton;
 use yii\helpers\Html;
 use kartik\widgets\DateTimePicker;
 use kartik\widgets\FileInput;
 use yii\bootstrap\ActiveForm;
-use wbraganca\dynamicform\DynamicFormWidget;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Event */
@@ -34,6 +34,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
             <?php } ?>
 
             <?php $form = ActiveForm::begin([
+                'id' => 'event-form',
                 'options' => ['enctype'=>'multipart/form-data'],
                 'layout' => 'default',
                 'fieldConfig' => [
@@ -102,9 +103,14 @@ use wbraganca\dynamicform\DynamicFormWidget;
                     <?php } ?>
                 <?php } ?>
             <?php } ?>
-
+<!--
+            <div class="form-group">
+            <?/*=
+            Html::a('<i class="glyphicon glyphicon-plus"></i> Add New', "?r=event/add-field", ['class'=>'btn btn-success']) */?>
+            </div>-->
 
             <?= $form->field($model, 'description')->textInput(['maxlength' => 1000])->textarea(['rows' => 6]) ?>
+            <?= $form->field($model, 'note')->textInput(['maxlength' => 1000])->textarea(['rows' => 6]) ?>
 
             <div class="form-group">
                 <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
@@ -123,3 +129,5 @@ use wbraganca\dynamicform\DynamicFormWidget;
     var jsonMarkerList = JSON.parse('<?php echo json_encode($jsonMarkerList) ?>');
     var streetZoom = 15;
 </script>
+
+

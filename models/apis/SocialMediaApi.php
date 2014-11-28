@@ -16,13 +16,12 @@ class SocialMediaApi {
         if ($link->site_name === 'flickr') {
             $flickrApi = new FlickrApi($link->url);
             $this->pushImages($flickrApi->getImages());
+        } else if ($link->site_name === 'twitter') {
+            $twitterApi = new TwitterApi($link->url);
+            $twitterApi->getTweets();
+            $this->pushComments($twitterApi->getComments());
+            $this->pushImages($twitterApi->getImages());
         }
-
-        /*if (isset($this->socialmedia['images'])) {
-            array_merge($this->socialmedia['images'], $images);
-        } else {
-            $this->socialmedia['images'] = $images;
-        }*/
     }
 
     public function validateSocialMedia($link) {
@@ -30,11 +29,21 @@ class SocialMediaApi {
             $flickrApi = new FlickrApi($link->url);
             $flickrApi->getImages();
         }
+        if ($link->site_name === 'twitter') {
+            $twitterApi = new TwitterApi($link->url);
+            $twitterApi->getTweets();
+        }
     }
 
     public function pushImages($loadedImages) {
         foreach ($loadedImages as $loadedImage) {
             $this->socialmedia['images'][] = $loadedImage;
+        }
+    }
+
+    public function pushComments($loadedComments) {
+        foreach ($loadedComments as $loadedComment) {
+            $this->socialmedia['comments'][] = $loadedComment;
         }
     }
 
