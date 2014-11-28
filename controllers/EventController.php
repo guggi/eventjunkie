@@ -299,10 +299,9 @@ class EventController extends Controller
         if (!Yii::$app->cache->get('socialmedia' . $id)) {
             $socialMediaApi = new SocialMediaApi();
             foreach ($socialMediaModels as $key => $socialMediaModel) {
-                try {
+
                     $socialMediaApi->loadSocialMedia($socialMediaModels[$key]);
-                } catch (\InvalidArgumentException $e) {
-                }
+
             }
             Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia());
         }

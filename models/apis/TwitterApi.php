@@ -47,7 +47,7 @@ class TwitterApi
                 $this->getTweetsPerHashtag($this->url);
             }
         } catch (Exception $e) {
-            throw new \InvalidArgumentException('Invalid Twitter Url/Hashtag');
+            throw new \InvalidArgumentException($e->getMessage());
         }
     }
 
@@ -55,6 +55,22 @@ class TwitterApi
         $hashtag_regex = '/[^(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/)][a-zA-Z0-9\_\-]+/';
         preg_match($hashtag_regex, $this->url, $match);
         return $match[0];
+    }
+
+    public function parseTweet($tweet_text) {
+        $parsed_tweet_text = preg_replace(
+            '@(https?://([-\w\.]+)+(/([\w/_\.]*(\?\S+)?(#\S+)?)?)?)@',
+            '<a href="$1">$1</a>',
+            $tweet_text);
+        $parsed_tweet_text = preg_replace(
+            '/@(\w+)/',
+            '<a href="http://twitter.com/$1">@$1</a>',
+            $parsed_tweet_text);
+        $parsed_tweet_text = preg_replace(
+            '/\s+#(\w+)/',
+            ' <a href="http://search.twitter.com/search?q=%23$1">#$1</a>',
+            $parsed_tweet_text);
+        return $parsed_tweet_text;
     }
 
     public function getTweetsPerHashtag($hashtag) {
@@ -78,19 +94,22 @@ class TwitterApi
                     'title' => '#'.$hashtag,
                     'date' => strtotime($tweet->{"created_at"}),
                     'author' => $tweet->{"user"}->{"screen_name"},
-                    'text' => $tweet->{"text"},
+                    'text' => $this->parseTweet($tweet->{"text"}),
                     'site_name' => 'Twitter',
                     'url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"} .'/status/'.$tweet->{"id"},
                     'author_url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"},
                     'socialmedia_url' => 'https://twitter.com/hashtag/'. $hashtag . '?src=hash',
                 ]);
-            var_dump(strtotime($tweet->{"created_at"}));
-            foreach ($tweet->{"entities"}->{"urls"} as $url) {
-                array_push($this->images,
-                    [
-                        'thumbnail' => $url->{"url"},
-                        'original' => $url->{"url"},
-                    ]);
+            var_dump("da");
+            if (isset($tweet->{"entities"}->{"media"})) {
+                foreach ($tweet->{"entities"}->{"media"} as $media) {
+                    array_push($this->images,
+                        [
+                            'thumbnail' => $media->{"media_url"} . ':thumb',
+                            'original' => $media->{"media_url"},
+                        ]);
+
+                }
             }
         }
     }

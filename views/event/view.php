@@ -141,6 +141,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="col-md-4">
 
+
             <!-- images from linked sites -->
             <?php
             if (isset($socialmedia['images'])) { ?>
