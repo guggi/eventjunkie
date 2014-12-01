@@ -45,7 +45,7 @@ class TwitterApi
                 $this->getTweetsPerHashtag($this->url);
             }
         } catch (Exception $e) {
-            throw new \InvalidArgumentException($e->getMessage());
+            throw new \InvalidArgumentException('Invalid Twitter Url/Hashtag.');
         }
     }
 
@@ -65,8 +65,8 @@ class TwitterApi
             '<a href="https://twitter.com/$1">@$1</a>',
             $parsed_tweet_text);
         $parsed_tweet_text = preg_replace(
-            '/\s+#(\w+)/',
-            ' <a href="https://api.twitter.com/1.1/search/?q=%23$1">#$1</a>',
+            '/s*#([\wäÄöÖüÜß]+)/',
+            ' <a href="https://twitter.com/hashtag/$1?src=hash">#$1</a>',
             $parsed_tweet_text);
         return $parsed_tweet_text;
     }

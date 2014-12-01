@@ -113,17 +113,15 @@ class EventController extends Controller
         $model->update();
 
         // make "linked" link for hashtags
-        foreach ($socialMediaModels as $key=>$socialMediaModel) {
-            //
-            if ($socialMediaModels[$key]->site_name === 'twitter') {
+        foreach ($socialMediaModels as $socialMediaModel) {
+            if ($socialMediaModel->site_name === 'twitter') {
                 $url_regex = '/(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/[a-zA-Z0-9\_\-]*\?src=hash/';
-                if (!preg_match($url_regex, $socialMediaModels[$key]->url)) {
-                    $socialMediaModels[$key]->url = preg_replace(
+                if (!preg_match($url_regex, $socialMediaModel->url)) {
+                    $socialMediaModel->url = preg_replace(
                         '/#?(\w+)/i',
                         'https://twitter.com/hashtag/$1?src=hash',
-                        $socialMediaModels[$key]->url);
+                        $socialMediaModel->url);
                 }
-
             }
         }
 
@@ -168,7 +166,6 @@ class EventController extends Controller
                     $image->saveAs($model->getImagePath());
                 }
 
-                $this->findSocialMedia($model->id, $socialMediaModels);
                 foreach ($socialMediaModels as $socialMediaModel) {
                     if ($socialMediaModel->url === '') {
                         $socialMediaModel->delete();
@@ -177,9 +174,16 @@ class EventController extends Controller
                         try {
                             $socialMediaModel->save();
                         } catch (IntegrityException $e) {
+                            throw new \InvalidArgumentException('Url/Hashtag already exists');
                         }
                     }
                 }
+
+                // delete cache of this event and create new cache
+                Yii::$app->cache->delete('socialmedia' . $model->id);
+                $socialMediaModels = SocialMedia::find()->where(['event_id' => $model->id])->orderBy('id')->all();
+                $this->findSocialMedia($model->id, $socialMediaModels);
+
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
@@ -231,20 +235,23 @@ class EventController extends Controller
                     $image->saveAs($model->getImagePath());
                 }
 
-                Yii::$app->cache->delete('socialmedia' . $id); // delete cache of this event
-                $this->findSocialMedia($id, $socialMediaModels);
                 foreach ($socialMediaModels as $socialMediaModel) {
                     if ($socialMediaModel->url === '') {
                         $socialMediaModel->delete();
                     } else {
                         $socialMediaModel->event_id = $model->id;
                         try {
-                            if ($socialMediaModel->save()) {
-                            }
+                            $socialMediaModel->save();
                         } catch (IntegrityException $e) {
+                            throw new \InvalidArgumentException('Url/Hashtag already exists');
                         }
                     }
                 }
+
+                // delete cache of this event and create new cache
+                Yii::$app->cache->delete('socialmedia' . $id);
+                $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
+                $this->findSocialMedia($id, $socialMediaModels);
 
                 return $this->redirect(['view', 'id' => $model->id]);
             }
@@ -276,6 +283,61 @@ class EventController extends Controller
             return $this->render('update', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
         }
     }
+
+    /**
+     * Creates a new Social Media Link.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionLink($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->user_id === Yii::$app->user->id) {
+            return $this->redirect(['update', 'id' => $id]);
+        }
+
+        $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
+
+        // make "linked" link for hashtags
+        foreach ($socialMediaModels as $socialMediaModel) {
+            if ($socialMediaModel->site_name === 'twitter') {
+                $url_regex = '/(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/[a-zA-Z0-9\_\-]*\?src=hash/';
+                if (!preg_match($url_regex, $socialMediaModel->url)) {
+                    $socialMediaModel->url = preg_replace(
+                        '/#?(\w+)/i',
+                        'https://twitter.com/hashtag/$1?src=hash',
+                        $socialMediaModel->url);
+                }
+            }
+        }
+
+        $linkModel = new SocialMedia();
+
+        $postData = Yii::$app->request->post();
+
+        if ($linkModel->load($postData) && $linkModel->validate()) {
+            if ($linkModel->url === '') {
+                $linkModel->delete();
+            } else {
+                $linkModel->event_id = $model->id;
+                try {
+                    $linkModel->save();
+                } catch (IntegrityException $e) {
+                    throw new \InvalidArgumentException('Url/Hashtag already exists');
+                }
+            }
+
+            // delete cache of this event and create new cache
+            Yii::$app->cache->delete('socialmedia' . $id);
+            $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
+            $this->findSocialMedia($id, $socialMediaModels);
+
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+        return $this->render('link', ['model' => $model, 'linkModel' => $linkModel, 'socialMediaModels' => $socialMediaModels]);
+    }
+
 
     /**
      * Deletes an existing Event model.
@@ -315,24 +377,9 @@ class EventController extends Controller
         if (!Yii::$app->cache->get('socialmedia' . $id)) {
             $socialMediaApi = new SocialMediaApi();
             foreach ($socialMediaModels as $key => $socialMediaModel) {
-                    $socialMediaApi->loadSocialMedia($socialMediaModels[$key]);
+                $socialMediaApi->loadSocialMedia($socialMediaModels[$key]);
             }
             Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia(), 300);
         }
     }
 }
-
-/*
-$valid = true;
-
-if ($model->load($postData) && Model::loadMultiple($socialMediaModels, $postData) && Model::validateMultiple([$model], $socialMediaModels)) {
-    foreach ($socialMediaModels as $socialMediaModel) {
-        if ($socialMediaModel->load($postData) && $socialMediaModel->validate()) {
-
-        } else {
-            $valid = false;
-        }
-    }
-} else {
-    $valid = false;
-}*/

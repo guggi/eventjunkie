@@ -21,8 +21,6 @@ use yii\bootstrap\ActiveForm;
     "longitude" => $model->longitude
 ] ?>
 
-<script src="/js/socialmedia.js" language="Javascript" type="text/javascript"></script>
-
 <div class="event-form">
 
     <div class="row">

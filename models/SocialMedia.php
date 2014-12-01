@@ -82,7 +82,7 @@ class SocialMedia extends ActiveRecord
         try {
             $socialMediaApi->validateSocialMedia($this);
         } catch (\InvalidArgumentException $e) {
-            $this->addError($attribute, 'Not a valid Url.');
+            $this->addError($attribute, $e->getMessage());
         }
 
         curl_close($check_head);
