@@ -71,11 +71,6 @@ class SocialMedia extends ActiveRecord
         } else {
             if (preg_match($hashtag_regex, $this->$attribute)) {
                 $this->site_name = 'twitter';
-                /*if (substr($this->url, 0, 1) === '#') {
-                    $this->url = substr($this->url, 1);
-                }
-                $hashtag = $this->url;
-                //$this->url = 'https://twitter.com/hashtag/' . $hashtag . '?src=hash';*/
             } else {
                 $this->addError($attribute, 'Not a valid Url.');
             }
@@ -91,5 +86,9 @@ class SocialMedia extends ActiveRecord
         }
 
         curl_close($check_head);
+    }
+
+    public function getType() {
+        return ['type'];
     }
 }

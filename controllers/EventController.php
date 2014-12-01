@@ -105,12 +105,27 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
         $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
-        Yii::$app->cache->delete('socialmedia' . $id);
+        //Yii::$app->cache->delete('socialmedia' . $id);
         $this->findSocialMedia($id, $socialMediaModels);
 
         ++$model->clicks;
 
         $model->update();
+
+        // make "linked" link for hashtags
+        foreach ($socialMediaModels as $key=>$socialMediaModel) {
+            //
+            if ($socialMediaModels[$key]->site_name === 'twitter') {
+                $url_regex = '/(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/[a-zA-Z0-9\_\-]*\?src=hash/';
+                if (!preg_match($url_regex, $socialMediaModels[$key]->url)) {
+                    $socialMediaModels[$key]->url = preg_replace(
+                        '/#?(\w+)/i',
+                        'https://twitter.com/hashtag/$1?src=hash',
+                        $socialMediaModels[$key]->url);
+                }
+
+            }
+        }
 
         return $this->render('view', [
             'model' => $model, 'socialmedia' => Yii::$app->cache->get('socialmedia' . $id),
@@ -296,14 +311,13 @@ class EventController extends Controller
      * Checks if socialmedia is in the cache, else loads social media content.
      */
     public function findSocialMedia($id, $socialMediaModels) {
+        Yii::$app->cache->gc(true);
         if (!Yii::$app->cache->get('socialmedia' . $id)) {
             $socialMediaApi = new SocialMediaApi();
             foreach ($socialMediaModels as $key => $socialMediaModel) {
-
                     $socialMediaApi->loadSocialMedia($socialMediaModels[$key]);
-
             }
-            Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia());
+            Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia(), 300);
         }
     }
 }

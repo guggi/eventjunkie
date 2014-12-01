@@ -5,8 +5,6 @@ namespace app\models\apis;
 use Exception;
 use TwitterAPIExchange;
 use Yii;
-use yii\authclient\clients\Twitter;
-use yii\authclient\OAuthToken;
 
 class TwitterApi
 {
@@ -63,12 +61,12 @@ class TwitterApi
             '<a href="$1">$1</a>',
             $tweet_text);
         $parsed_tweet_text = preg_replace(
-            '/@(\w+)/',
-            '<a href="http://twitter.com/$1">@$1</a>',
+            '/@([\w]+)/',
+            '<a href="https://twitter.com/$1">@$1</a>',
             $parsed_tweet_text);
         $parsed_tweet_text = preg_replace(
             '/\s+#(\w+)/',
-            ' <a href="http://search.twitter.com/search?q=%23$1">#$1</a>',
+            ' <a href="https://api.twitter.com/1.1/search/?q=%23$1">#$1</a>',
             $parsed_tweet_text);
         return $parsed_tweet_text;
     }
@@ -79,7 +77,7 @@ class TwitterApi
         }
 
         $url = 'https://api.twitter.com/1.1/search/tweets.json';
-        $getfield = '?q=#' . $hashtag;
+        $getfield = '?q=#' . $hashtag . '&result_type=recent&count=100&lang=eu';
         $requestMethod = 'GET';
 
         $json = $this->twitter->setGetfield($getfield)
@@ -100,7 +98,7 @@ class TwitterApi
                     'author_url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"},
                     'socialmedia_url' => 'https://twitter.com/hashtag/'. $hashtag . '?src=hash',
                 ]);
-            var_dump("da");
+
             if (isset($tweet->{"entities"}->{"media"})) {
                 foreach ($tweet->{"entities"}->{"media"} as $media) {
                     array_push($this->images,

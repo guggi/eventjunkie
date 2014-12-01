@@ -22,6 +22,7 @@ class SocialMediaApi {
             $this->pushComments($twitterApi->getComments());
             $this->pushImages($twitterApi->getImages());
         }
+
     }
 
     public function validateSocialMedia($link) {
@@ -42,13 +43,22 @@ class SocialMediaApi {
     }
 
     public function pushComments($loadedComments) {
+        $this->socialmedia['comments'] = [];
         foreach ($loadedComments as $loadedComment) {
             $this->socialmedia['comments'][] = $loadedComment;
         }
     }
 
-    public function getSocialMedia() {
+    public function getSocialMedia() { // todo sort funktioniert nicht
+        usort($this->socialmedia['comments'], function ($a, $b) {
+            $t1 = strtotime($a['date']);
+            $t2 = strtotime($b['date']);
+            var_dump($t1);
+            var_dump($t2);
+            if($t1 == $t2)
+                return 0;
+            return $t1 < $t2 ? 1 : -1;
+        });
         return $this->socialmedia;
     }
-
 } 
