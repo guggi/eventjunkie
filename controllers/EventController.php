@@ -105,6 +105,7 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
         $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
+
         //Yii::$app->cache->delete('socialmedia' . $id);
         $this->findSocialMedia($id, $socialMediaModels);
 
@@ -128,6 +129,17 @@ class EventController extends Controller
         return $this->render('view', [
             'model' => $model, 'socialmedia' => Yii::$app->cache->get('socialmedia' . $id),
             'socialMediaModels' => $socialMediaModels,
+        ]);
+    }
+
+    public function actionGallery($id) {
+        $model = $this->findModel($id);
+        $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
+
+        $this->findSocialMedia($id, $socialMediaModels);
+
+        return $this->render('gallery', [
+            'model' => $model, 'socialmedia' => Yii::$app->cache->get('socialmedia' . $id),
         ]);
     }
 

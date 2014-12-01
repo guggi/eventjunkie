@@ -101,7 +101,7 @@ use yii\bootstrap\ActiveForm;
                     <?php } ?>
                 <?php } ?>
             <?php } ?>
-<!--
+            <!--
             <div class="form-group">
             <?/*=
             Html::a('<i class="glyphicon glyphicon-plus"></i> Add New', "?r=event/add-field", ['class'=>'btn btn-success']) */?>

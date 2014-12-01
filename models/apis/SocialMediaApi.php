@@ -49,6 +49,10 @@ class SocialMediaApi {
     }
 
     public function getSocialMedia() {
+        if (isset($this->socialmedia['images'])) {
+            $this->socialmedia['images'] = array_map("unserialize", array_unique(array_map("serialize", $this->socialmedia['images'])));
+        }
+
         if (isset($this->socialmedia['comments'])) {
             usort($this->socialmedia['comments'], function ($a, $b) {
                 if ($a['date'] == $b['date'])

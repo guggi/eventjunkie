@@ -117,7 +117,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php foreach ($topList as $event): ?>
 
                     <div class="list-group">
-                        <a href="<?php echo \Yii::$app->request->BaseUrl.'/index.php?r=event/view&id='.$event->id; ?>" class="list-group-item">
+                        <a href="<?= \Yii::$app->request->BaseUrl.'/index.php?r=event/view&id='.$event->id ?>" class="list-group-item">
                             <h3 class="list-group-item-heading"><?= Html::encode($event->name) ?></h3>
                             <p class="list-group-item-text pull-left">
                             </p>

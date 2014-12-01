@@ -8,7 +8,7 @@ use yii\bootstrap\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\models\Event */
 /* @var $form yii\widgets\ActiveForm */
-$this->title = 'Link to Event: ' . ' ' . $model->name;
+$this->title = 'Link Social Media with Event: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Link with Social Media';
