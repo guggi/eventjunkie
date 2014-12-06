@@ -9,6 +9,23 @@ $this->title = 'EventJunkie - Event wall';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<script>
+
+function advancedSearch(){
+
+	searchForm = document.getElementById('searchForm');
+	if(searchForm.style.visibility=='hidden'){
+		searchForm.style.visibility='visible';
+		searchForm.style.position="relative";
+	}
+	else{
+		searchForm.style.visibility='hidden';
+		searchForm.style.position="fixed";
+	}
+}
+
+</script>
+
 <div class="site-index">
 
     <div class="body-content">
@@ -34,6 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($searchModel, 'name') ?>
                 <?= $form->field($searchModel, 'address') ?>
+<div id="searchForm" style="visibility:hidden; position:fixed;">
                 <?= $form->field($searchModel, 'radius')->widget(RangeInput::classname(), [
                     'options' => ['readonly' => false],
                     'html5Options' => ['min' => 0, 'max' => 50],
@@ -55,6 +73,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         'todayHighlight' => true
                     ]
                 ]) ?>
+</div>
+		<button type="button" onClick="advancedSearch();">Advanced Search</button>
+		<br><br>
 
                 <?= $form->field($searchModel, 'type')->checkboxList([
                         0 => 'Site',
