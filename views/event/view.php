@@ -12,13 +12,13 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $jsonMarkerList[0] = [
-"id" => $model->id,
-"name" => $model->name,
-"start_date" => $model->start_date,
-"end_date" => $model->end_date,
-"address" => $model->address,
-"latitude" => $model->latitude,
-"longitude" => $model->longitude
+    "id" => $model->id,
+    "name" => $model->name,
+    "start_date" => $model->start_date,
+    "end_date" => $model->end_date,
+    "address" => $model->address,
+    "latitude" => $model->latitude,
+    "longitude" => $model->longitude
 ] ?>
 
 <div class="event-view">
@@ -42,12 +42,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ]) ?>
                 </p>
+            <?php } else { ?>
+                <p>
+                    <?= Html::a('Link with Social Media', ['link', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
+                </p>
+
             <?php } ?>
 
             <!-- image -->
             <?php if ($model->image) { ?>
-            <img class="img-responsive" src="<?= \Yii::$app->request->getBaseUrl() . Yii::$app->params['imagePath'] .
-            Html::encode($model->image) ?>">
+                <img class="img-responsive" src="<?= \Yii::$app->request->getBaseUrl() . Yii::$app->params['imagePath'] .
+                Html::encode($model->image) ?>">
             <?php } ?>
 
             <hr>
@@ -80,6 +85,9 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- description -->
             <p><strong>Description:</strong></p>
             <p><?= Html::encode($model->description) ?></p>
+            <br>
+            <p><i>Note:</i></p>
+            <p><?= Html::encode($model->description) ?></p>
 
             <hr>
 
@@ -89,61 +97,82 @@ $this->params['breadcrumbs'][] = $this->title;
             <hr>
 
             <!-- Only show if event is linked with either facebook, flickr or twitter -->
-            <?php if ($model->facebook || $model->flickr || $model->twitter) { ?>
+            <?php if ($socialMediaModels) { ?>
 
                 <p class="tiny text-center">Linked with:
-                    <?php if ($model->facebook) { ?>
-                        <a class="btn btn-social-icon btn-facebook">
-                            <i class="fa fa-facebook"></i>
-                        </a>
-                    <?php } ?>
-                    <?php if ($model->flickr) { ?>
-                        <a class="btn btn-social-icon btn-flickr" href="<?= $model->flickr ?>">
-                            <i class="fa fa-flickr"></i>
-                        </a>
-                    <?php } ?>
-                    <?php if ($model->twitter) { ?>
-                        <a class="btn btn-social-icon btn-twitter">
-                            <i class="fa fa-twitter"></i>
-                        </a>
+                    <?php foreach ($socialMediaModels as $socialMediaModel) {?>
+                        <?php if ($socialMediaModel->site_name === 'facebook') {?>
+                            <a class="btn btn-social-icon btn-facebook">
+                                <i class="fa fa-facebook"></i>
+                            </a>
+                        <?php } ?>
+                        <?php if ($socialMediaModel->site_name === 'flickr') {?>
+                            <a class="btn btn-social-icon btn-flickr" href="<?= $socialMediaModel->url ?>">
+                                <i class="fa fa-flickr"></i>
+                            </a>
+                        <?php } ?>
+                        <?php if ($socialMediaModel->site_name === 'twitter') {?>
+                            <a class="btn btn-social-icon btn-twitter" href="<?= $socialMediaModel->url ?>">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        <?php } ?>
                     <?php } ?>
                 </p>
 
-            <?php } ?>
+            <?php }?>
             <!-- -->
 
             <hr>
-
 
             <h4>Comments</h4>
 
             <!-- comments from linked sites -->
             <?php
-            for ($i = 0; $i < 5; $i++) { ?>
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <strong>Lorem Ipsum</strong><br>
-                        <small class="text-muted">Date</small>
-                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-                        </p>
-                        <small> – Person on <cite title="source">Facebook</cite></small>
-                    </div></div>
+            if (isset($socialmedia['comments'])) { ?>
+                <?php foreach ($socialmedia['comments'] as $socialmedia_comment) { ?>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <strong><a href="<?= $socialmedia_comment['url'] ?>"><?= $socialmedia_comment['title'] ?></a></strong><br>
+                            <small class="text-muted"><?= date("d.m.Y G:i",
+                                    $socialmedia_comment['date']) ?></small>
+                            <p><?= $socialmedia_comment['text'] ?>
+                            </p>
+                            <small> – <a href="<?= $socialmedia_comment['author_url'] ?>"><?= $socialmedia_comment['author'] ?></a>
+                                on <a href="<?= $socialmedia_comment['socialmedia_url'] ?>"><cite title="source"><?= $socialmedia_comment['site_name'] ?></cite></a></small>
+                        </div>
+                    </div>
+                <?php } ?>
             <?php } ?>
-
         </div>
-
         <div class="col-md-4">
+
 
             <!-- images from linked sites -->
             <?php
             if (isset($socialmedia['images'])) { ?>
-
+                <div class="col-md-12"><a href="<?= \Yii::$app->request->BaseUrl.'/index.php?r=event/gallery&id='.$model->id ?>">View Gallery</a>
+                    <hr></div>
+                <div class="col-md-12">
                 <?php
-                foreach ($socialmedia['images'] as $socialmedia_image): ?>
+                $i = 0;
+                foreach ($socialmedia['images'] as $socialmedia_image) { ?>
                     <div class="col-md-6">
-                        <a href="<?= $socialmedia_image['original'] ?>"><img src="<?= $socialmedia_image['thumbnail'] ?>" alt="img" /> </a>
+                        <a class="thumbnail thumbnail2" href="<?= $socialmedia_image['original'] ?>">
+                            <img src="<?= $socialmedia_image['thumbnail'] ?>" alt="<?= $socialmedia_image['thumbnail'] ?>" />
+                        </a>
                     </div>
-                <?php endforeach; ?>
+                    <?php
+                    $i++;
+                    if ($i > 0 && ($i % 2 === 0)) { ?>
+                        </div>
+                        <div class="col-md-12">
+                            <br>
+                        </div>
+                        <div class="col-md-12">
+                    <?php }?>
+
+                <?php } ?>
+                </div>
             <?php } ?>
 
         </div>

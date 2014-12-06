@@ -14,7 +14,7 @@ class SearchEventForm extends Event {
     public function rules() {
         return [
             [['name', 'address'], 'string', 'max' => 50],
-            [['address'], 'setGeoLocation'],
+            [['address'], 'isValidGeoLocation'],
             [['radius'], 'integer'],
             [['from_date', 'to_date'], 'isValidDate'],
         ];

@@ -43,7 +43,7 @@ CREATE INDEX profile_user_id ON profile (user_id);
 CREATE TABLE IF NOT EXISTS event (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     user_id INT UNSIGNED NOT NULL, /* geht bei mir nur unsigned */
-    creation_date TIMESTAMP,
+    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     name VARCHAR(50) NOT NULL,
     address VARCHAR(50) NOT NULL,
     latitude DECIMAL(17,14),
@@ -51,13 +51,21 @@ CREATE TABLE IF NOT EXISTS event (
     start_date TIMESTAMP NOT NULL,
     end_date TIMESTAMP,
     image VARCHAR(100),
-    facebook VARCHAR(1000),
-    twitter VARCHAR(1000),
-    flickr VARCHAR(1000),
     clicks INT UNSIGNED DEFAULT 0,
     description VARCHAR(1000),
+    note VARCHAR(1000),
     CONSTRAINT pk_event PRIMARY KEY(id),
     CONSTRAINT fk_event_user_id FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS socialmedia (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    event_id INT UNSIGNED NOT NULL,
+    site_name VARCHAR(100),
+    url VARCHAR(500) NOT NULL,
+    CONSTRAINT pk_socialmedia PRIMARY KEY(id),
+    CONSTRAINT fk_socialmedia_event_id FOREIGN KEY (event_id) REFERENCES event(id) ON DELETE CASCADE,
+    CONSTRAINT uq_socialmedia UNIQUE(event_id, url)
 );
 
 

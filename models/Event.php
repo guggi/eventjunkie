@@ -20,17 +20,16 @@ use yii\web\UploadedFile;
  * @property string $start_date
  * @property string $end_date
  * @property string $image
- * @property string $facebook
- * @property string $twitter
- * @property string $flickr
  * @property integer $clicks
  * @property string $description
+ * @property string $note
  *
  * @property User $user
  */
 class Event extends ActiveRecord
 {
     public $upload_image;
+    public $num_socialMedia;
 
     /**
      * @inheritdoc
@@ -46,20 +45,19 @@ class Event extends ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'clicks'], 'integer'],
-            [['end_date'], 'safe'],
-            [['start_date', 'end_date'], 'isValidDate'],
-            [['start_date'], 'isValidStartDate'],
-            [['end_date'], 'isValidEndDate'],
             [['name', 'address', 'start_date'], 'required'],
+            [['user_id', 'clicks'], 'integer'],
+            [['start_date', 'end_date'], 'isValidDate'],
+            [['start_date'], 'isValidStartDate'], //todo entweder das start_date richtig validieren oder so lassen
+            [['end_date'], 'isValidEndDate'],
             [['latitude', 'longitude'], 'number'],
             [['name', 'address'], 'string', 'max' => 50],
-            [['address'], 'setGeoLocation'],
+            [['address'], 'isValidGeoLocation'],
             [['image'], 'string', 'max' => 100],
-            [['upload_image'], 'safe'],
-            [['upload_image'], 'file', 'extensions' => 'jpg, gif, png'], //todo filegröße
-            [['facebook', 'twitter', 'flickr', 'description'], 'string', 'max' => 1000], //todo hier validieren
-            [['facebook', 'twitter', 'flickr'], 'isValidUrl'],
+            [['upload_image'], 'file', 'extensions' => 'jpg, gif, png', 'maxSize' => 2097152, 'tooBig' =>
+            'Image size cannot be larger then 2MB.'],
+            [['description', 'note'], 'string', 'max' => 1000],
+            [['num_socialMedia'], 'safe'],
         ];
     }
 
@@ -78,53 +76,44 @@ class Event extends ActiveRecord
             'start_date' => 'Start Date',
             'end_date' => 'End Date',
             'image' => 'Image',
-            'facebook' => 'Facebook',
-            'twitter' => 'Twitter',
-            'flickr' => 'Flickr',
+            'socialmedia' => 'Social Media',
             'clicks' => 'Clicks',
             'description' => 'Description',
+            'note' => 'Note',
         ];
     }
 
-    public function isValidDate($attribute, $params)
+    public function isValidDate($attribute)
     {
-        if (!strtotime($this->$attribute)) {
+        if (!strtotime($this->$attribute) && strtotime($this->$attribute) != 0) {
             $this->addError($attribute, $attribute . ' has wrong format');
         }
     }
 
-    public function isValidStartDate($attribute, $params)
+    public function isValidStartDate($attribute)
     {
-        if (strtotime($this->$attribute) < time() && strtotime($this->$attribute) < strtotime($this->creation_date)) {
-            $this->addError($attribute, $attribute . ' must be after today');
+        if (strtotime($this->$attribute) <= 0) {
+            $this->addError($attribute, 'Start date must be after '. date('d.m.Y G:i', 0));
         }
     }
 
-    public function isValidEndDate($attribute, $params)
+    public function isValidEndDate($attribute)
     {
-        if (strtotime($this->$attribute) < strtotime($this->start_date)) {
-            $this->addError($attribute, $attribute . ' must be after Start Date');
-        }
-    }
-
-    public function isValidUrl($attribute, $params)
-    {
-        $flickr_regex = '/(http|https)?(:)?(\/\/)?(w*\.)?flickr\.com\/photos([^?]*)/';
-        $check_head = curl_init($this->$attribute);
-        curl_setopt($check_head, CURLOPT_NOBODY, true);
-        curl_exec($check_head);
-
-        if (!preg_match($flickr_regex, $this->$attribute) && (curl_getinfo($check_head, CURLINFO_HTTP_CODE) !== '200')) {
-            $this->addError($attribute, 'Not a valid Url.');
+        if (strtotime($this->$attribute) > 0 && strtotime($this->$attribute) < strtotime($this->start_date)) {
+            $this->addError($attribute, 'End Date must be after Start Date');
         }
 
-        curl_close($check_head);
+        if (strtotime($this->$attribute) === 0) {
+            $this->$attribute = date('Y-m-d H:i:s', strtotime($this->start_date));
+        } else {
+            $this->$attribute = date('Y-m-d H:i:s', strtotime($this->$attribute));
+        }
     }
 
     /*
      * Validate address and set latitude and longitude via Google-Api.
      */
-    public function setGeoLocation($attribute, $param)
+    public function isValidGeoLocation($attribute)
     {
         if ($this->$attribute !== '') {
             $parsed_address = str_replace(' ', '+', $this->$attribute);

@@ -4,7 +4,6 @@ namespace app\models\apis;
 
 class SocialMediaApi {
     private $socialmedia;
-    private $flickr_regex = '/(http|https)?(:)?(\/\/)?(w*\.)?flickr\.com\/photos([^?]*)/';
 
     public function __construct() {
         $this->socialmedia = [
@@ -14,21 +13,53 @@ class SocialMediaApi {
     }
 
     public function loadSocialMedia($link) {
-        $images = [];
-        if (preg_match($this->flickr_regex, $link)) {
-            $flickrApi = new FlickrApi($link);
-            $images = $flickrApi->getPhotos();
+        if ($link->site_name === 'flickr') {
+            $flickrApi = new FlickrApi($link->url);
+            $this->pushImages($flickrApi->getImages());
+        } else if ($link->site_name === 'twitter') {
+            $twitterApi = new TwitterApi($link->url);
+            $twitterApi->getTweets();
+            $this->pushComments($twitterApi->getComments());
+            $this->pushImages($twitterApi->getImages());
         }
 
-        if (isset($this->socialmedia['images'])) {
-            array_merge($this->socialmedia['images'], $images);
-        } else {
-            $this->socialmedia['images'] = $images;
+    }
+
+    public function validateSocialMedia($link) {
+        if ($link->site_name === 'flickr') {
+            $flickrApi = new FlickrApi($link->url);
+            $flickrApi->getImages();
+        }
+        if ($link->site_name === 'twitter') {
+            $twitterApi = new TwitterApi($link->url);
+            $twitterApi->getTweets();
+        }
+    }
+
+    public function pushImages($loadedImages) {
+        foreach ($loadedImages as $loadedImage) {
+            $this->socialmedia['images'][] = $loadedImage;
+        }
+    }
+
+    public function pushComments($loadedComments) {
+        foreach ($loadedComments as $loadedComment) {
+            $this->socialmedia['comments'][] = $loadedComment;
         }
     }
 
     public function getSocialMedia() {
+        if (isset($this->socialmedia['images'])) {
+            $this->socialmedia['images'] = array_map("unserialize", array_unique(array_map("serialize", $this->socialmedia['images'])));
+        }
+
+        if (isset($this->socialmedia['comments'])) {
+            usort($this->socialmedia['comments'], function ($a, $b) {
+                if ($a['date'] == $b['date'])
+                    return 0;
+                return $a['date'] < $b['date'] ? 1 : -1;
+            });
+        }
         return $this->socialmedia;
     }
-
 } 

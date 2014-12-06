@@ -3,6 +3,7 @@
 $params = require(__DIR__ . '/params.php');
 
 $config = [
+    'timeZone' => 'Europe/Berlin',
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
@@ -46,6 +47,9 @@ $config = [
         'user' => [
             'class' => 'amnah\yii2\user\Module',
             // set custom module properties here ...
+        ],
+        'gridview' => [
+            'class' => '\kartik\grid\Module'
         ],
     ],
     'params' => $params,

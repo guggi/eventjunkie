@@ -1,5 +1,6 @@
 <?php
 
+use demogorgorn\ajax\AjaxSubmitButton;
 use yii\helpers\Html;
 use kartik\widgets\DateTimePicker;
 use kartik\widgets\FileInput;
@@ -31,6 +32,7 @@ use yii\bootstrap\ActiveForm;
             <?php } ?>
 
             <?php $form = ActiveForm::begin([
+                'id' => 'event-form',
                 'options' => ['enctype'=>'multipart/form-data'],
                 'layout' => 'default',
                 'fieldConfig' => [
@@ -65,7 +67,7 @@ use yii\bootstrap\ActiveForm;
                 'pluginOptions' => [
                     'format' => 'd.m.Y G:i',
                     'todayHighlight' => true
-                ]
+                ],
             ]) ?>
 
             <?php if ($model->image) { ?>
@@ -90,13 +92,23 @@ use yii\bootstrap\ActiveForm;
                 ?>
             <?php } ?>
 
-            <?= $form->field($model, 'facebook')->textInput(['maxlength' => 1000]) ?>
-
-            <?= $form->field($model, 'twitter')->textInput(['maxlength' => 1000]) ?>
-
-            <?= $form->field($model, 'flickr')->textInput(['maxlength' => 1000]) ?>
+            <?php if (isset($socialMediaModels)) {
+                foreach ($socialMediaModels as $key=>$socialMediaModel) { ?>
+                    <?php if ($key === 0) { ?>
+                        <?= $form->field($socialMediaModel, '['.$key.']url')->textInput(['maxlength' => 500]) ?>
+                    <?php } else { ?>
+                        <?= $form->field($socialMediaModel, '['.$key.']url')->textInput(['maxlength' => 500])->label('') ?>
+                    <?php } ?>
+                <?php } ?>
+            <?php } ?>
+            <!--
+            <div class="form-group">
+            <?/*=
+            Html::a('<i class="glyphicon glyphicon-plus"></i> Add New', "?r=event/add-field", ['class'=>'btn btn-success']) */?>
+            </div>-->
 
             <?= $form->field($model, 'description')->textInput(['maxlength' => 1000])->textarea(['rows' => 6]) ?>
+            <?= $form->field($model, 'note')->textInput(['maxlength' => 1000])->textarea(['rows' => 6]) ?>
 
             <div class="form-group">
                 <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
@@ -115,3 +127,5 @@ use yii\bootstrap\ActiveForm;
     var jsonMarkerList = JSON.parse('<?php echo json_encode($jsonMarkerList) ?>');
     var streetZoom = 15;
 </script>
+
+
