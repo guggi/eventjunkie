@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\models\apis\SocialMediaApi;
+use app\models\apis\GoaBaseApi;
+
 use app\models\SocialMedia;
 use Yii;
 use app\models\Event;
@@ -73,7 +75,8 @@ class EventController extends Controller
 
         $query = $query->joinWith('user');
 
-        $pagination = new Pagination([
+
+      $pagination = new Pagination([
             'defaultPageSize' => 10,
             'totalCount' => $query->count(),
         ]);
@@ -84,6 +87,21 @@ class EventController extends Controller
             ->limit($pagination->limit)
             ->all();
 
+
+	$goa = new GoaBaseApi();
+	
+	$goaParties = $goa->getParties();
+	$goaId = $query->count();
+
+	for($i=0;$i< count($goaParties); $i++){
+		$eventList[$goaId] = $goaParties[$i];
+		++$goaId;
+	}
+
+	//print_r("dasfasfd ".$goaParties[0]->name);
+	
+	//print_r($eventList);
+
         // Top Events
         $topList = $query->orderBy(['clicks' => SORT_DESC])->limit(3)->all();
 
@@ -92,9 +110,9 @@ class EventController extends Controller
 
         return $this->render('index', ['searchModel' => $searchModel,
             'eventList' => $eventList,
-            'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);
+            'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);  
 
-    }
+    } 
 
     /**
      * Displays a single Event model.

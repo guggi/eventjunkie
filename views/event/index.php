@@ -73,14 +73,16 @@ function advancedSearch(){
                         'todayHighlight' => true
                     ]
                 ]) ?>
-</div>
-		<button type="button" onClick="advancedSearch();">Advanced Search</button>
-		<br><br>
+
 
                 <?= $form->field($searchModel, 'type')->checkboxList([
                         0 => 'Site',
                         1 => 'Goabase']
                 )?>
+
+</div>
+		<button type="button" onClick="advancedSearch();">Advanced Search</button>
+		<br><br>
 
 
                 <div class="form-group">
@@ -99,10 +101,15 @@ function advancedSearch(){
                 <hr>
 
                 <?php $jsonMarkerList = []; ?>
+<?php 
+//print_r($eventList);
+?>
 
                 <?php foreach ($eventList as $event): ?>
                     <!-- Marker for Google Map -->
-                    <?php $jsonMarkerList[] = [
+                  <?php 
+			try{ //ohne try catch block -> trying to get property of non-object
+			$jsonMarkerList[] = [
                         "id" => $event->id,
                         "name" => $event->name,
                         "start_date" => $event->start_date,
@@ -117,9 +124,17 @@ function advancedSearch(){
                                 <h3 class="list-group-item-heading"><?= Html::encode($event->name) ?></h3>
                                 <p class="list-group-item-text pull-left">
                                 </p>
-                                <?php if ($event->image) { ?>
+                                <?php if ($event->image) { 
+					//if goabase image
+					if( substr($event->image, 0, 23) == "https://www.goabase.net"){ 
+						?> <center><img class="thumbnail-image" src="<?= Html::encode($event->image) ?>"></center><br> <?
+					}
+					else{ //intern image
+				?>
                                     <img class="thumbnail-image" src="images/<?= Html::encode($event->image) ?>"><br>
-                                <?php } ?>
+                                <?php 
+				    }
+				} ?>
                                 <p class="list-group-item-text">
                                     <strong>Start: </strong><?= Html::encode(date("d.m.Y G:i", strtotime($event->start_date))) ?><br>
                                     <?= Html::encode($event->address) ?><br>
@@ -128,7 +143,11 @@ function advancedSearch(){
                             </a>
                         </div>
                     </div>
-                <?php endforeach; ?>
+                <?php
+
+		}catch(Exception $e){}
+	 endforeach; ?> 
+
 
                 <?= LinkPager::widget(['pagination' => $pagination]) ?>
             </div>
