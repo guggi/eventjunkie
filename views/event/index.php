@@ -120,7 +120,14 @@ function advancedSearch(){
                     ] ?>
                     <div class="col-md-6">
                         <div class="list-group">
+			    <?php 
+				if( substr($event->id, 0, 7) == "goabase"){ ?>
+                            <a href="<?php echo \Yii::$app->request->getBaseUrl().'/index.php?r=event/loadgoaparty&id='.$event->id; ?>" class="list-group-item">
+				<?php
+			    	} else{
+		 	    ?>
                             <a href="<?php echo \Yii::$app->request->getBaseUrl().'/index.php?r=event/view&id='.$event->id; ?>" class="list-group-item">
+			    <?php } ?>
                                 <h3 class="list-group-item-heading"><?= Html::encode($event->name) ?></h3>
                                 <p class="list-group-item-text pull-left">
                                 </p>

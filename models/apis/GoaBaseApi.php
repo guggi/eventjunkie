@@ -18,6 +18,7 @@ class GoaBaseApi {
 
 
     //returns a list with event objects of goaparties
+    //limit is number of parties in the goaObject list
     function getParties($limit=10){
 	// Read the json file contents into a string variable,
 	$str_data = file_get_contents($this->url);
@@ -27,12 +28,11 @@ class GoaBaseApi {
 
 	$goaObject[$limit] = Array();
 
-	//$goaObject->name="hallo";
-
 	for($i=0;$i<$limit; $i++){
 		$goaObject[$i] = new Event();
 		
 		$goaObject[$i]->name  = $partyList['partylist'][$i]['nameParty'];
+		$goaObject[$i]->id = "goabase".$partyList['partylist'][$i]['id'];
 		$goaObject[$i]->user_id  = 1;//"Goabase: ".$partyList['partylist'][$i]['nameOrganizer'];
 
 		$goaObject[$i]->creation_date  = $partyList['partylist'][$i]['dateCreated'];
@@ -43,15 +43,24 @@ class GoaBaseApi {
 		$goaObject[$i]->longitude  = $partyList['partylist'][$i]['geoLon'];
 
 		$goaObject[$i]->image  = $partyList['partylist'][$i]['urlImageSmall'];
-		//$goaObject[$i]->clicks  = $partyList['partylist'][$i]['dateCreated'];
 
+		//$goaObject[$i]->clicks  = $partyList['partylist'][$i]['dateCreated'];
 		//$goaObject[$i]->description  = $partyList['partylist'][$i]['dateCreated'];
 		//$goaObject[$i]->note  = $partyList['partylist'][$i]['dateCreated'];
-
 	}  
-
 	return $goaObject; 
+    }
 
+
+    //get single party
+    //id example: goabase1234
+    function getParty($id){
+	$id =  substr($id, 7, strlen($id)); //cut "goabase" part away
+	// Read the json file contents into a string variable,
+	$str_data = file_get_contents("https://www.goabase.net/party/api/json/".$id);
+	//and parse the string into a data structure
+	$party = json_decode($str_data,true);
+	return $party;
     }
 
 } 

@@ -88,19 +88,25 @@ class EventController extends Controller
             ->all();
 
 
+	//-----Add GoaParties to eventList--------
 	$goa = new GoaBaseApi();
-	
-	$goaParties = $goa->getParties();
 	$goaId = $query->count();
 
+	Yii::$app->cache->gc(true);
+
+   	if (Yii::$app->cache->get('goabase') == NULL) { //if not in cache load from api
+		//list of goa parties, Type: ArrayList with Events
+		$goaParties = $goa->getParties();
+		Yii::$app->cache->set('goabase', $goaParties, 300);
+	}else{ //load from cache
+		$goaParties = Yii::$app->cache->get('goabase');
+	}  
+	
 	for($i=0;$i< count($goaParties); $i++){
 		$eventList[$goaId] = $goaParties[$i];
 		++$goaId;
 	}
-
-	//print_r("dasfasfd ".$goaParties[0]->name);
-	
-	//print_r($eventList);
+	//---------------------------------------
 
         // Top Events
         $topList = $query->orderBy(['clicks' => SORT_DESC])->limit(3)->all();
@@ -111,7 +117,6 @@ class EventController extends Controller
         return $this->render('index', ['searchModel' => $searchModel,
             'eventList' => $eventList,
             'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);  
-
     } 
 
     /**
@@ -412,4 +417,14 @@ class EventController extends Controller
             Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia(), 300);
         }
     }
+
+    /**
+     * Load Goa party from goabase api
+    */
+    public function actionLoadgoaparty($id){
+	$goaBaseApi = new GoaBaseApi();
+	$goaParty = $goaBaseApi->getParty($id);
+	return $this->render('goaparty', ['party' => $goaParty]);
+    }
+
 }
