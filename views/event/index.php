@@ -121,7 +121,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <p class="list-group-item-text pull-left">
                                     </p>
                                     <?php if ($event->image) { ?>
-                                        <img class="thumbnail-image" src="<?= (substr($event->id, 0, 7) === "goabase") ? Html::encode($event->image) : "images/" . Html::encode($event->image) ?>"><br>
+                                        <div class="thumbnail-clipwrapper">
+                                            <div class="thumbnail-clip">
+                                                <img src="<?= (substr($event->id, 0, 7) === "goabase") ? Html::encode($event->image) : "images/" . Html::encode($event->image) ?>"><br>
+                                            </div>
+                                        </div>
                                     <?php } ?>
                                     <p class="list-group-item-text">
                                         <strong>Start: </strong><?= Html::encode(date("d.m.Y G:i", strtotime($event->start_date))) ?><br>

@@ -77,7 +77,7 @@ class TwitterApi
         }
 
         $url = 'https://api.twitter.com/1.1/search/tweets.json';
-        $getfield = '?q=#' . $hashtag . '&result_type=recent&count=100&lang=eu';
+        $getfield = '?q=#' . $hashtag . '&result_type=recent&count=100';
         $requestMethod = 'GET';
 
         $json = $this->twitter->setGetfield($getfield)

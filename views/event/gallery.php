@@ -27,16 +27,13 @@ $this->params['breadcrumbs'][] = 'Gallery';
                 $i = 0;
                 foreach ($socialmedia['images'] as $socialmedia_image) { ?>
                     <div class="col-md-2">
-                        <a class="thumbnail thumbnail2" href="<?= $socialmedia_image['original'] ?>">
-                            <img src="<?= $socialmedia_image['thumbnail'] ?>" alt="<?= $socialmedia_image['thumbnail'] ?>" />
+                        <a href="<?= $socialmedia_image['original'] ?>">
+                            <img class="thumbnail" src="<?= $socialmedia_image['thumbnail'] ?>" alt="<?= $socialmedia_image['thumbnail'] ?>" />
                         </a>
                     </div>
                     <?php
                     $i++;
                     if ($i > 0 && ($i % 6 === 0)) { ?>
-                        </div>
-                        <div class="col-md-12">
-                            <br>
                         </div>
                         <div class="col-md-12">
                     <?php }?>

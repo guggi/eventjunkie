@@ -157,16 +157,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 $i = 0;
                 foreach ($socialmedia['images'] as $socialmedia_image) { ?>
                     <div class="col-md-6">
-                        <a class="thumbnail thumbnail2" href="<?= $socialmedia_image['original'] ?>">
-                            <img src="<?= $socialmedia_image['thumbnail'] ?>" alt="<?= $socialmedia_image['thumbnail'] ?>" />
+                        <a href="<?= $socialmedia_image['original'] ?>">
+                            <img class="thumbnail" src="<?= $socialmedia_image['thumbnail'] ?>" alt="<?= $socialmedia_image['thumbnail'] ?>" />
                         </a>
                     </div>
                     <?php
                     $i++;
                     if ($i > 0 && ($i % 2 === 0)) { ?>
-                        </div>
-                        <div class="col-md-12">
-                            <br>
                         </div>
                         <div class="col-md-12">
                     <?php }?>
@@ -183,3 +180,7 @@ $this->params['breadcrumbs'][] = $this->title;
     var jsonMarkerList = JSON.parse('<?php echo json_encode($jsonMarkerList) ?>');
     var streetZoom = 15;
 </script>
+
+<script src="/lightbox/js/jquery-1.11.0.min.js"></script>
+<script src="/lightbox/js/lightbox.min.js"></script>
+<link href="/lightbox/css/lightbox.css" rel="stylesheet" />

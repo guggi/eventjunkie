@@ -177,7 +177,7 @@ class EventController extends Controller
 
         $socialMediaModels = [];
 
-        $model->max_num_socialMedia = 20;
+        $model->max_num_socialMedia = 5;
         $model->num_socialMedia = 1;
 
         for ($i = 0; $i < $model->max_num_socialMedia; $i++) {
@@ -295,6 +295,27 @@ class EventController extends Controller
 
         }
         return $this->render('update', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
+    }
+
+
+    /**
+     * Adds new field.
+     * @return mixed
+     */
+    public function actionAddField()
+    {
+        //todo funktioniert nicht
+        $postData = Yii::$app->request->post();
+        $model = new Event();
+        $socialMediaModels = [];
+        $model->load($postData);
+        Model::loadMultiple($socialMediaModels, $postData);
+        $socialMediaModels[] = new SocialMedia();
+        if ($model->isNewRecord) {
+            return $this->render('create', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
+        } else {
+            return $this->render('update', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
+        }
     }
 
     /**
