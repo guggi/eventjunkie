@@ -39,7 +39,7 @@ class GoaBaseApi {
             $goaObject[$i]->start_date  = $partyList['partylist'][$i]['dateStart'];
             $goaObject[$i]->end_date  = $partyList['partylist'][$i]['dateEnd'];
 
-            $goaObject[$i]->address  = $partyList['partylist'][$i]['textLocation']; // ?
+           // $goaObject[$i]->address  = $partyList['partylist'][$i]['textLocation']; // ?
             $goaObject[$i]->latitude  = $partyList['partylist'][$i]['geoLat'];
             $goaObject[$i]->longitude  = $partyList['partylist'][$i]['geoLon'];
 
