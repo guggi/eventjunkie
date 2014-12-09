@@ -76,7 +76,7 @@ class EventController extends Controller
         $query = $query->joinWith('user');
 
 
-      $pagination = new Pagination([
+        $pagination = new Pagination([
             'defaultPageSize' => 10,
             'totalCount' => $query->count(),
         ]);
@@ -88,25 +88,25 @@ class EventController extends Controller
             ->all();
 
 
-	//-----Add GoaParties to eventList--------
-	$goa = new GoaBaseApi();
-	$goaId = $query->count();
+        //-----Add GoaParties to eventList--------
+        $goa = new GoaBaseApi();
+        $goaId = $query->count();
 
-	Yii::$app->cache->gc(true);
+        Yii::$app->cache->gc(true);
 
-   	if (Yii::$app->cache->get('goabase') == NULL) { //if not in cache load from api
-		//list of goa parties, Type: ArrayList with Events
-		$goaParties = $goa->getParties();
-		Yii::$app->cache->set('goabase', $goaParties, 300);
-	}else{ //load from cache
-		$goaParties = Yii::$app->cache->get('goabase');
-	}  
-	
-	for($i=0;$i< count($goaParties); $i++){
-		$eventList[$goaId] = $goaParties[$i];
-		++$goaId;
-	}
-	//---------------------------------------
+        if (Yii::$app->cache->get('goabase') == NULL) { //if not in cache load from api
+            //list of goa parties, Type: ArrayList with Events
+            $goaParties = $goa->getParties();
+            Yii::$app->cache->set('goabase', $goaParties, 300);
+        } else { //load from cache
+            $goaParties = Yii::$app->cache->get('goabase');
+        }
+
+        for ($i=0 ; $i < count($goaParties) ; $i++) {
+            $eventList[$goaId] = $goaParties[$i];
+            ++$goaId;
+        }
+        //---------------------------------------
 
         // Top Events
         $topList = $query->orderBy(['clicks' => SORT_DESC])->limit(3)->all();
@@ -116,8 +116,8 @@ class EventController extends Controller
 
         return $this->render('index', ['searchModel' => $searchModel,
             'eventList' => $eventList,
-            'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);  
-    } 
+            'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);
+    }
 
     /**
      * Displays a single Event model.
@@ -420,11 +420,11 @@ class EventController extends Controller
 
     /**
      * Load Goa party from goabase api
-    */
+     */
     public function actionLoadgoaparty($id){
-	$goaBaseApi = new GoaBaseApi();
-	$goaParty = $goaBaseApi->getParty($id);
-	return $this->render('goaparty', ['party' => $goaParty]);
+        $goaBaseApi = new GoaBaseApi();
+        $goaParty = $goaBaseApi->getParty($id);
+        return $this->render('goaparty', ['party' => $goaParty]);
     }
 
 }
