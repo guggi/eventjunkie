@@ -30,6 +30,7 @@ class Event extends ActiveRecord
 {
     public $upload_image;
     public $num_socialMedia;
+    public $max_num_socialMedia;
 
     /**
      * @inheritdoc
@@ -57,7 +58,7 @@ class Event extends ActiveRecord
             [['upload_image'], 'file', 'extensions' => 'jpg, gif, png', 'maxSize' => 2097152, 'tooBig' =>
             'Image size cannot be larger then 2MB.'],
             [['description', 'note'], 'string', 'max' => 1000],
-            [['num_socialMedia'], 'safe'],
+            [['num_socialMedia', 'max_num_socialMedia'], 'safe'],
         ];
     }
 

@@ -95,17 +95,19 @@ use yii\bootstrap\ActiveForm;
             <?php if (isset($socialMediaModels)) {
                 foreach ($socialMediaModels as $key=>$socialMediaModel) { ?>
                     <?php if ($key === 0) { ?>
-                        <?= $form->field($socialMediaModel, '['.$key.']url')->textInput(['maxlength' => 500]) ?>
+                        <div id="<?= 'socialmedia-field' . $key ?>" class="field-visible">
+                            <?= $form->field($socialMediaModel, '['.$key.']url')->textInput(['maxlength' => 500]) ?>
+                        </div>
                     <?php } else { ?>
-                        <?= $form->field($socialMediaModel, '['.$key.']url')->textInput(['maxlength' => 500])->label('') ?>
+                        <div id="<?= 'socialmedia-field' . $key ?>" class="<?= ($key < $model->num_socialMedia) ? 'field-visible' : 'field-hidden' ?>">
+                            <?= $form->field($socialMediaModel, '['.$key.']url')->textInput(['maxlength' => 500])->label('') ?>
+                        </div>
                     <?php } ?>
                 <?php } ?>
             <?php } ?>
-            <!--
             <div class="form-group">
-            <?/*=
-            Html::a('<i class="glyphicon glyphicon-plus"></i> Add New', "?r=event/add-field", ['class'=>'btn btn-success']) */?>
-            </div>-->
+                <button id=addField-button" class="btn btn-default" type="button" onClick="addField(this);">Add Field</button>
+            </div>
 
             <?= $form->field($model, 'description')->textInput(['maxlength' => 1000])->textarea(['rows' => 6]) ?>
             <?= $form->field($model, 'note')->textInput(['maxlength' => 1000])->textarea(['rows' => 6]) ?>
@@ -126,6 +128,21 @@ use yii\bootstrap\ActiveForm;
 <script>
     var jsonMarkerList = JSON.parse('<?php echo json_encode($jsonMarkerList) ?>');
     var streetZoom = 15;
+</script>
+
+<script>
+    var numFields = JSON.parse('<?php echo json_encode($model->num_socialMedia) ?>');
+    function addField(addFieldButton) {
+        var maxNumFields = JSON.parse('<?php echo json_encode($model->max_num_socialMedia) ?>');
+        numFields += 1;
+        if (numFields <= maxNumFields) {
+            var field = document.getElementById('socialmedia-field' + (numFields - 1));
+            field.className = 'field-visible';
+            if (numFields === maxNumFields) {
+                addFieldButton.className = 'field-hidden';
+            }
+        }
+    }
 </script>
 
 

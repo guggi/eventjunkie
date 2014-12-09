@@ -177,11 +177,10 @@ class EventController extends Controller
 
         $socialMediaModels = [];
 
-        if (!$model->num_socialMedia) {
-            $model->num_socialMedia = 5;
-        }
+        $model->max_num_socialMedia = 20;
+        $model->num_socialMedia = 1;
 
-        for ($i = 0; $i < $model->num_socialMedia; $i++) {
+        for ($i = 0; $i < $model->max_num_socialMedia; $i++) {
             $socialMediaModels[] = new SocialMedia();
         }
 
@@ -239,13 +238,13 @@ class EventController extends Controller
             return $this->redirect(['view', 'id' => $id]);
         }
 
-        $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
+        $query = SocialMedia::find()->where(['event_id' => $id])->orderBy('id');
+        $socialMediaModels = $query->all();
 
-        if (!$model->num_socialMedia) {
-            $model->num_socialMedia = 1;
-        }
+        $model->max_num_socialMedia = 20;
+        $model->num_socialMedia = intval($query->count());
 
-        for ($i = 0; $i < $model->num_socialMedia; $i++) {
+        for ($i = 0; $i < $model->max_num_socialMedia - $model->num_socialMedia; $i++) {
             $socialMediaModels[] = new SocialMedia();
         }
 
@@ -296,27 +295,6 @@ class EventController extends Controller
 
         }
         return $this->render('update', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
-    }
-
-
-    /**
-     * Adds new field.
-     * @return mixed
-     */
-    public function actionAddField()
-    {
-        //todo funktioniert nicht
-        $postData = Yii::$app->request->post();
-        $model = new Event();
-        $socialMediaModels = [];
-        $model->load($postData);
-        Model::loadMultiple($socialMediaModels, $postData);
-        $socialMediaModels[] = new SocialMedia();
-        if ($model->isNewRecord) {
-            return $this->render('create', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
-        } else {
-            return $this->render('update', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
-        }
     }
 
     /**

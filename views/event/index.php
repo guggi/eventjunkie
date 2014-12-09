@@ -15,13 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
     function advancedSearch(searchOptionButton){
         var searchForm = document.getElementById('searchForm');
 
-        if(searchForm.style.visibility == 'hidden'){
-            searchForm.style.visibility = 'visible';
-            searchForm.style.position = 'relative';
+        if(searchForm.className == 'field-hidden'){
+            searchForm.className = 'field-visible';
             searchOptionButton.innerHTML = 'Simple Search';
-        } else{
-            searchForm.style.visibility = 'hidden';
-            searchForm.style.position = 'fixed';
+        } else {
+            searchForm.className = 'field-hidden';
             searchOptionButton.innerHTML = 'Advanced Search';
         }
     }
@@ -54,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($searchModel, 'name') ?>
                 <?= $form->field($searchModel, 'address') ?>
-                <div id="searchForm" style="visibility: hidden; position: fixed">
+                <div id="searchForm" class="field-hidden">
                     <?= $form->field($searchModel, 'radius')->widget(RangeInput::classname(), [
                         'options' => ['readonly' => false],
                         'html5Options' => ['min' => 0, 'max' => 50],
@@ -84,10 +82,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     )?>
 
                 </div>
-                <button id="searchOption" class="btn btn-default" type="button" onClick="advancedSearch(this);">Advanced Search</button>
-                <br><br>
-
-
+                <div class="form-group">
+                    <button id="searchOptionButton" class="btn btn-default" type="button" onClick="advancedSearch(this);">Advanced Search</button>
+                </div>
                 <div class="form-group">
                     <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
                 </div>

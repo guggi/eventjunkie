@@ -107,3 +107,13 @@ a.desc:after {
     color: #999;
     font-size: small;
 }
+
+.field-visible {
+    visibility: visible;
+    position: relative;
+}
+
+.field-hidden {
+    visibility: hidden;
+    position: fixed;
+}

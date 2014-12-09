@@ -174,7 +174,7 @@ class GoaBaseWidget extends Widget{
 	<?php echo $party['party']['nameCountry']." - ".$party['party']['nameTown']; ?>
 	<br>
 	<br>
-	     <!-----Goolge-Maps----->
+	     <!-----Google-Maps----->
 		  <div class="span12 map_searchEvent" id="map"></div>
 		   <hr>
 	<br>
