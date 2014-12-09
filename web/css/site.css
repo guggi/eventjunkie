@@ -90,9 +90,15 @@ a.desc:after {
     margin: 0 0 15px 0;
 }
 
-.thumbnail-image {
-    height: 80px;
-    width: 80px;
+.thumbnail-clipwrapper{
+    position:relative;
+    max-width: 160px;
+    height:80px;
+}
+
+.thumbnail-clip{
+    position:absolute;
+    clip:rect(0px 160px 80px 0px);
 }
 
 .table.table-borderless td, .table.table-borderless th {
