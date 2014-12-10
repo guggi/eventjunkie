@@ -4,6 +4,8 @@ use yii\bootstrap\ActiveForm;
 use yii\widgets\LinkPager;
 use kartik\widgets\RangeInput;
 use kartik\widgets\DateTimePicker;
+use kartik\widgets\TypeaheadBasic;
+
 /* @var $this yii\web\View */
 $this->title = 'EventJunkie';
 $this->params['breadcrumbs'][] = $this->title;
@@ -30,7 +32,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ]); ?>
 
-                <?= $form->field($searchModel, 'name') ?>
+                <?= $form->field($searchModel, 'name')->widget(TypeaheadBasic::classname(), [
+                    'options' => ['placeholder' => 'Search for an event...'],
+                    'dataset' => [
+                        [
+                            'local' => ['alpha', 'beta', 'gamma'],
+                            'limit' => 10
+                        ]
+                    ]
+                ]) ?>
                 <?= $form->field($searchModel, 'address') ?>
                 <?= $form->field($searchModel, 'distance')->widget(RangeInput::classname(), [
                     'value' => 1,

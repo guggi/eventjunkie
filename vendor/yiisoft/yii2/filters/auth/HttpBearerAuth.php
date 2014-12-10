@@ -31,7 +31,7 @@ class HttpBearerAuth extends AuthMethod
     /**
      * @var string the HTTP authentication realm
      */
-    public $realm = 'apis';
+    public $realm = 'api';
 
 
     /**

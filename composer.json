@@ -22,7 +22,8 @@
         "kartik-v/yii2-widgets": "dev-master",
         "demogorgorn/yii2-ajax-submit-button": "dev-master",
         "yiisoft/yii2-authclient": "*",
-        "j7mbo/twitter-api-php": "dev-master"
+        "j7mbo/twitter-api-php": "dev-master",
+		"yiisoft/yii2-jui": "*"
 
 },
     "require-dev": {

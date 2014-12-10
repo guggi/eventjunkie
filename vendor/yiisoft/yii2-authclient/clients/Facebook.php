@@ -33,7 +33,7 @@ use yii\authclient\OAuth2;
  * ~~~
  *
  * @see https://developers.facebook.com/apps
- * @see http://developers.facebook.com/docs/reference/apis
+ * @see http://developers.facebook.com/docs/reference/api
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
