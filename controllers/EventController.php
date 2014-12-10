@@ -103,10 +103,13 @@ class EventController extends Controller
             $goaParties = Yii::$app->cache->get('goabase');
         }
 
+	//append goaparties to eventList (intern parties)
         for ($i=0 ; $i < count($goaParties) ; $i++) {
             $eventList[$goaId] = $goaParties[$i];
             ++$goaId;
         }
+
+	$eventList = $this->sortEventList($eventList);
         //---------------------------------------
 
         // Top Events
@@ -424,6 +427,22 @@ class EventController extends Controller
         $goaBaseApi = new GoaBaseApi();
         $goaParty = $goaBaseApi->getParty($id);
         return $this->render('goaparty', ['party' => $goaParty]);
+    }
+
+    //Sort date from eventList 
+    private function sortEventList($eventList){
+   	$anz = count($eventList); 
+    	$temp=""; 
+    	for ($a = 0; $a < $anz; $a++) { 
+       	  for ($b = 0; $b < $anz -2; $b++) { 
+		if ($eventList[$b +1]->start_date < $eventList[$b]->start_date) {
+		        $temp = $eventList[$b]; 
+		        $eventList[$b] = $eventList[$b +1]; 
+		        $eventList[$b +1] = $temp; 
+	        } 
+          } 
+        } 
+     return $eventList; 
     }
 
 }

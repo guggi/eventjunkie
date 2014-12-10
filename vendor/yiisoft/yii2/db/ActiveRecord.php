@@ -100,8 +100,19 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * Loads default values from database table schema
      *
-     * @param boolean $skipIfSet if existing value should be preserved
-     * @return static model instance
+     * To enable loading defaults for every newly created record, you can add a call to this method to [[init()]]:
+     *
+     * ```php
+     * public function init()
+     * {
+     *     parent::init();
+     *     $this->loadDefaultValues();
+     * }
+     * ```
+     *
+     * @param boolean $skipIfSet whether existing value should be preserved.
+     * This will only set defaults for attributes that are `null`.
+     * @return static the model instance itself.
      */
     public function loadDefaultValues($skipIfSet = true)
     {
@@ -332,15 +343,15 @@ class ActiveRecord extends BaseActiveRecord
      * ~~~
      * return [
      *     'admin' => self::OP_INSERT,
-     *     'apis' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
+     *     'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
      *     // the above is equivalent to the following:
-     *     // 'apis' => self::OP_ALL,
+     *     // 'api' => self::OP_ALL,
      *
      * ];
      * ~~~
      *
      * The above declaration specifies that in the "admin" scenario, the insert operation ([[insert()]])
-     * should be done in a transaction; and in the "apis" scenario, all the operations should be done
+     * should be done in a transaction; and in the "api" scenario, all the operations should be done
      * in a transaction.
      *
      * @return array the declarations of transactional operations. The array keys are scenarios names,
