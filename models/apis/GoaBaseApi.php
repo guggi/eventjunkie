@@ -12,8 +12,6 @@ class GoaBaseApi {
     //single party infos example: https://www.goabase.net/party/api/json/81655
 
     function __construct() {
-        //   $this->api_key = Yii::$app->params['flickrApiKey'];
-        //$this->name = $name;
     }
 
 
@@ -36,10 +34,10 @@ class GoaBaseApi {
             $goaObject[$i]->user_id = "goabase".$partyList['partylist'][$i]['nameOrganizer'];;//"Goabase: ".$partyList['partylist'][$i]['nameOrganizer'];
 
             $goaObject[$i]->creation_date  = $partyList['partylist'][$i]['dateCreated'];
-            $goaObject[$i]->start_date  = $partyList['partylist'][$i]['dateStart'];
-            $goaObject[$i]->end_date  = $partyList['partylist'][$i]['dateEnd'];
 
-           // $goaObject[$i]->address  = $partyList['partylist'][$i]['textLocation']; // ?
+            $goaObject[$i]->start_date  = $this->dateFormat($partyList['partylist'][$i]['dateStart']);
+            $goaObject[$i]->end_date  = $this->dateFormat($partyList['partylist'][$i]['dateEnd']);
+
 
             $goaObject[$i]->latitude  = $partyList['partylist'][$i]['geoLat'];
             $goaObject[$i]->longitude  = $partyList['partylist'][$i]['geoLon'];
@@ -53,6 +51,13 @@ class GoaBaseApi {
         return $goaObject;
     }
 
+    //Change date Format from 2014-12-11T22:00:00+01:00 to 2014-12-13 22:30:00
+    private function dateFormat($goaBaseDate){
+	    //Date format from the goabase api: 2014-12-11T22:00:00+01:00"
+	    $goaBaseDate = substr($goaBaseDate, 0, 19); // format example: 2014-12-13T22:30:00
+	    $goaBaseDate = str_replace('T', ' ', $goaBaseDate); //replace T with whitespace
+	    return $goaBaseDate;
+    }
 
     //get single party
     //id example: goabase1234
