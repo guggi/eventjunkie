@@ -29,11 +29,15 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-8">
 
             <!-- update / delete -->
-            <?php
-            if ($model->user_id === Yii::$app->user->id) {
-                ?>
-                <p>
+            <p>
+                <?php
+                if (Yii::$app->user->id === $model->user_id) {
+                    ?>
                     <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                <?php } else { ?>
+                    <?= Html::a('Link with Social Media', ['link', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
+                <?php } ?>
+                <?php if (Yii::$app->user->can('admin') || $model->user_id === Yii::$app->user->id) { ?>
                     <?= Html::a('Delete', ['delete', 'id' => $model->id], [
                         'class' => 'btn btn-danger',
                         'data' => [
@@ -41,13 +45,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'method' => 'post',
                         ],
                     ]) ?>
-                </p>
-            <?php } else { ?>
-                <p>
-                    <?= Html::a('Link with Social Media', ['link', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
-                </p>
 
-            <?php } ?>
+                <?php } ?>
+            </p>
 
             <!-- image -->
             <?php if ($model->image) { ?>

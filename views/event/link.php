@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = 'Link with Social Media';
             <?= $form->field($linkModel, 'url')->textInput(['maxlength' => 500]) ?>
 
             <div class="form-group">
-                <?= Html::submitButton('Link with Social Media', ['class' => 'btn btn-success']) ?>
+                <?= Html::submitButton('Link with Social Media', ['class' => 'btn btn-default']) ?>
             </div>
 
             <?php ActiveForm::end(); ?>

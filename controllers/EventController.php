@@ -13,6 +13,7 @@ use yii\base\Model;
 use yii\db\IntegrityException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -169,10 +170,15 @@ class EventController extends Controller
     /**
      * Creates a new Event model.
      * If creation is successful, the browser will be redirected to the 'view' page.
+     * @throws ForbiddenHttpException
      * @return mixed
      */
     public function actionCreate()
     {
+        if (Yii::$app->user->can('admin')) {
+            throw new ForbiddenHttpException('You are not allowed to perform this action.');
+        }
+
         $model = new Event();
 
         $socialMediaModels = [];
@@ -228,11 +234,18 @@ class EventController extends Controller
      * Updates an existing Event model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
+     * @throws ForbiddenHttpException
+     * @throws NotFoundHttpException
+     * @throws \Exception
      * @return mixed
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+
+        if (Yii::$app->user->can('admin') || Yii::$app->user->id !== $model->user_id) {
+            throw new ForbiddenHttpException('You are not allowed to perform this action.');
+        }
 
         if ($model->user_id !== Yii::$app->user->id) {
             return $this->redirect(['view', 'id' => $id]);
@@ -297,27 +310,6 @@ class EventController extends Controller
         return $this->render('update', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
     }
 
-
-    /**
-     * Adds new field.
-     * @return mixed
-     */
-    public function actionAddField()
-    {
-        //todo funktioniert nicht
-        $postData = Yii::$app->request->post();
-        $model = new Event();
-        $socialMediaModels = [];
-        $model->load($postData);
-        Model::loadMultiple($socialMediaModels, $postData);
-        $socialMediaModels[] = new SocialMedia();
-        if ($model->isNewRecord) {
-            return $this->render('create', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
-        } else {
-            return $this->render('update', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
-        }
-    }
-
     /**
      * Creates a new Social Media Link.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -327,7 +319,7 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->user_id === Yii::$app->user->id) {
+        if (Yii::$app->user->id === $model->user_id) {
             return $this->redirect(['update', 'id' => $id]);
         }
 
@@ -377,11 +369,19 @@ class EventController extends Controller
      * Deletes an existing Event model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
+     * @throws ForbiddenHttpException
+     * @throws NotFoundHttpException
+     * @throws \Exception
      * @return mixed
      */
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
+
+        if (!Yii::$app->user->can('admin') || Yii::$app->user->id !== $model->user_id) {
+            throw new ForbiddenHttpException('You are not allowed to perform this action.');
+        }
+
         $model->deleteImage($model->image);
         $model->delete();
         return $this->redirect(['index']);

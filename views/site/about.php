@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 EventJunkie ist ein Eventkalender, welcher mit Facebook (www.facebook.com),
-Goabase, Flickr und Twitter verküpft ist. <br>
+Goabase, Flickr und Twitter verknüpft ist. <br>
 Die Hauptseite enthält eine Google-Karte, welche die Adresse der Events anzeigt, 
 die direkt unter der Karte angezeigt werden. <br>
 Die Events werden direkt auf EventJunkie erstellt und anschließend mit Facebook, Flickr oder Twitter verlinkt. <br>

@@ -62,15 +62,36 @@ function createMarker(jsonMarker) {
         infoWindowList.get(jsonMarker.id).open(map, markerList.get(jsonMarker.id));
     });
 
+    var link;
+    var id_string = jsonMarker.id + '';
+    if (id_string.substring(0, 7) === 'goabase') {
+        link = 'loadgoaparty';
+    } else {
+        link = 'view';
+        jsonMarker.start_date = formatMySQLDate(jsonMarker.start_date);
+        jsonMarker.end_date = formatMySQLDate(jsonMarker.end_date);
+    }
+
     var infoWindow = new google.maps.InfoWindow({
         content: '<div>' +
-        '<strong><a href="/index.php?r=event/view&id=' + jsonMarker.id + '">' + jsonMarker.name + '</a></strong><br>' +
+        '<strong><a href="/index.php?r=event/' + link + '&id=' + jsonMarker.id + '">' + jsonMarker.name + '</a></strong><br>' +
         '<em>' + jsonMarker.start_date + ' - ' + jsonMarker.end_date + '</em><br>' +
         jsonMarker.address +
         '</div>'
     });
 
     infoWindowList.set(jsonMarker.id, infoWindow);
+}
+
+function formatMySQLDate(mysql_date) {
+    if (mysql_date !== null) {
+        var t = mysql_date.split(/[- :]/);
+        var date = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
+        return date.getDay() + '.' + date.getMonth() + '.' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes();
+    } else {
+        return null;
+    }
+
 }
 
 function codeAddress() {
@@ -83,7 +104,6 @@ function codeAddress() {
             if (codeMarker) {
                 codeMarker.setPosition(results[0].geometry.location);
             } else {
-                console.log(codeMarker);
                 codeMarker = new google.maps.Marker({
                     map: map,
                     position: results[0].geometry.location

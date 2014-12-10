@@ -42,7 +42,7 @@ AppAsset::register($this);
             'items' => [
                 ['label' => 'Info', 'url' => ['/site/about']],
                 ['label' => 'Contact', 'url' => ['/site/contact']],
-            ],
+            ], 
         ]);
 
         echo Nav::widget([
@@ -51,22 +51,25 @@ AppAsset::register($this);
                 /*                    ['label' => 'Home', 'url' => ['/site/index']],
                                     ['label' => 'About', 'url' => ['/site/about']],
                                     ['label' => 'Contact', 'url' => ['/site/contact']],*/
-                ['label' => 'Create event',  'url' =>  Yii::$app->user->isGuest ?  \Yii::$app->request->BaseUrl.'/index.php?r=user/login' :  \Yii::$app->request->BaseUrl.'/index.php?r=event/create' ],
-
-                /*Yii::$app->user->isGuest ?
-                    ['label' => 'Login', 'url' => ['/user/login']] :
-                    ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
-                        'url' => ['/site/logout'],
-                        'linkOptions' => ['data-method' => 'post']],*/
+                //['label' => 'Create event',  'url' =>  Yii::$app->user->isGuest ?  Yii::$app->request->BaseUrl.'/index.php?r=user/login' :  \Yii::$app->request->BaseUrl.'/index.php?r=event/create' ],
+                ['label' => 'Create event',  'url' => \Yii::$app->request->BaseUrl.'/index.php?r=event/create', 'visible' => !Yii::$app->user->isGuest && !Yii::$app->user->can('admin')],
+                // not logged in
                 ['label' => 'Register', 'url' => ['/user/register'], 'visible'=>  Yii::$app->user->isGuest ? true : false],
+                ['label' => 'Login', 'url' => ['/user/login'], 'visible' => Yii::$app->user->isGuest ? true : false],
+                // admin
+                ['label' => 'Manage Users', 'url' => ['/user/admin'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->can('admin') ? true : false],
+                ['label' => 'Manage Events', 'url' => ['/event/admin'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->can('admin') ? true : false],
+                // logged is
                 ['label' => Yii::$app->user->displayName, 'url' => ['/user/account'], 'visible'=>  !Yii::$app->user->isGuest ? true : false],
-
-                //  ['label' => 'User', 'url' => ['/user']],
-                Yii::$app->user->isGuest ?
+                ['label' => 'Logout (' . Yii::$app->user->displayName . ')',
+                    'url' => ['/user/logout'],
+                    'linkOptions' => ['data-method' => 'post'],
+                    'visible' => !Yii::$app->user->isGuest ? true : false],
+ /*               Yii::$app->user->isGuest ?
                     ['label' => 'Login', 'url' => ['/user/login']] :
                     ['label' => 'Logout (' . Yii::$app->user->displayName . ')',
                         'url' => ['/user/logout'],
-                        'linkOptions' => ['data-method' => 'post']],
+                        'linkOptions' => ['data-method' => 'post']],*/
             ],
         ]);
         NavBar::end();
