@@ -31,7 +31,7 @@ class GoaBaseApi {
 
             $goaObject[$i]->name  = $partyList['partylist'][$i]['nameParty'];
             $goaObject[$i]->id = "goabase".$partyList['partylist'][$i]['id'];
-            $goaObject[$i]->user_id = "goabase".$partyList['partylist'][$i]['nameOrganizer'];;//"Goabase: ".$partyList['partylist'][$i]['nameOrganizer'];
+            $goaObject[$i]->user_id = "Goabase: ".$partyList['partylist'][$i]['nameOrganizer'];;//"Goabase: ".$partyList['partylist'][$i]['nameOrganizer'];
 
             $goaObject[$i]->creation_date  = $partyList['partylist'][$i]['dateCreated'];
 

@@ -39,7 +39,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php $form = ActiveForm::begin([
                     'layout' => 'default',
-                    'method' => 'get',
+                    'method' => 'POST',
+		    'action' =>  \Yii::$app->request->BaseUrl.'/index.php?r=search/search',
                     'fieldConfig' => [
                         'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
                         'horizontalCssClasses' => [
@@ -59,9 +60,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'local' => $searchModel->eventNameList,
                             'limit' => 10
                         ]
-                    ]
-                    
+                    ]  
                 ]) ?>
+
                 <?= $form->field($searchModel, 'address') ?>
                 <div id="searchForm" class="field-hidden">
                     <?= $form->field($searchModel, 'radius')->widget(RangeInput::classname(), [
@@ -85,7 +86,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             'todayHighlight' => true
                         ]
                     ]) ?>
-
 
                     <?= $form->field($searchModel, 'type')->checkboxList([
                             0 => 'Site',
