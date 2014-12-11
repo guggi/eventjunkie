@@ -88,6 +88,9 @@ class EventController extends Controller
             ->limit($pagination->limit)
             ->all();
 
+        // Daten für die Autovervollständiung
+        foreach($eventList as $eventName)
+            array_push($searchModel->eventNameList, $eventName->name);
 
         //-----Add GoaParties to eventList--------
         $goa = new GoaBaseApi();

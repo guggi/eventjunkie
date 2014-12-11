@@ -10,6 +10,7 @@ class SearchEventForm extends Event {
     public $to_date;
     public $radius = 0;
     public $type = [0,1];
+    public $eventNameList = array();
 
     public function rules() {
         return [

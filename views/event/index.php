@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'options' => ['placeholder' => 'Search for an event...'],
                     'dataset' => [
                         [
-                            'local' => ['a', 'b', 'c'],
+                            'local' => $searchModel->eventNameList,
                             'limit' => 10
                         ]
                     ]
