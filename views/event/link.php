@@ -1,3 +1,4 @@
+
 <?php
 
 use yii\helpers\Html;
@@ -15,7 +16,6 @@ $this->params['breadcrumbs'][] = 'Link with Social Media';
 ?>
 
 <div class="event-link">
-
     <div class="row">
         <div class="col-md-4">
             <?php if (Yii::$app->session->hasFlash('error')){ ?>

@@ -21,6 +21,8 @@ class SocialMediaApi {
             $twitterApi->getTweets();
             $this->pushComments($twitterApi->getComments());
             $this->pushImages($twitterApi->getImages());
+        } else if ($link->site_name === 'facebook') {
+            $facebookApi = new FacebookApi($link->url);
         }
 
     }
@@ -33,6 +35,9 @@ class SocialMediaApi {
         if ($link->site_name === 'twitter') {
             $twitterApi = new TwitterApi($link->url);
             $twitterApi->getTweets();
+        }
+        if ($link->site_name === 'facebook') {
+            $facebookApi = new FacebookApi($link->url);
         }
     }
 
