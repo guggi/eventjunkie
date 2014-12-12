@@ -23,7 +23,8 @@
         "demogorgorn/yii2-ajax-submit-button": "dev-master",
         "yiisoft/yii2-authclient": "*",
         "j7mbo/twitter-api-php": "dev-master",
-		"yiisoft/yii2-jui": "*"
+		"yiisoft/yii2-jui": "*",
+		"facebook/php-sdk-v4" : "4.0.*"
 
 },
     "require-dev": {

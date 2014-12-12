@@ -102,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <p class="tiny text-center">Linked with:
                     <?php foreach ($socialMediaModels as $socialMediaModel) {?>
                         <?php if ($socialMediaModel->site_name === 'facebook') {?>
-                            <a class="btn btn-social-icon btn-facebook">
+                            <a class="btn btn-social-icon btn-facebook" href="<?= $socialMediaModel->url ?>">
                                 <i class="fa fa-facebook"></i>
                             </a>
                         <?php } ?>

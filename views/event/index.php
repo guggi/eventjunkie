@@ -10,9 +10,7 @@ $this->title = 'EventJunkie - Event wall';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-
 <script>
-
     function advancedSearch(searchOptionButton){
         var searchForm = document.getElementById('searchForm');
 
@@ -27,7 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 </script>
 
-
 <div class="site-index">
 
     <div class="body-content">
@@ -40,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php $form = ActiveForm::begin([
                     'layout' => 'default',
                     'method' => 'POST',
-		    'action' =>  \Yii::$app->request->BaseUrl.'/index.php?r=search/search',
+                    'action' =>  \Yii::$app->request->BaseUrl.'/index.php?r=search/search',
                     'fieldConfig' => [
                         'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
                         'horizontalCssClasses' => [

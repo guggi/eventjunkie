@@ -56,6 +56,11 @@ class EventController extends Controller
     public function actionIndex()
     {
         $searchModel = new SearchEventForm();
+        $query = null;
+        $pagination = null;
+        $eventList = null;
+
+        $goaParties = null;
 
         if ($searchModel->load(Yii::$app->request->get()) && $searchModel->validate()) { // search form
             $query = Event::find()->where(['like', 'name', $searchModel->name]);
@@ -75,7 +80,6 @@ class EventController extends Controller
         }
 
         $query = $query->joinWith('user');
-
 
         $pagination = new Pagination([
             'defaultPageSize' => 10,
@@ -106,13 +110,13 @@ class EventController extends Controller
             $goaParties = Yii::$app->cache->get('goabase');
         }
 
-	//append goaparties to eventList (intern parties)
+	    //append goaparties to eventList (intern parties)
         for ($i=0 ; $i < count($goaParties) ; $i++) {
             $eventList[$goaId] = $goaParties[$i];
             ++$goaId;
         }
 
-	$eventList = $this->sortEventList($eventList);
+	    $eventList = $this->sortEventList($eventList);
         //---------------------------------------
 
         // Top Events
