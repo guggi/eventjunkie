@@ -5,7 +5,7 @@ use yii\helpers\Html;
 <h1>Search results</h1>
 <br>
 
-<i>Gesucht wurde nach: ' 
+<i>Es wurden <?php echo count($results); ?> Parties gefunden. Gesucht wurde nach: ' 
 <?php 
 
 if( isset($searchModel) ){
@@ -21,7 +21,7 @@ if( isset($searchModel) ){
 
 <p>
 <?php if( count($results) ==0) echo "<i>No parties founded... :(</i><br><br>";?>
-<?php echo count($results); ?>
+
 <?php foreach ($results as $event): ?>
 <?php try{ ?>
         <div class="col-md-6">

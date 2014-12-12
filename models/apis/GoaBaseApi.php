@@ -41,6 +41,8 @@ class GoaBaseApi {
 
             $goaObject[$i]->latitude  = $partyList['partylist'][$i]['geoLat'];
             $goaObject[$i]->longitude  = $partyList['partylist'][$i]['geoLon'];
+	
+	    $goaObject[$i]->address = $this->getAdressFromLatLng( $goaObject[$i]->latitude,  $goaObject[$i]->longitude);
 
             $goaObject[$i]->image  = $partyList['partylist'][$i]['urlImageSmall'];
 
@@ -70,14 +72,6 @@ class GoaBaseApi {
         return $results;
     }
 
-    //Change date Format from 2014-12-11T22:00:00+01:00 to 2014-12-13 22:30:00
-    private function dateFormat($goaBaseDate){
-	    //Date format from the goabase api: 2014-12-11T22:00:00+01:00"
-	    $goaBaseDate = substr($goaBaseDate, 0, 19); // format example: 2014-12-13T22:30:00
-	    $goaBaseDate = str_replace('T', ' ', $goaBaseDate); //replace T with whitespace
-	    return $goaBaseDate;
-    }
-
     //get single party
     //id example: goabase1234
     function getParty($id){
@@ -88,5 +82,33 @@ class GoaBaseApi {
         $party = json_decode($str_data,true);
         return $party;
     }
+
+//-----------------------Private-------------------------------
+
+    //Change date Format from 2014-12-11T22:00:00+01:00 to 2014-12-13 22:30:00
+    private function dateFormat($goaBaseDate){
+	    //Date format from the goabase api: 2014-12-11T22:00:00+01:00"
+	    $goaBaseDate = substr($goaBaseDate, 0, 19); // format example: 2014-12-13T22:30:00
+	    $goaBaseDate = str_replace('T', ' ', $goaBaseDate); //replace T with whitespace
+	    return $goaBaseDate;
+    }
+
+
+    //example for google api: https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&sensor=true
+    private function getAdressFromLatLng($lantitude, $longitude){
+
+        $jsonData = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?latlng=' .
+                $lantitude . ','.$longitude.'&sensor=true');
+
+ 	$data = json_decode($jsonData);
+
+       if ($data->{'status'} != 'OK') {
+        	return;
+        }else{
+		return $data->{'results'}[0]->{'formatted_address'};
+	} 
+
+    }
+
 
 } 

@@ -72,7 +72,7 @@ class EventController extends Controller
             Yii::$app->cache->set('goabase', $goaParties, 300);
         } else { //load from cache
             $goaParties = Yii::$app->cache->get('goabase');
-        }
+        } 
 
         if ($searchModel->load(Yii::$app->request->post()) && $searchModel->validate()) { // search form
             $query = Event::find()->where(['like', 'name', $searchModel->name]);
@@ -137,9 +137,9 @@ class EventController extends Controller
         // New Events
         $newList = $query->orderBy(['creation_date' => SORT_DESC])->limit(3)->all();
 
-        return $this->render('index', ['searchModel' => $searchModel,
+       return $this->render('index', ['searchModel' => $searchModel,
             'eventList' => $eventList,
-            'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);
+            'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]); 
     }
 
 
