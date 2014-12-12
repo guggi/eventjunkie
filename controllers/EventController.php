@@ -62,43 +62,7 @@ class EventController extends Controller
 
         $goaParties = null;
 
-        if ($searchModel->load(Yii::$app->request->get()) && $searchModel->validate()) { // search form
-            $query = Event::find()->where(['like', 'name', $searchModel->name]);
-            if (isset($searchModel->latitude)) {
-                $query = $query->andWhere('acos(sin('.$searchModel->latitude . ') * sin(Latitude) + cos('.$searchModel->latitude . ') * cos(Latitude) * cos(Longitude - ('.$searchModel->longitude . '))) * 6371 <= ' .
-                    $searchModel->radius);
-            }
-            echo $searchModel->latitude;
-            if ($searchModel->from_date !== "") {
-                $query = $query->andWhere(['>=', 'UNIX_TIMESTAMP(start_date)', strtotime($searchModel->from_date)]);
-            }
-            if ($searchModel->to_date !== "") {
-                $query = $query->andWhere(['<=', 'UNIX_TIMESTAMP(start_date)', strtotime($searchModel->to_date)]);
-            }
-        } else { // normal index call
-            $query = Event::find()->where(['>=', 'UNIX_TIMESTAMP(start_date)', time()]);
-        }
-
-        $query = $query->joinWith('user');
-
-        $pagination = new Pagination([
-            'defaultPageSize' => 10,
-            'totalCount' => $query->count(),
-        ]);
-
-        // Event List ordered by date
-        $eventList = $query->orderBy('start_date')
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-
-        // Daten für die Autovervollständiung
-        foreach($eventList as $eventName)
-            array_push($searchModel->eventNameList, $eventName->name);
-
-        //-----Add GoaParties to eventList--------
         $goa = new GoaBaseApi();
-        $goaId = $query->count();
 
         Yii::$app->cache->gc(true);
 
@@ -110,14 +74,62 @@ class EventController extends Controller
             $goaParties = Yii::$app->cache->get('goabase');
         }
 
-	    //append goaparties to eventList (intern parties)
-        for ($i=0 ; $i < count($goaParties) ; $i++) {
-            $eventList[$goaId] = $goaParties[$i];
-            ++$goaId;
+        if ($searchModel->load(Yii::$app->request->post()) && $searchModel->validate()) { // search form
+            $query = Event::find()->where(['like', 'name', $searchModel->name]);
+            if (isset($searchModel->latitude)) {
+                $query = $query->andWhere('acos(sin('.$searchModel->latitude . ') * sin(Latitude) + cos('.$searchModel->latitude . ') * cos(Latitude) * cos(Longitude - ('.$searchModel->longitude . '))) * 6371 <= ' .
+                    $searchModel->radius);
+            }
+            if ($searchModel->from_date !== "") {
+                $query = $query->andWhere(['>=', 'UNIX_TIMESTAMP(start_date)', strtotime($searchModel->from_date)]);
+            } else {
+                $query = $query->andWhere(['>=', 'UNIX_TIMESTAMP(start_date)', time()]);
+            }
+            if ($searchModel->to_date !== "") {
+                $query = $query->andWhere(['<=', 'UNIX_TIMESTAMP(start_date)', strtotime($searchModel->to_date)]);
+            }
+            $goaParties = $this->findGoaBaseEvent($goaParties, $searchModel->name, $searchModel->address);
+        } else { // normal index call
+            $query = Event::find()->where(['>=', 'UNIX_TIMESTAMP(start_date)', time()]);
         }
 
-	    $eventList = $this->sortEventList($eventList);
-        //---------------------------------------
+        $query = $query->joinWith('user');
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 10,
+            'totalCount' => $query->count(),
+        ]);
+
+        if (($searchModel->type_site == 1) && ($searchModel->type_goabase == 0)) {
+            // Event List ordered by date
+            $eventList = $query->orderBy('start_date')
+                ->offset($pagination->offset)
+                ->limit(10)
+                ->all();
+            // Daten für die Autovervollständiung
+            foreach($eventList as $eventName)
+                array_push($searchModel->eventNameList, $eventName->name);
+        } else {
+            // Event List ordered by date
+            $eventList = $query->orderBy('start_date')->all();
+
+            // Daten für die Autovervollständiung
+            foreach($eventList as $eventName)
+                array_push($searchModel->eventNameList, $eventName->name);
+
+            //-----Add GoaParties to eventList--------
+            $goaId = $query->count();
+
+            //append goaparties to eventList (intern parties)
+            for ($i=0 ; $i < count($goaParties) ; $i++) {
+                $eventList[$goaId] = $goaParties[$i];
+                ++$goaId;
+            }
+
+            // Sort Event List
+            $eventList = $this->sortEventList($eventList);
+            //---------------------------------------
+        }
 
         // Top Events
         $topList = $query->orderBy(['clicks' => SORT_DESC])->limit(3)->all();
@@ -128,6 +140,25 @@ class EventController extends Controller
         return $this->render('index', ['searchModel' => $searchModel,
             'eventList' => $eventList,
             'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);
+    }
+
+
+    function findGoaBaseEvent($eventList, $searchName, $searchAdress){
+        $results[] =  Array();
+
+        $counter=0;
+        for($i=0; $i < count ($eventList)-1; $i++){
+            if ( strlen($searchName) > 0 && strpos(strtolower($eventList[$i]->name) , strtolower($searchName) ) != 0 ){ //search name
+                $results[$counter] = new Event;
+                $results[$counter] = $eventList[$i];
+                $counter++;
+            }else if( strlen($searchAdress) > 0 && strpos(strtolower($eventList[$i]->address) , strtolower($searchAdress) ) != 0 ){//search adress
+                $results[$counter] = new Event;
+                $results[$counter] = $eventList[$i];
+                $counter++;
+            }
+        }
+        return $results;
     }
 
     /**

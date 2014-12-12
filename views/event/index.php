@@ -1,4 +1,5 @@
 <?php
+use kartik\checkbox\CheckboxX;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\LinkPager;
@@ -86,10 +87,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]
                     ]) ?>
 
-                    <?= $form->field($searchModel, 'type')->checkboxList([
-                            0 => 'Site',
-                            1 => 'Goabase']
-                    )?>
+                    <div class="form-group">
+                        <?= $form->field($searchModel, 'type_site')->widget(CheckboxX::classname(), [
+                            'pluginOptions'=>['threeState'=>false],
+                        ]); ?>
+                        <?= $form->field($searchModel, 'type_goabase')->widget(CheckboxX::classname(), [
+                            'pluginOptions'=>['threeState'=>false],
+                        ]); ?>
+                    </div>
 
                 </div>
                 <div class="form-group">

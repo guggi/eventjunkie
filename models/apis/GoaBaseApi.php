@@ -51,6 +51,25 @@ class GoaBaseApi {
         return $goaObject;
     }
 
+    function findEvent($searchName, $searchAdress){
+        $results[] =  Array();
+        $eventList = $this->getParties();
+
+        $counter=0;
+        for($i=0; $i < count ($eventList)-1; $i++){
+            if ( strlen($searchName) > 0 && strpos(strtolower($eventList[$i]->name) , strtolower($searchName) ) != 0 ){ //search name
+                $results[$counter] = new Event;
+                $results[$counter] = $eventList[$i];
+                $counter++;
+            }else if( strlen($searchAdress) > 0 && strpos(strtolower($eventList[$i]->address) , strtolower($searchAdress) ) != 0 ){//search adress
+                $results[$counter] = new Event;
+                $results[$counter] = $eventList[$i];
+                $counter++;
+            }
+        }
+        return $results;
+    }
+
     //Change date Format from 2014-12-11T22:00:00+01:00 to 2014-12-13 22:30:00
     private function dateFormat($goaBaseDate){
 	    //Date format from the goabase api: 2014-12-11T22:00:00+01:00"

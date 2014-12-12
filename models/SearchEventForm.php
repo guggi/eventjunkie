@@ -9,14 +9,15 @@ class SearchEventForm extends Event {
     public $from_date;
     public $to_date;
     public $radius = 0;
-    public $type = [0,1];
+    public $type_site = 1;
+    public $type_goabase = 1;
     public $eventNameList = array();
 
     public function rules() {
         return [
             [['name', 'address'], 'string', 'max' => 50],
             [['address'], 'isValidGeoLocation'],
-            [['radius'], 'integer'],
+            [['radius', 'type_site', 'type_goabase'], 'integer'],
             [['from_date', 'to_date'], 'isValidDate'],
         ];
     }
@@ -29,7 +30,8 @@ class SearchEventForm extends Event {
             'from_date' => 'From Date',
             'ro_date' => 'To Date',
             'radius' => 'Radius',
-            'type' => 'Which Events',
+            'type_site' => 'Site',
+            'type_goabase' => 'GoaBase',
         ];
     }
 }
