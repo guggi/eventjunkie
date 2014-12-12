@@ -53,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ]); ?>
 
-                <?= $form->field($searchModel, 'name')->widget(Typeahead::classname(), [
+                <?php /* <?= $form->field($searchModel, 'name')->widget(Typeahead::classname(), [
                     'options' => ['placeholder' => 'Search for an event...'],
                     'dataset' => [
                         [
@@ -61,7 +61,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'limit' => 10
                         ]
                     ]  
-                ]) ?>
+                ]) ?> */  ?>
+
+                <?=  $form->field($searchModel, 'name') ?>
 
                 <?= $form->field($searchModel, 'address') ?>
                 <div id="searchForm" class="field-hidden">
