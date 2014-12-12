@@ -40,6 +40,19 @@ CREATE TABLE profile (
 );
 CREATE INDEX profile_user_id ON profile (user_id);
 
+CREATE TABLE user_key (
+    id INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    user_id INT UNSIGNED NOT NULL,
+    type TINYINT NOT NULL,
+    `key` VARCHAR(255) NOT NULL,
+    create_time TIMESTAMP,
+    consume_time TIMESTAMP,
+    expire_time TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user (id)
+);
+CREATE UNIQUE INDEX user_key_key ON user_key (`key`);
+CREATE INDEX user_key_user_id ON user_key (user_id);
+
 CREATE TABLE IF NOT EXISTS event (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     user_id INT UNSIGNED NOT NULL, /* geht bei mir nur unsigned */
@@ -71,14 +84,8 @@ CREATE TABLE IF NOT EXISTS socialmedia (
 
 DROP TABLE event;
 
-INSERT INTO event (user_id, name, address, latitude, longitude, start_date, image, description) VALUES(
+INSERT INTO eventjunkie.event (user_id, name, address, latitude, longitude, start_date, image, description) VALUES(
     1, 'DAS Event', 'Ort 1', 38.4, 32.3, '2015-05-02', 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jinx_0.jpg', 'Hihihi'
 );
 
-INSERT INTO event (name, address, latitude, longitude, eventDate, description) VALUES(
-    'Event 2','Ort 2', 33.6, 42.3, '2008-03-02', 'Hihihi'
-);
-
-INSERT INTO event (name, address, latitude, longitude, eventDate, description) VALUES(
-    'Event 3','Ort 3', 38.6, 42.3, '2008-03-02', 'Hihihi'
-);
+INSERT INTO eventjunkie.user (id, role_id, status, email, new_email, username, password, auth_key, api_key, login_ip, login_time, create_ip, create_time, update_time, ban_time, ban_reason) VALUES (1, 1, 1, 'neo@neo.com', null, 'neo', '$2y$13$TwrvoO6XDvaHBSzDp4Jl0.GSj5ULQ21IjSs0vr4zx2s9MrRDT83Ga', 'VgcR3_Uch3jNMr5MDiltEoKeGtlrWd34', 'qr5hMoPOHOR3_6a4PYM9mScs9lrxWkHL', '127.0.0.1', '2014-12-10 18:56:26', null, '2014-10-26 21:39:10', '2014-10-31 19:05:35', null, null);
