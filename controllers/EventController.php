@@ -8,9 +8,11 @@ use app\models\apis\GoaBaseApi;
 use app\models\SocialMedia;
 use Yii;
 use app\models\Event;
+use yii\helpers\Json;
 use yii\base\Exception;
 use yii\base\Model;
 use yii\db\IntegrityException;
+use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
@@ -58,6 +60,8 @@ class EventController extends Controller
         Yii::$app->cache->gc(true);
         $searchModel = new SearchEventForm();
 
+
+
         $query = Event::find()->where(['>=', 'UNIX_TIMESTAMP(start_date)', time()]);
 
         $query = $query->joinWith('user');
@@ -104,6 +108,28 @@ class EventController extends Controller
         return $this->render('index', ['searchModel' => $searchModel,
             'eventList' => $eventList,
             'pagination' => $pagination, 'topList' => $topList, 'newList' => $newList]);
+    }
+
+    public function actionAsyncloading($search = null, $id = null) {
+        $out = ['more' => false];
+        
+        if (!is_null($search)) {
+            $query = new Query;
+            $query->select('id, name AS text')
+                ->from('event')
+                ->where('name LIKE "%' . $search .'%"')
+                ->limit(20);
+            $command = $query->createCommand();
+            $data = $command->queryAll();
+            $out['results'] = array_values($data);
+        
+        } else if ($id > 0) {
+            $out['results'] = ['id' => $id, 'text' => Event::find($id)->name];
+        
+        } else {
+            $out['results'] = ['id' => 0, 'text' => 'No matching records found'];
+        }
+        echo Json::encode($out);
     }
 
     /**

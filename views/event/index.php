@@ -1,16 +1,31 @@
 <?php
 use kartik\checkbox\CheckboxX;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\LinkPager;
+use yii\web\JsExpression;
 use kartik\widgets\RangeInput;
 use kartik\widgets\DateTimePicker;
 use kartik\widgets\Typeahead;
+use kartik\widgets\Select2;
 /* @var $this yii\web\View */
 $this->title = 'EventJunkie - Event wall';
 $this->params['breadcrumbs'][] = $this->title;
-?>
 
+$url = Url::to(['asyncloading']);
+
+$initScript = "
+    function (element, callback) {
+        var id=\$(element).val();
+        if (id !== '') {
+            \$.ajax('{$url}?id=' + id, {
+                dataType: 'json'
+            }).done(function(data) { callback(data.results); });
+        }
+    }"
+
+?>
 
 <div class="site-index">
 
@@ -24,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php $form = ActiveForm::begin([
                     'layout' => 'default',
                     'method' => 'POST',
-                    'action' =>  \Yii::$app->request->BaseUrl.'/index.php?r=search/search',
+                    'action' =>  \Yii::$app->request->BaseUrl . '/index.php?r=search/search',
                     'fieldConfig' => [
                         'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
                         'horizontalCssClasses' => [
@@ -37,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ]); ?>
 
-                <?= $form->field($searchModel, 'name')->widget(Typeahead::classname(), [
+                <?php echo $form->field($searchModel, 'name')->widget(Typeahead::classname(), [
                     'options' => ['placeholder' => 'Search for an event...'],
                     'dataset' => [
                         [
@@ -46,6 +61,21 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]
                     ]  
                 ]) ?>
+
+                <?php /* echo $form->field($searchModel, 'name')->widget(Select2::classname(), [
+                    'options' => ['placeholder' => 'Search for an event...'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'minimumInputLength' => 1,
+                        'ajax' => [
+                            'url' => $url,
+                            'dataType' => 'json',
+                            'data' => new JsExpression('function(term, page) { return {search: term}; }'),
+                            'results' => new JsExpression('function(data, page) { return {results: data.results}; }'),
+                        ],
+                        'initSelection' => new JsExpression($initScript)
+                    ],
+                ]) */ ?>
 
                 <?= $form->field($searchModel, 'address') ?>
                 <div id="searchForm" class="field-hidden">
