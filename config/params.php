@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'adminEmail' => 'admin@example.com',
+    'adminEmail' => 'sandra.nina.ma@gmail.com',
     'imagePath' => 'images/',
     'twitterApiKey' => 'wcnEeL0fBNZVnLeAr9ssBZqei',
     'twitterApiSecret' => '6Qf8caeEamUSlRg6acDpoEn8DCg2Q3hfVYJVK9QC2y65JyaqFO',

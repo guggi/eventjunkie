@@ -63,7 +63,7 @@ class SocialMedia extends ActiveRecord
         curl_setopt($check_head, CURLOPT_NOBODY, true);
         curl_exec($check_head);
 
-        if ((curl_getinfo($check_head, CURLINFO_HTTP_CODE) === 200 || 302)) {
+        if ((curl_getinfo($check_head, CURLINFO_HTTP_CODE) === 200 || curl_getinfo($check_head, CURLINFO_HTTP_CODE) === 302)) {
             if (preg_match($flickr_regex, $this->$attribute)) {
                 $this->site_name = 'flickr';
             } else if (preg_match($twitter_regex, $this->$attribute)) {

@@ -11,20 +11,6 @@ $this->title = 'EventJunkie - Event wall';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<script>
-    function advancedSearch(searchOptionButton){
-        var searchForm = document.getElementById('searchForm');
-
-        if(searchForm.className == 'field-hidden'){
-            searchForm.className = 'field-visible';
-            searchOptionButton.innerHTML = 'Simple Search';
-        } else {
-            searchForm.className = 'field-hidden';
-            searchOptionButton.innerHTML = 'Advanced Search';
-        }
-    }
-
-</script>
 
 <div class="site-index">
 
@@ -202,6 +188,29 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 </div>
+
+
+<script>
+    if (localStorage.getItem('search') === 'advanced') {
+        var searchForm = document.getElementById('searchForm');
+        var searchOptionButton = document.getElementById('searchOptionButton');
+        searchForm.className = 'field-visible';
+        searchOptionButton.innerHTML = 'Simple Search';
+    }
+    function advancedSearch(searchOptionButton){
+        var searchForm = document.getElementById('searchForm');
+
+        if(searchForm.className == 'field-hidden'){
+            searchForm.className = 'field-visible';
+            searchOptionButton.innerHTML = 'Simple Search';
+            localStorage.setItem('search', 'advanced');
+        } else {
+            searchForm.className = 'field-hidden';
+            searchOptionButton.innerHTML = 'Advanced Search';
+            localStorage.setItem('search', 'simple');
+        }
+    }
+</script>
 
 <script>
     var jsonMarkerList = JSON.parse('<?php echo json_encode($jsonMarkerList) ?>');
