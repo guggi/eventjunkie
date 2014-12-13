@@ -29,6 +29,6 @@ runtime/
 web/assets/
 
 # Composer
-vendor/
-!vendor/amnah
+#vendor/
+#!vendor/amnah
 

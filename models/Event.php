@@ -5,6 +5,8 @@ namespace app\models;
 use amnah\yii2\user\models\User;
 use Yii;
 use yii\db\ActiveRecord;
+use yii\validators\DateValidator;
+use yii\validators\Validator;
 use yii\web\UploadedFile;
 
 /**
@@ -49,8 +51,9 @@ class Event extends ActiveRecord
             [['name', 'address', 'start_date'], 'required'],
             [['user_id', 'clicks'], 'integer'],
             [['start_date', 'end_date'], 'isValidDate'],
-            [['start_date'], 'isValidStartDate'], //todo entweder das start_date richtig validieren oder so lassen
+            [['start_date'], 'isValidStartDate'],
             [['end_date'], 'isValidEndDate'],
+            ['end_date', 'compare', 'compareAttribute'=>'start_date','operator'=>'>=', 'message' => 'End Date must be after Start Date'],
             [['latitude', 'longitude'], 'number'],
             [['name', 'address'], 'string', 'max' => 50],
             [['address'], 'isValidGeoLocation'],
@@ -84,6 +87,9 @@ class Event extends ActiveRecord
         ];
     }
 
+    /**
+     * @param $attribute
+     */
     public function isValidDate($attribute)
     {
         if (!strtotime($this->$attribute) && strtotime($this->$attribute) != 0) {
@@ -91,6 +97,9 @@ class Event extends ActiveRecord
         }
     }
 
+    /**
+     * @param $attribute
+     */
     public function isValidStartDate($attribute)
     {
         if (strtotime($this->$attribute) <= 0) {
@@ -98,6 +107,9 @@ class Event extends ActiveRecord
         }
     }
 
+    /**
+     * @param $attribute
+     */
     public function isValidEndDate($attribute)
     {
         if (strtotime($this->$attribute) > 0 && strtotime($this->$attribute) < strtotime($this->start_date)) {

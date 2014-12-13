@@ -55,7 +55,7 @@ class SocialMedia extends ActiveRecord
     }
 
     public function isValidUrl($attribute) {
-        $flickr_regex = '/(http|https)?(:)?(\/\/)?(w*\.)?flickr\.com\/photos([^?]*)/';
+        $flickr_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos([^?]*)/';
         $twitter_regex = '/(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/[a-zA-Z0-9\_\-]*\?src=hash/';
         $facebook_regex = '/(http|https)?:?(\/\/)?(w*\.)?facebook\.com\/events([^?]*)/';
         $hashtag_regex = '/(\#)?[a-zA-Z0-9\_\-]*/';

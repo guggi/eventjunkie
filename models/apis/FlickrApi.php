@@ -22,8 +22,8 @@ class FlickrApi {
     {
         try {
             $gallery_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/flickr\/galleries\/([^?]*)/';
-            $set_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/(([0-9]*\@N[0-9][0-9])|(flickr))\/sets\/([0-9]*)\/?/';
-            $photo_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/[^\/ ]*\/[0-9]*\/in\/([^?]*)/';
+            $set_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/(([0-9]*\@N[0-9][0-9])|(flickr)|(\w)+)\/sets\/([0-9]*)\/?/';
+            $photo_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/[^\/ ]*\/[0-9]+(\/in\/([^?]*))?/';
             if (preg_match($gallery_regex, $this->url)) {
                 $this->getGalleryPhotos();
             } else if (preg_match($set_regex, $this->url)) {
@@ -32,7 +32,7 @@ class FlickrApi {
                 $this->getSinglePhoto();
             }
         } catch (Exception $e) {
-            throw new \InvalidArgumentException('Invalid Flickr Url');
+            throw new \InvalidArgumentException($e->getMessage());
         }
 
         return $this->images;
@@ -53,15 +53,15 @@ class FlickrApi {
      * Return the id of the gallery by a given Flickr-Url.
      */
     public function getGalleryId() {
+        $id_url_regex = '/(http|https)?:?(\/\/)?(w*\.)?flickr\.com\/photos\/flickr\/galleries\/[0-9]+/';
+        preg_match($id_url_regex, $this->url, $match);
+        $this->url = $match[0];
         $json = file_get_contents('https://api.flickr.com/services/rest/?' .
             'method=flickr.urls.lookupGallery&' .
             'api_key=' . $this->api_key . '&' .
             'url=' . $this->url . '&format=json&nojsoncallback=1');
         $data = json_decode($json);
 
-        /*if (!isset($data->{'stat'}) || $data->{'stat'} === 'fail') {
-            throw new \InvalidArgumentException('Invalid Flickr Gallery');
-        }*/
         return $data->{'gallery'}->{'id'};
     }
 
@@ -108,9 +108,6 @@ class FlickrApi {
     public function getSetId() {
         $id_regex = '/[0-9]{9,}/';
         preg_match($id_regex, $this->url, $match);
-        /*if (!$match) {
-            throw new \InvalidArgumentException('Invalid Flickr Set');
-        }*/
         return $match[0];
     }
 
@@ -151,12 +148,8 @@ class FlickrApi {
      * Get photo id from url.
      */
     public function getPhotoId() {
-        $id_regex = '/[0-9]{11,}/';
+        $id_regex = '/[0-9]+/';
         preg_match($id_regex, $this->url, $match);
-        /*if (!$match) {
-            throw new \InvalidArgumentException('Invalid Flickr Photo');
-        }*/
-
         return $match[0];
     }
 
