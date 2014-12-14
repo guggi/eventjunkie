@@ -4,8 +4,10 @@ use yii\helpers\Html;
 ?>
 <h1>Search results</h1>
 <br>
-
-<i>Es wurden <?php echo count($results); ?> Parties gefunden. Gesucht wurde nach: ' 
+<?php $hits =  count($results); 
+if( $results[0] == NULL )$hits--;
+?> 
+<i>Es wurden <?php echo $hits; ?>  Parties gefunden. Gesucht wurde nach: ' 
 <?php 
 
 if( isset($searchModel) ){
