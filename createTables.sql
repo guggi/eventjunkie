@@ -81,15 +81,9 @@ CREATE TABLE IF NOT EXISTS socialmedia (
     CONSTRAINT uq_socialmedia UNIQUE(event_id, url)
 );
 
-
-DROP TABLE event;
-
 INSERT INTO role (id, name, create_time, update_time, can_admin) VALUES (1, 'Admin', '2014-10-26 21:39:10', null, 1);
 INSERT INTO role (id, name, create_time, update_time, can_admin) VALUES (2, 'User', '2014-10-26 21:39:10', null, 0);
 
 INSERT INTO user (id, role_id, status, email, new_email, username, password, auth_key, api_key, login_ip, login_time, create_ip, create_time, update_time, ban_time, ban_reason) VALUES (1, 1, 1, 'neo@neo.com', null, 'neo', '$2y$13$TwrvoO6XDvaHBSzDp4Jl0.GSj5ULQ21IjSs0vr4zx2s9MrRDT83Ga', 'VgcR3_Uch3jNMr5MDiltEoKeGtlrWd34', 'qr5hMoPOHOR3_6a4PYM9mScs9lrxWkHL', '127.0.0.1', '2014-12-10 18:56:26', null, '2014-10-26 21:39:10', '2014-10-31 19:05:35', null, null);
 
-
-INSERT INTO event (user_id, name, address, latitude, longitude, start_date, image, description) VALUES(
-    1, 'DAS Event', 'Ort 1', 38.4, 32.3, '2015-05-02', 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jinx_0.jpg', 'Hihihi'
-);
+DROP TABLE event;

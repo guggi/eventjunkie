@@ -418,7 +418,7 @@ class EventController extends Controller
     /**
      * Checks if socialmedia is in the cache, else loads social media content.
      */
-    public function findSocialMedia($id, $socialMediaModels) {
+    public function findSocialMedia($id, $socialMediaModels) { //todo als Cron-Job oder ähnliches
         Yii::$app->cache->gc(true);
         if (!Yii::$app->cache->get('socialmedia' . $id)) {
             $socialMediaApi = new SocialMediaApi();
