@@ -17,7 +17,7 @@ class GoaBaseApi {
 
     //returns a list with event objects of goaparties
     //limit is number of parties in the goaObject list
-    function getParties($limit=10){
+    function getParties($limit=20){
         // Read the json file contents into a string variable,
         $str_data = file_get_contents($this->url);
 

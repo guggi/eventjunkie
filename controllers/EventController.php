@@ -150,7 +150,7 @@ class EventController extends Controller
 
         // make "linked" link for hashtags
         foreach ($socialMediaModels as $socialMediaModel) {
-            if ($socialMediaModel->site_name === 'twitter') {
+            if ($socialMediaModel->site_name == 'twitter') {
                 $url_regex = '/(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/[a-zA-Z0-9\_\-]*\?src=hash/';
                 $user_regex = '/(\@)[a-zA-Z0-9\_\-]*/';
                 if (!preg_match($url_regex, $socialMediaModel->url)) {
@@ -219,12 +219,12 @@ class EventController extends Controller
             // image
             $image = $model->uploadImage();
             if ($model->save()) {
-                if ($image !== null) {
+                if ($image != null) {
                     $image->saveAs($model->getImagePath());
                 }
 
                 foreach ($socialMediaModels as $socialMediaModel) {
-                    if ($socialMediaModel->url === '') {
+                    if ($socialMediaModel->url == '') {
                         $socialMediaModel->delete();
                     } else {
                         $socialMediaModel->event_id = $model->id;
@@ -260,7 +260,7 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (Yii::$app->user->can('admin') || (Yii::$app->user->id !== $model->user_id)) {
+        if (Yii::$app->user->can('admin') || (Yii::$app->user->id != $model->user_id)) {
             throw new ForbiddenHttpException('You are not allowed to perform this action.');
         }
 
@@ -286,18 +286,18 @@ class EventController extends Controller
             // image
             $image = $model->uploadImage();
 
-            if ($image === null) {
+            if ($image == null) {
                 $model->image = $old_image;
             }
 
-            if ($model->update() !== false) {
-                if ($image !== null) { // delete old and overwrite
+            if ($model->update() != false) {
+                if ($image != null) { // delete old and overwrite
                     $model->deleteImage($old_image);
                     $image->saveAs($model->getImagePath());
                 }
 
                 foreach ($socialMediaModels as $socialMediaModel) {
-                    if ($socialMediaModel->url === '') {
+                    if ($socialMediaModel->url == '') {
                         $socialMediaModel->delete();
                     } else {
                         $socialMediaModel->event_id = $model->id;
@@ -333,7 +333,7 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (Yii::$app->user->id === $model->user_id) {
+        if (Yii::$app->user->id == $model->user_id) {
             return $this->redirect(['update', 'id' => $id]);
         }
 
@@ -341,7 +341,7 @@ class EventController extends Controller
 
         // make "linked" link for hashtags
         foreach ($socialMediaModels as $socialMediaModel) {
-            if ($socialMediaModel->site_name === 'twitter') {
+            if ($socialMediaModel->site_name == 'twitter') {
                 $url_regex = '/(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/[a-zA-Z0-9\_\-]*\?src=hash/';
                 if (!preg_match($url_regex, $socialMediaModel->url)) {
                     $socialMediaModel->url = preg_replace(
@@ -357,7 +357,7 @@ class EventController extends Controller
         $postData = Yii::$app->request->post();
 
         if ($linkModel->load($postData) && $linkModel->validate()) {
-            if ($linkModel->url === '') {
+            if ($linkModel->url == '') {
                 $linkModel->delete();
             } else {
                 $linkModel->event_id = $model->id;
@@ -392,7 +392,7 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (!Yii::$app->user->can('admin') || Yii::$app->user->id !== $model->user_id) {
+        if (!Yii::$app->user->can('admin') || Yii::$app->user->id != $model->user_id) {
             throw new ForbiddenHttpException('You are not allowed to perform this action.');
         }
 
@@ -410,7 +410,7 @@ class EventController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Event::findOne($id)) !== null) {
+        if (($model = Event::findOne($id)) != null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
