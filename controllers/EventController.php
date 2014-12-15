@@ -60,8 +60,6 @@ class EventController extends Controller
         Yii::$app->cache->gc(true);
         $searchModel = new SearchEventForm();
 
-
-
         $query = Event::find()->where(['>=', 'UNIX_TIMESTAMP(start_date)', time()]);
 
         $query = $query->joinWith('user');
@@ -141,6 +139,7 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
         $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
+
 
         //Yii::$app->cache->delete('socialmedia' . $id);
         $this->findSocialMedia($id, $socialMediaModels);
@@ -255,13 +254,13 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (Yii::$app->user->can('admin') || Yii::$app->user->id !== $model->user_id) {
+        if (Yii::$app->user->can('admin') || (Yii::$app->user->id !== $model->user_id)) {
             throw new ForbiddenHttpException('You are not allowed to perform this action.');
         }
 
-        if ($model->user_id !== Yii::$app->user->id) {
+        /*if ($model->user_id !== Yii::$app->user->id) {
             return $this->redirect(['view', 'id' => $id]);
-        }
+        }*/
 
         $query = SocialMedia::find()->where(['event_id' => $id])->orderBy('id');
         $socialMediaModels = $query->all();
