@@ -52,7 +52,7 @@ $initScript = "
                     ],
                 ]); ?>
 
-                <?php echo $form->field($searchModel, 'name')->widget(Typeahead::classname(), [
+                <?php /*echo $form->field($searchModel, 'name')->widget(Typeahead::classname(), [
                     'options' => ['placeholder' => 'Search for an event...'],
                     'dataset' => [
                         [
@@ -60,7 +60,9 @@ $initScript = "
                             'limit' => 10
                         ]
                     ]  
-                ]) ?>
+                ])  */ ?>
+
+                <?php echo $form->field($searchModel, 'name'); ?>
 
                 <?php /* echo $form->field($searchModel, 'name')->widget(Select2::classname(), [
                     'options' => ['placeholder' => 'Search for an event...'],
@@ -132,8 +134,10 @@ $initScript = "
 
                 <?php foreach ($eventList as $event): ?>
                     <!-- Marker for Google Map -->
-                    <?php
+		
+                    <?php 
                     try { //ohne try catch block -> trying to get property of non-object
+			if( $event->id == NULL ) continue; 
                         $jsonMarkerList[] = [
                             "id" => $event->id,
                             "name" => $event->name,
@@ -152,7 +156,7 @@ $initScript = "
                                     <?php if ($event->image) { ?>
                                         <div class="thumbnail-clipwrapper">
                                             <div class="thumbnail-clip">
-                                                <img src="<?= (substr($event->id, 0, 7) === "goabase") ? Html::encode($event->image) : "images/" . Html::encode($event->image) ?>"><br>
+                                                <img style="max-height:100%; max-width:100%;" src="<?= (substr($event->id, 0, 7) === "goabase") ? Html::encode($event->image) : "images/" . Html::encode($event->image) ?>"><br>
                                             </div>
                                         </div>
                                     <?php } ?>
