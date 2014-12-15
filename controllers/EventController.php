@@ -60,7 +60,7 @@ class EventController extends Controller
         Yii::$app->cache->gc(true);
         $searchModel = new SearchEventForm();
 
-        $query = Event::find()->where(['>=', 'UNIX_TIMESTAMP(start_date)', time()]);
+        $query = Event::find()->where(['>=', 'UNIX_TIMESTAMP(end_date)', time()]);
 
         $query = $query->joinWith('user');
 
