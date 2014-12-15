@@ -53,7 +53,7 @@ class Event extends ActiveRecord
             [['start_date', 'end_date'], 'isValidDate'],
             [['start_date'], 'isValidStartDate'],
             [['end_date'], 'isValidEndDate'],
-            ['end_date', 'compare', 'compareAttribute'=>'start_date','operator'=>'>=', 'message' => 'End Date must be after Start Date'],
+            //['end_date', 'compare', 'compareAttribute'=>'start_date','operator'=>'>', 'message' => 'End Date must be 2 after Start Date'],
             [['latitude', 'longitude'], 'number'],
             [['name', 'address'], 'string', 'max' => 50],
             [['address'], 'isValidGeoLocation'],
