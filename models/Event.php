@@ -5,8 +5,6 @@ namespace app\models;
 use amnah\yii2\user\models\User;
 use Yii;
 use yii\db\ActiveRecord;
-use yii\validators\DateValidator;
-use yii\validators\Validator;
 use yii\web\UploadedFile;
 
 /**
@@ -50,16 +48,24 @@ class Event extends ActiveRecord
         return [
             [['name', 'address', 'start_date'], 'required'],
             [['user_id', 'clicks'], 'integer'],
+
+            // Validate Dates
+            [['start_date', 'end_date'], 'match',
+                'pattern'=>'/^((\d{2})\.(\d{2})\.(\d{4})(\d{1,2}):(\d{2}))||((\d{4})-(\d{2})-(\d{2}) (\d{1,2}):(\d{2}):(\d{2}))$/'],
             [['start_date', 'end_date'], 'isValidDate'],
             [['start_date'], 'isValidStartDate'],
             [['end_date'], 'isValidEndDate'],
-            ['end_date', 'compare', 'compareAttribute'=>'start_date','operator'=>'>=', 'message' => 'End Date must be after Start Date'],
-            [['latitude', 'longitude'], 'number'],
+
+            // Validate Address
             [['name', 'address'], 'string', 'max' => 50],
             [['address'], 'isValidGeoLocation'],
+            [['latitude', 'longitude'], 'number'],
+
+            // Validate Image
             [['image'], 'string', 'max' => 100],
             [['upload_image'], 'file', 'extensions' => 'jpg, gif, png', 'maxSize' => 2097152, 'tooBig' =>
-            'Image size cannot be larger then 2MB.'],
+                'Image size cannot be larger then 2MB.'],
+
             [['description', 'note'], 'string', 'max' => 1000],
             [['num_socialMedia', 'max_num_socialMedia'], 'safe'],
         ];
@@ -115,11 +121,14 @@ class Event extends ActiveRecord
         if (strtotime($this->$attribute) > 0 && strtotime($this->$attribute) < strtotime($this->start_date)) {
             $this->addError($attribute, 'End Date must be after Start Date');
         }
+    }
 
-        if (strtotime($this->$attribute) === 0) {
-            $this->$attribute = date('Y-m-d H:i:s', strtotime($this->start_date));
+    public function afterValidate() {
+        $this->start_date = date('Y-m-d H:i:s', strtotime($this->start_date));
+        if (strtotime($this->end_date) === 0) {
+            $this->end_date = date('Y-m-d H:i:s', strtotime($this->start_date));
         } else {
-            $this->$attribute = date('Y-m-d H:i:s', strtotime($this->$attribute));
+            $this->end_date = date('Y-m-d H:i:s', strtotime($this->end_date));
         }
     }
 

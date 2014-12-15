@@ -1,0 +1,339 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{hyperref}
+\definecolor{lightblue}{rgb}{0.93,0.95,1.0}
+
+
+\title{Status Report}
+\author{WS 2014/15 - Gruppe PK2 Team: PK2}
+\date{Dezember 2014}
+
+\begin{document}
+\begin{titlepage}
+    \begin{center}
+    \huge \textbf{\textsf{PR Anwendungsentwicklung i.d. Medieninformatik}} \\
+    \vspace{1cm} \textbf{EventJunkie} \\
+    \vspace{2cm}
+    \LARGE\textbf{\textsc{Status Report}}\\
+    \vspace{0.5cm}
+    \large {WS 2014/15 - Gruppe PK2 Team: PK2}\\
+    \end{center}
+    %\begin{flushleft}
+    
+    \vspace{2cm}
+    %\normalsize \textbf{Projekthomepage: }\\
+    %cewebs.cs.univie.ac.at/SWE/ws13/index.php?m=D\&t=uebung\&c=show\&CEWebS\_c=g1t1 \\
+    %\end{flushleft}
+    \normalsize \textbf{Contributors: }
+    \begin{center} 
+    \normalsize{
+    \begin{tabular}{lll}
+    	\textbf{MatNr.} & \textbf{Name} & \textbf{e-mail} \\ \hline
+    	a1125503 & Oliver Guggenberger & a1125503@unet.univie.ac.at \\
+    	a1207617 & Philipp Hierman & a1207617@unet.univie.ac.at \\
+    	a1151917 & Sandra Markhart & a1151917@unet.univie.ac.at \\
+    \end{tabular}\\
+    }
+    
+    \vspace{1.5cm}
+   % \textbf{Revision History} \\
+    
+    %\begin{tabular}{c|c|c|c}
+    %\rowcolor{lightblue} Issue  & Author & Date  & Description  \\ \hline
+    %v01 & Max Musterman & 15-Oct-2011   & 1 version written \\ \hline
+   % \end{tabular}
+    
+    \end{center}
+    \vspace{0.5cm}
+ %   \normalsize \textbf{Revision History: }\\
+    \begin{center} 
+ %   \normalsize{
+  %  \begin{tabular}{llll}
+ %   	\textbf{Issue} & \textbf{Author} & \textbf{Date} & %\textbf{Description} \\ \hline
+ %   	? & ? & ? & ? \\
+  %  \end{tabular}\\
+   % }
+    \vspace{3.3cm}
+   \today \\
+    \end{center}
+   
+\end{titlepage}
+
+\tableofcontents
+
+\pagebreak
+
+\section{Progress}
+\subsection{Summary}
+
+Die Seite ist auf 
+\href{http://eventjunkie.funatika.org}{http://eventjunkie.funatika.org} abrufbar.\\ \\
+Alle Basisfunktionalitäten wie Event erstellen/anzeigen/updaten/löschen/verlinken, sowie die Flickr/Twitter/GoogleMap/GoaBase-APIS wurden implementiert. "Simple Search" wurde für normale und GoaBase-Events implementiert, Advanced-Search nur für normale Events mit der ausgewählten Checkbox "Site" ohne "GoaBase". Beim Erstellen und Updaten von Events sind alle benötigten Felder vorhanden und werden im Event-Model validiert. Mit "Add Field" können Social-Media-Felder hinzugefügt, welche im Social-Media-Model validiert werden. Über die dazugehörige API werden die Social-Media-Daten abgefragt und in ein socialmedia-Array geschrieben. Events können auch von nicht-angemeldeten Benutzern mit Social-Media-Seiten verlinkt werden.
+\\ \\
+Ausstehend für die zweite Iteration sind noch Advanced-Search für GoaBase und beide Seiten zusammen, Ajax-Validierungen und die Administration von Events durch den Admin.
+Auch muss noch die Facebook-API implementiert werden. Um normale Events und GoaBase-Events besser durchsuchen zu können, sollen die GoaBase-Events in einer eigenen Datenbank-Tabelle abgespeichert werden, und nach einer bestimmten Cache-Zeit gelöscht und über die
+API neu abgefragt werden. Dadurch soll es uns leichter möglich sein, dass Events, egal ob von der Seite oder von GoaBase durchsucht und sortiert werden können. Somit ist es auch möglich die Pagination übergreifend für beide Event-Typen einzubauen. Auch soll die Image-Gallery mit JavaScript umgesetzt werden.
+
+\subsection{Git-Repository}
+
+Das Git-Repository ist auf \href{https://github.com/reiko1991/eventjunkie}{https://github.com/reiko1991/eventjunkie} zu finden. Dort sind unser aktuelles Projekt und alle zugehörigen Commits zu finden.
+
+\subsubsection{Namen auf GitHub}
+    \begin{description}
+        \item[guggi] Oliver Guggenberger
+        \item[fips1986] Philipp Hiermann
+        \item[reiko1991] Sandra Markhart
+    \end{description}
+
+
+\subsection{Status per Milestone}
+
+\begin{tabular}{lll}
+    	\textbf{Meilenstein} & \textbf{Datum (von)} & \textbf{Datum (bis)} \\ \hline \hline
+    	
+    	\textbf{1 Anforderungen und des Designs} & \textbf{14.10.2014} & \textbf{9.11.2014} \\ 
+    	Das Anforderungen und Design Dokument \\ wurde erstellt und \\der Meilenstein ist
+    	zu 100\% abgeschlossen \\ und wurde zeitgerecht gestartet und beendet.\\\hline
+    	\textbf{2 Prototyp, Statusbericht} & \textbf{24.10.2014} & \textbf{14.12.2014} \\
+    	Fast alle geplanten Funktionalitäten wurden \\ implementiert und der Statusbericht erstellt.\\
+    	Einzelne Funktionalität (Advanced Search) wurden nicht \\ implementiert
+    	und werden stattdessen bis \\ zur finalen Demo hinzugefügt. \\
+    	Insgesamt wurden aber 95\% des Meilensteins erreicht. \\\hline
+    	\textbf{3 Präsentation, Endbericht} & \textbf{20.01.2014} & \textbf{25.01.2014} \\
+    	Präsentation und Endbericht müssen noch \\erstellt werden. \\
+    	Zudem auch eine AJAX-Validierung,\\ GoaBase-Event-Table in der Datenbank\\
+    	und Adminsitration der Events durch den Admin. \\ \hline
+    	\textbf{4 Finale Demo} & \textbf{15.12.2014} & \textbf{31.01.2014} \\
+    	Einzelne Funktionalitäten müssen noch \\implementiert und getestet werden. \\
+    	\textbf{5. Präsentation der Demo} & \textbf{31.01.2014} & \textbf{31.01.2014} \\
+    \end{tabular}\\
+
+\subsection{Activities per Person}
+\subsubsection{Sandra Markhart}
+
+\begin{description}
+    \item[Events:]
+Create/Update/Delete/View/Link ist jetzt möglich. Create ermöglicht das Erstellen von Events, Update das                    Bearbeiten und Delete das Löschen. Mit "View" wird ein Event mit einer bestimmten ID angezeigt. Dabei werden auch die zugehörigen Social-Media-Objekte aus dem Cache gelesen. Link-Events ermöglicht es einen                            Social-Media-Link zu einem Event zu erstellen, auch wenn dieser einem nicht gehört. 
+        \begin{itemize}
+            \item Event-Table und SocialMedia-Table in der Datenbank erstellt.
+            \item Erste Version der Event-Index-Seite mit Suchformular erstellt, auf der die normalen Events nach Datum gereiht aufgelistet werden. Zusätzlich Top-Events nach Clicks und New-Events nach Erstellungdatum. 
+            \item Advanced Search/Simple Search für auschließlich normale Events.
+            \item Merken der Auswahl Advanced Search/Simple Search nach neuem Request.
+            \item Views und Controller-Actions für Create/Update/Delete/View/Link erstellt.
+            \item Gallery-Link mit Gallery zu den jeweiligen SocialMedia-Bildern der Seite.
+            \item AddField-Funktion um SocialMedia-Felder zum Formular mittels JavaScript hinzuzufügen.
+            \item Validierung von Events nach Datum, Bildformat usw. und von Social-Media-Links beim Erstellen/Updaten im Event-Model.
+            \item Link-Events-with-SocialMedia für nicht-angemeldete User.
+        \end{itemize}
+    \item[SocialMedia APIs:]
+    Erstellen eines socialmedia-Objekts mit der SocialMediaApi aus Twitter-Links/Hashtags und Flickr-Links. Zugriff auf die Google-Maps-API.
+    \begin{itemize}
+            \item Cache von Social-Media-Objekten mittels FileCache für 5 Minuten. Dieser wird ebenfalls beim Updaten für               das jeweilige Event gelöscht und die Daten neu von Flickr/Twitter etc. abgefragt.
+            \item SocialMediaApi-Klasse erstellt um ein SocialMedia-Objekt mit "images" und "comments" anzulegen.                    Doppelte Bilder werden dabei entfernt und Kommentare nach Datum sortiert.
+            \item FlickrApi-Klasse erstellt um Gallery/Set/Photo-Links zu parsen und alle zugehörigen Bilder                         (thumbnail/original) zu erhalten. Dabei wurden Requests über eine REST-Schnittstelle gestellt und die zurückgelieferten JSON-Objekte geparsed.
+            \item TwitterApi-Klasse erstellt um Tweets nach einem Hashtag-Link oder Hashtag zu durchsuchen und zughörige Tweets und Bilder der Tweets aus dem erhaltenen JSON-Objekt auszulesen. Tweets werden zusätzlich nach Hashtags, Benutzern und anderen Links geparsed und diese durch eine Verlinkung ersetzt. Für die Authentifizierung mit OAuth wurde die PHP-Library "j7mbo/twitter-api-php" verwendet.
+            \item Adressen werden mit Hilfe der Geolocating API (JavaScript und serverseitig) im Event-Model geparsed und             die Longitude/Latitude-Daten abgespeichert.
+            \item Erstellen einer Karte mittels der GoogleMaps-API und aufgelistete Events im Event-View und auf der Event-Index-Seite auf der Karte mit einem Marker, der die Daten des Events enthält anzeigen. Dies wurde mit der GoogleMaps-API und JavaScript umgesetzt.
+            \end{itemize}
+            
+\end{description}
+
+%--------------------------------------------------------------------------------
+
+\subsubsection{Oliver Guggenberger}
+
+\begin{description}
+
+    \item[User:]
+    Geeignetes Usermanagment ausgesucht und in Applikation integriert (Amnah Usermanagment). 
+
+   \item[Events:]
+   Events von GoaBase werden auf der Eventseite angezeigt. Dadurch ist die Eventseite nie leer, auch wenn keine internen Events existieren. Wenn es jedoch interne Events gibt, werden die GoaBase-Events mit den internen Events, nach Datum angezeigt. Die GoaBase-Events werden aus dem Cache gelesen, falls diese schon einmal aufgerufen worden sind.
+      \begin{itemize}
+      \item Erstellung des EventContollers.
+      \item Weiterleitung von SiteController $\rightarrow$ EventController
+      \item Suche in Advanced und Simple Search aufgeteilt
+      \item GoaBase\-Events integriert
+      \item Interne Events mit Goabase-Events vermischen und nach Datum sortiert.
+      \item GoaBase view erstellt (Für Detail Ansicht eines Goabase-Events)
+      \end{itemize}
+      
+    \item[GoaBaseApi:]
+    Schnittstelle zu GoaBase. Laden von beliebigt vielen Goaparties oder von Detail Informationen zu einer gewissen Party mithilfe der Party Id.
+    Wenn eine Liste von Parties geladen wird, sind die einzelnen Parties so integriert, dass diese vom Typ ein Event Objekt sind und somit den gleichen Typ haben wie interne Events. 
+    
+    \begin{itemize}
+    \item GoabaseApi-Klasse erstellt
+    \item Detail Informationen zu einer bestimmten Party mit Party-Id abfragen
+    \item Partieliste mit GoaBase-Events. Diese haben den Typ Events wie interne Events.
+    \item Start und End Datum wird nach dem Format der internen Parties angepasst.
+    \item Erhaltenen GoaBase Koordinaten in brauchbare Adresse parsen (Google maps Api).
+    \end{itemize}
+    
+  \item[Info:]
+  Informationsseite erstellt. Informationen bzw Overview über EventJunkie werden in der Infoseite angezeigt.
+  
+   \item[Contact:]
+     Kontaktseite erstellt. Über ein Kontaktforumlar kann Kontakt mit den Administrator aufgenommen werden.
+
+  \item[Generell:]
+    EventJunkie auf private Domain installiert bzw. Daten migriert (Datenbank und Tabellen).
+    Internetadresse: $http://eventjunkie.funatika.org/$
+
+  
+\end{description}
+
+%--------------------------------------------------------------------------------
+
+\subsubsection{Philipp Hiermann}
+
+\begin{description}
+
+    \item[Events:]
+    Bei Eingabe einer Zeichenkette in die Suchmaske, werden dazu passend Events als möglich Sucheingaben angezeigt. Dies soll asynchron erfolgen.
+      \begin{itemize}
+        \item Geeignete Funktion im Eventcontroller zum Laden der Daten erstellt
+        \item Javascript-Callbacks zur Behandlung der geholten Daten erstellt
+      \end{itemize}
+      
+    \item[FacebookApi:]
+    Die Klasse FacebookApi stellt die Schnittstelle zur API von Facebook dar. Ziel ist es, dass zumindest Kommentare zu einem Event auf unsere Seite sichtbar sein sollen.
+    \begin{itemize}
+        \item Klasse FacebookApi erstellt
+        \item Geeignete Funktion zum Parsen von Facebook-Links erstellt
+
+    \end{itemize}
+    
+\end{description}
+
+\subsection{Report on working hours per person}
+
+\subsubsection{Sandra Markhart}
+
+Die genauen Stunden wurden von mir nicht dokumentiert, jedoch kann der Aufwand mit den Commits zu unserem Git-Repository nachvollzogen werden. Ich denke aber, dass die geplanten 65 Stunden erreicht wurden.
+
+\subsubsection{Oliver Guggenberger}
+
+Ich habe meine geleisteten Stunden ebenfalls nicht mitdokumentiert, jedoch kann der Aufwand mit den Commits zu unserem Git-Repository nachvollzogen werden. Die geplanten 65 wurden bestimmt erreicht.
+
+\subsubsection{Philipp Hiermann}
+
+Auch bei mir gilt: Die Arbeitsstunden wurden nicht notiert. Jedoch habe ich mit großer Wahrscheinlich keine 65 Stunden daran gearbeitet (eher 40).
+
+%------------------------------------------
+\section{Risk Analysis}
+
+Was kann passieren, das das Projekt gefährdet?
+
+\begin{itemize}
+  \item \textbf{Risko:} Ausfall von Team-Mitgliedern\\
+        \textbf{Gegenmaßnahmen:} Jedes Team-Mitglied kennt sich im gesamten Projekt aus. Dadurch können die Aufgaben eines ausgefallenen Temmitgliedes an die verbleibenden Mitglieder aufgeteilt werden.
+  \item \textbf{Risko:} Wir nehmen uns zu viel vor \\
+        \textbf{Gegenmaßnahmen:} Iterativer Entwicklungsansatz (je eine überschaubare Teilmenge an Features); regelmäßige Diskussion und Feedback mit Übungsleiter. Derzeit eher unwahrscheinlich, da das Projekt schon recht weit fortgeschritten ist.
+  \item \textbf{Risko:} Ausfall von benötigter Infrastruktur (unwahrscheinlich, beherrschbar) \\
+        \textbf{Gegenmaßnahmen:} Abhängigkeit von zentraler Infrastruktur minimieren: Verteiltes Source-Code-Management mit git; Anwendung kann einfach lokal getestet und vorgezeigt werden (lokaler Apache)
+  \item \textbf{Risko:} Das Projekt findet keinen Anklang bei der gewünschten Zielgruppe \\
+        \textbf{Gegenmaßnahmen:} Seite intuitiv designen, hohe Latenzzeiten vermeiden um eine annehmbare Performance gewährzuleisten. 
+  \item \textbf{Risko:} Jeder hat seine eigenen Vorstellungen und möchte diese umsetzen, Kompromisse sind sehr schwer einzugehen. \\
+        \textbf{Gegenmaßnahmen:} "In den sauren Apfel beißen", versuchen, die eigenen Vorstellungen mit denen der anderen zu vereinen und das Beste aus beidem zu machen. 
+\end{itemize}
+
+
+
+
+%------------------------------------------
+\section{Outlook}
+
+\subsection{Milestones and Schedules}
+
+Diesselben wie im "Requirements und Design"-Dokument inklusive der erwähnten Punkte bei Punkt 1.1 Summary und 1.3 Status per Milestone.
+
+\subsection{Planned Effort per Person}
+
+\subsubsection{Sandra Markhart}
+
+\begin{description}
+    \item[Events:]
+        \begin{itemize}
+        \item[]
+            \item Anzeigen von eigenen Events in einer Liste um schneller auf diese zugreifen zu können.
+            \item SocialMedia-Bilder bei Klick nicht mehr statt der Seite öffnen sondern in einem kleinem Fenster                    (eventuell mittels JavaScript).
+        \end{itemize}
+    \item[Admin:]
+        \begin{itemize}
+        \item[]
+            \item Auflisten aller Events in einer Tabelle und Löschen von Events durch den Admin ("Manage Events"). 
+        \end{itemize}
+    \item[Allgemein:]
+        \begin{itemize}
+        \item[]
+            \item Testen und Fehler beheben.
+            \item Mitarbeit an der Präsentation und dem Endbericht.
+        \end{itemize}
+\end{description}
+
+Da die meisten geplanten Punkte schon in der ersten Iteration implementiert wurden, rechne ich mit einem maximalen Aufwand von 40 Stunden.
+
+%-----------------------------------------
+
+\subsubsection{Oliver Guggenberger}
+
+\begin{description}
+    \item[Events:]
+        \begin{itemize}
+        \item[]
+            \item Advanced Search implementieren
+        \end{itemize}
+
+    \item[Allgemein:]
+        \begin{itemize}
+        \item[]
+            \item Testen und Fehler beheben.
+            \item Mitarbeit an der Präsentation und dem Endbericht.
+            \item EventJunkie im Internet deployen und aktuell halten.
+        \end{itemize}
+\end{description}
+
+
+\subsubsection{Philipp Hiermann}
+
+\begin{description}
+    \item[Events:]
+        \begin{itemize}
+        \item[]
+            \item Suchmaske im Bezug auf Ajax verbessern
+        \end{itemize}
+        
+    \item[FacebookApi:]
+        \begin{itemize}
+        \item[]
+            \item Api fertig implementieren
+        \end{itemize}
+
+    \item[Allgemein:]
+        \begin{itemize}
+        \item[]
+            \item Testen und Fehler beheben.
+            \item Mitarbeit an der Präsentation und dem Endbericht.
+        \end{itemize}
+\end{description}
+
+
+%\section{Feedback}
+
+
+%\begin{figure}[h!]
+%\centering
+%\includegraphics[scale=1.7]{universe.jpg}
+%\caption{The Universe}
+%\label{fig:univerise}
+%\end{figure}
+
+
+%\bibliographystyle{plain}
+%\bibliography{references}
+
+\end{document}

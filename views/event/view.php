@@ -31,13 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- update / delete -->
             <p>
                 <?php
-                if (Yii::$app->user->id === $model->user_id) {
+                if (\Yii::$app->user->id === $model->user_id) {
                     ?>
                     <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
                 <?php } else { ?>
                     <?= Html::a('Link with Social Media', ['link', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
                 <?php } ?>
-                <?php if (Yii::$app->user->can('admin') || $model->user_id === Yii::$app->user->id) { ?>
+                <?php if (\Yii::$app->user->can('admin') || ($model->user_id === Yii::$app->user->id)) { ?>
                     <?= Html::a('Delete', ['delete', 'id' => $model->id], [
                         'class' => 'btn btn-danger',
                         'data' => [
@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- data -->
             <p>
                 <strong>Organizer:</strong>
-                <?= Html::encode($model->user_id) ?> <tiny><?= Html::encode(date("d.m.Y G:i", strtotime($model->creation_date))) ?></tiny>
+                <?= Html::encode($model->user["username"]) ?> <tiny><?= Html::encode(date("d.m.Y G:i", strtotime($model->creation_date))) ?></tiny>
             </p>
             <p>
                 <strong>Date:</strong>

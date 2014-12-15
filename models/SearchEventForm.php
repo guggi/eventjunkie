@@ -18,6 +18,8 @@ class SearchEventForm extends Event {
             [['name', 'address'], 'string', 'max' => 50],
             [['address'], 'isValidGeoLocation'],
             [['radius', 'type_site', 'type_goabase'], 'integer'],
+            [['from_date', 'to_date'], 'match',
+                'pattern'=>'/^((\d{2})\.(\d{2})\.(\d{4})(\d{1,2}):(\d{2}))||((\d{4})-(\d{2})-(\d{2}) (\d{1,2}):(\d{2}):(\d{2}))$/'],
             [['from_date', 'to_date'], 'isValidDate'],
         ];
     }
