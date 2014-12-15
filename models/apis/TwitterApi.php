@@ -37,10 +37,13 @@ class TwitterApi
     {
         try {
             $hashtag_regex = '/(\#)?[a-zA-Z0-9\_\-]*/';
+            $user_regex = '/(\@)[a-zA-Z0-9\_\-]*/';
             $url_regex = '/(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/[a-zA-Z0-9\_\-]*\?src=hash/';
             if (preg_match($url_regex, $this->url)) {
                 preg_match($hashtag_regex, $this->url);
                 $this->getTweetsPerHashtag($this->getHashtagFromUrl());
+            } else if (preg_match($user_regex, $this->url)) {
+                $this->getTweetsPerUser($this->url);
             } else if (preg_match($hashtag_regex, $this->url)) {
                 $this->getTweetsPerHashtag($this->url);
             }
@@ -97,6 +100,47 @@ class TwitterApi
                     'url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"} .'/status/'.$tweet->{"id"},
                     'author_url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"},
                     'socialmedia_url' => 'https://twitter.com/hashtag/'. $hashtag . '?src=hash',
+                ]);
+
+            if (isset($tweet->{"entities"}->{"media"})) {
+                foreach ($tweet->{"entities"}->{"media"} as $media) {
+                    array_push($this->images,
+                        [
+                            'thumbnail' => $media->{"media_url"} . ':thumb',
+                            'original' => $media->{"media_url"},
+                        ]);
+
+                }
+            }
+        }
+    }
+
+    public function getTweetsPerUser($user) {
+        if (substr($user, 0, 1) === '@') {
+            $user = substr($user, 1);
+        }
+
+        $url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
+        $getfield = '?screen_name=' . $user . '&count=100';
+        $requestMethod = 'GET';
+
+        $json = $this->twitter->setGetfield($getfield)
+            ->buildOauth($url, $requestMethod)
+            ->performRequest();
+
+        $data = json_decode($json);
+
+        foreach ($data as $tweet) {
+            array_push($this->comments,
+                [
+                    'title' => '@'.$user,
+                    'date' => strtotime($tweet->{"created_at"}),
+                    'author' => $tweet->{"user"}->{"screen_name"},
+                    'text' => $this->parseTweet($tweet->{"text"}),
+                    'site_name' => 'Twitter',
+                    'url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"} .'/status/'.$tweet->{"id"},
+                    'author_url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"},
+                    'socialmedia_url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"},
                 ]);
 
             if (isset($tweet->{"entities"}->{"media"})) {

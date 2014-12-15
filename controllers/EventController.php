@@ -152,11 +152,19 @@ class EventController extends Controller
         foreach ($socialMediaModels as $socialMediaModel) {
             if ($socialMediaModel->site_name === 'twitter') {
                 $url_regex = '/(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/[a-zA-Z0-9\_\-]*\?src=hash/';
+                $user_regex = '/(\@)[a-zA-Z0-9\_\-]*/';
                 if (!preg_match($url_regex, $socialMediaModel->url)) {
-                    $socialMediaModel->url = preg_replace(
-                        '/#?(\w+)/i',
-                        'https://twitter.com/hashtag/$1?src=hash',
-                        $socialMediaModel->url);
+                    if (preg_match($user_regex, $socialMediaModel->url)) {
+                        $socialMediaModel->url = preg_replace(
+                        '/\@(\w+)/i',
+                            'https://twitter.com/$1',
+                            $socialMediaModel->url);
+                    } else {
+                        $socialMediaModel->url = preg_replace(
+                            '/#?(\w+)/i',
+                            'https://twitter.com/hashtag/$1?src=hash',
+                            $socialMediaModel->url);
+                    }
                 }
             }
         }
