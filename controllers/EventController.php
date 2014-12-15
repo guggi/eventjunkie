@@ -205,8 +205,6 @@ class EventController extends Controller
 
         if ($model->load($postData) && $model->validate() && Model::loadMultiple($socialMediaModels, $postData) && Model::validateMultiple($socialMediaModels)) {
             $model->user_id = Yii::$app->user->id;
-            $model->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
-            $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
 
             $model->clicks = 0;
 
@@ -277,9 +275,6 @@ class EventController extends Controller
         $old_image = $model->image;
 
         if ($model->load($postData) && $model->validate() && Model::loadMultiple($socialMediaModels, $postData) && Model::validateMultiple($socialMediaModels)) {
-            $model->start_date = date('Y-m-d H:i:s', strtotime($model->start_date));
-            $model->end_date = date('Y-m-d H:i:s', strtotime($model->end_date));
-
             // image
             $image = $model->uploadImage();
 
