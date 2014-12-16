@@ -50,10 +50,12 @@ $this->params['breadcrumbs'][] = $this->title;
             </p>
 
             <!-- image -->
-            <?php if ($model->image) { ?>
-                <img class="img-responsive" src="<?= \Yii::$app->request->getBaseUrl() . Yii::$app->params['imagePath'] .
-                Html::encode($model->image) ?>">
-            <?php } ?>
+	    <div style="max-width:750px;max-height:300px;height:300px;">
+		    <?php if ($model->image) { ?>
+		        <img class="img-responsive" style="max-height:100%; max-width:100%; "  src="<?= \Yii::$app->request->getBaseUrl() .'/'. Yii::$app->params['imagePath'] .
+		        Html::encode($model->image) ?>">
+		    <?php } ?>
+	    <div>
 
             <hr>
 
@@ -92,7 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <hr>
 
             <!-- clicks -->
-            <p class="text-center"><?= Html::encode($model->clicks) ?> Clicks</p>
+            <p class="text-center"><b><?= Html::encode($model->clicks) ?></b> Aufrufe</p>
 
             <hr>
 
