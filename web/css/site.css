@@ -91,13 +91,15 @@ a.desc:after {
 }
 
 .thumbnail-clipwrapper{
-    position:relative;
     max-width: 160px;
     height:80px;
+    position:relative;
 }
 
 .thumbnail-clip{
     position:absolute;
+    max-width: 160px;
+    height:80px;
     clip:rect(0px 160px 80px 0px);
 }
 
