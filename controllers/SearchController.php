@@ -61,7 +61,7 @@ class SearchController extends Controller
         $query = Event::find()->where(['like', 'name', $searchModel->name]);
         if (isset($searchModel->latitude)) {
             $query = $query->andWhere('acos(sin('.$searchModel->latitude . ') * sin(Latitude) + cos('.$searchModel->latitude . ') * cos(Latitude) * cos(Longitude - ('.$searchModel->longitude . '))) * 6371 <= ' .
-                $searchModel->radius);
+                $searchModel->radius*1000);
         }
         if ($searchModel->from_date !== "") {
             $query = $query->andWhere(['>=', 'UNIX_TIMESTAMP(start_date)', strtotime($searchModel->from_date)]);
