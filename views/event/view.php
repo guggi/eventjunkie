@@ -146,7 +146,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php } ?>
             <?php } ?>
         </div>
-        <div class="col-md-4" style="position:relative;left:110%;bottom:350%;">
+        <div class="col-md-4" style="position:absolute;left:100%;top:0%;">
 
             <!-- images from linked sites -->
             <?php
