@@ -1,3 +1,128 @@
+version 4.1.3
+=============
+**Date:** 20-Dec-2014
+
+1. (enh #85): Combine output data as a single object, that is sent for various file upload events. 
+    - `filepreupload`
+    - `fileuploaded`
+    - `fileuploaderror`
+    - `filebatchuploaderror`
+    - `filebatchuploadsuccess`
+    - `filebatchuploadcomplete`
+2. (enh #86): Disable thumbnail action buttons when upload is in progress.
+3. (enh #87): More correct progress indicator percentage for asynchronous upload.
+
+version 4.1.2
+=============
+**Date:** 19-Dec-2014
+
+1. (enh #81): Add new events:
+    - `filebatchuploadsuccess`
+    - `filebatchuploadcomplete` 
+2. (enh #80): Allow access to `uploadExtraData` and `responseData` to following events
+    - `filepreupload`
+    - `fileuploaded`
+    - `fileuploaderror`
+    - `filebatchuploaderror`
+    - `filebatchuploadsuccess`
+    - `filebatchuploadcomplete`
+    - `filelock`
+    - `fileunlock`
+
+version 4.1.1
+=============
+**Date:** 18-Dec-2014
+
+1. (bug #76): Update filestack when `showPreview` is false.
+2. (bug #78): Set uploadExtraData parameters to be correctly sent via POST.
+3. (enh #58): Set a new property `textEncoding` for reading the text files with right encoding.
+
+version 4.1.0
+=============
+**Date:** 17-Dec-2014
+
+1. (enh #74): Enhancements to file validation errors for both FORM and AJAX uploads.
+    - For normal Form based uploads automatically disable the Upload button
+    - Display a separate error styled thumbnail for the file that faced the validation error.
+    - Reset errors correctly to overwrite files with a new change or drag/drop
+2. (enh #75): Better validation of browser support for drag and drop.
+
+version 4.0.0
+=============
+**Date:** 14-Dec-2014
+
+1. (enh #70): Version 4.0 enhancements.
+2. Renamed `initialDelimiter` to `initialPreviewDelimiter`
+3. (bug #72): Fix bootstrap version constraint.
+
+### Version 4.0 Features
+
+1. Add functionality for AJAX based UPLOAD using HTML5 FormData (most modern browsers support it). Will degrade to normal Form Based File submission if this is not supported.
+2. To use AJAX Upload, the `uploadUrl` property is MANDATORY and must be set.
+3. Enhance plugin to now allow files to be added, appended, removed (based on FEEDBACK from many). Thus one can append files to preview.
+4. New DRAG & DROP zone available in preview to drag and drop files and append.
+5. Delete or upload files one by one OR in batch.
+6. If `showPreview` is set to false, or uploadUrl is not supported plugin will degrade to normal form based upload.
+7. Configurable indicators for file awaiting upload, file successfully uploaded, files errored in upload.
+8. Ability to add extra form data with ajax based uploads.
+9. Upload progress bar and individual thumbnail upload indicators.
+10. Ability to cancel and abort ongoing AJAX uploads.
+11. Templates have been revamped and enhanced for each file type.
+12. Ensure plugin is still lean in size and optimized for performance inspite of the above features by optimally utilizing HTML5 & jquery features only.
+
+### New properties added
+
+1. `showCancel`: shows a cancel button for aborting ajax uploads (defaults to `true`).
+2. `cancelLabel`: label for the cancel button.
+3. `cancelTitle`: title for the cancel button on hover.
+4. `cancelIcon`: icon markup for the cancel button
+5. `cancelClass`: CSS class for the cancel button.
+6. `removeTitle`: title for the remove button on hover.
+7. `uploadTitle`: title for the upload button on hover.
+8. `uploadUrl`: the url that will be used to process AJAX based uploads (using FormData XHR2).
+9. `uploadExtraData`: extra data that will be passed as data to the url/AJAX server call via POST
+10. `uploadAsync`: whether the batch upload of multiple files will be asynchronous/in parallel. Defaults to `true`.
+11. `initialPreviewShowDelete`:  shows a delete button for each initial preview content's thumbnail (defaults to `true`).
+12. `initialPreviewConfig`: configuration for setting up each `initialPreviewContent` item (associative array/object)
+    - `caption`: The caption or filename to display for each initial preview item content.
+    - `width`: The CSS width of the image/content displayed.
+    - `url`: The URL for deleting the image/content via AJAX (shown only for `initialPreviewContent`).
+    - `key`: The key that will be passed to the URL via POST (shown only for `initialPreviewContent`).
+13. `dropZoneEnabled`: Enable a drag and drop zone for dragging files and is available only for ajax based uploads (defaults to `true`). 
+14. `dropZoneTitle`: Title to be displayed in the drag & drop zone. 
+15. `dropZoneTitleClass`: CSS class for the drag & drop zone title.
+16. `fileActionSettings`: configuration for setting up actions for newly selected file thumbnails in the preview (associative array/object)
+    - `removeIcon`: icon for remove button to be displayed in each file thumbnail.
+    - `removeClass`: CSS class for the remove button in each file thumbnail.
+    - `removeTitle`: title for remove button in each file thumbnail.
+    - `uploadIcon`: icon for upload button to be displayed in each file thumbnail.
+    - `uploadClass`: CSS class for the remove button in each file thumbnail.
+    - `uploadTitle`: title for remove button in each file thumbnail.
+    - `indicatorNew`: an indicator (HTML markup) for new pending upload displayed in each file thumbnail.
+    - `indicatorSuccess`: an indicator (HTML markup) for successful upload displayed in each file thumbnail.
+    - `indicatorError`: an indicator (HTML markup) for error in upload displayed in each file thumbnail.
+    - `indicatorLoading`: an indicator (HTML markup) for ongoing upload displayed in each file thumbnail.
+    - `indicatorNewTitle`: title to display on hover of indicator for new pending upload in each file thumbnail.
+    - `indicatorSuccessTitle`: title to display on hover of indicator for successful in each file thumbnail.
+    - `indicatorErrorTitle`: title to display on hover of indicator for error in upload in each file thumbnail.
+    - `indicatorLoadingTitle`: title to display on hover of indicator for ongoing upload in each file thumbnail.
+
+version 3.0.0
+=============
+**Date:** 08-Dec-2014
+
+1. (enh #60): Enhance upload button for disable/enable when used with `<a>` tag.
+2. (bug #61): Refresh preview to show errors correctly after each file is validated.
+3. (enh #64): Add ability to override the slug method with a `slugCallback` property.
+4. (enh #65): Correct validation of `refreshPreview` using `updateFileDetails`.
+5. (enh #67): Enhance support for IE browsers
+    - Add specific validations for parsing IE versions rightly
+    - Enhance plugin to extend styling support to IE 9 (with the limitation that IE 9 does not support HTML 5 features like multiple file upload)
+    - Fix clearing of file input rightly for IE 9 & IE 10
+    - Degrade plugin automatically to a native file input for older IE versions
+    - Prevent change method firing twice when file is cleared after error is encountered in IE 11.
+6. (bug #68): Fix refresh method of the fileinput to trigger change correctly.
+
 version 2.9.0
 =============
 **Date:** 23-Nov-2014

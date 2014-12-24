@@ -2,16 +2,11 @@
 
 namespace app\controllers;
 
-use app\models\SearchEventForm;
+use app\models\forms\ContactForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
-use app\models\CreateEventForm;
-use yii\data\Pagination;
-use app\models\Event;
 
 class SiteController extends Controller
 {

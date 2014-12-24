@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-krajee-base
- * @version 1.3.0
+ * @version 1.6.0
  */
 
 namespace kartik\base;
@@ -33,6 +33,16 @@ class InputWidget extends \yii\widgets\InputWidget
      * If this property not set, then the current application language will be used.
      */
     public $language;
+    
+    /**
+     * @var boolean whether input is to be disabled
+     */
+    public $disabled = false;
+    
+    /**
+     * @var boolean whether input is to be readonly
+     */
+    public $readonly = false;
 
     /**
      * @var mixed show loading indicator while plugin loads
@@ -101,6 +111,12 @@ class InputWidget extends \yii\widgets\InputWidget
     protected $_lang = '';
 
     /**
+     * @var string the language js file
+     */
+    protected $_langFile = '';
+    
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -118,6 +134,7 @@ class InputWidget extends \yii\widgets\InputWidget
                 $this->attribute) : $this->options['name'];
             $this->value = $this->model[Html::getAttributeName($this->attribute)];
         }
+        $this->initDisability($this->options);
         $view = $this->getView();
         WidgetAsset::register($view);
     }
@@ -134,15 +151,52 @@ class InputWidget extends \yii\widgets\InputWidget
      * Initialize the plugin language
      *
      * @param string $property the name of language property in [[pluginOptions]].
+     * @param boolean $full whether to use the full language string. Defaults to `false` 
+     * which is the 2 (or 3) digit ISO-639 format.
      * Defaults to 'language'.
      */
-    protected function initLanguage($property = 'language')
+    protected function initLanguage($property = 'language', $full = false)
     {
         if (empty($this->pluginOptions[$property]) && $this->_lang != 'en') {
-            $this->pluginOptions[$property] = $this->_lang;
+            $this->pluginOptions[$property] = $full ? $this->language : $this->_lang;
         }
     }
-
+    /**
+     * Sets the language JS file if it exists
+     * @param string $assetPath the path to the assets
+     * @param string $filePath the path to the JS file with the file name prefix
+     * @param string $suffix the file name suffix - defaults to '.js'
+     */
+    protected function setLanguage($prefix, $assetPath = null, $filePath = null, $suffix = '.js') {
+        $pwd = Config::getCurrentDir($this);
+        $s = DIRECTORY_SEPARATOR;
+        if ($assetPath === null) {
+            $assetPath = "{$pwd}/assets/";
+        } elseif (substr($assetPath, -1) != '/') {
+            $assetPath = substr($assetPath, 0, -1);
+        }
+        if ($filePath === null) {
+            $filePath = "js/locales/";
+        } elseif (substr($filePath, -1) != '/') {
+            $filePath = substr($filePath, 0, -1);
+        }
+        $full = $filePath . $prefix . $this->language . $suffix;
+        $fullLower = $filePath . $prefix . strtolower($this->language) . $suffix;
+        $short = $filePath . $prefix . $this->_lang . $suffix;
+        if (Config::fileExists($assetPath . $full)) {
+            $this->_langFile = $full;
+            $this->pluginOptions['language'] = $this->language;
+        } elseif (Config::fileExists($assetPath . $fullLower)) {
+            $this->_langFile = $fullLower;
+            $this->pluginOptions['language'] = strtolower($this->language);
+        }  elseif (Config::fileExists($assetPath . $short)) {
+            $this->_langFile = $short;
+            $this->pluginOptions['language'] = $this->_lang;
+        } else {
+            $this->_langFile = '';
+        }
+    }
+    
     /**
      * Adds an asset to the view
      *
@@ -230,8 +284,25 @@ class InputWidget extends \yii\widgets\InputWidget
      */
     protected function registerPlugin($name, $element = null, $callback = null, $callbackCon = null)
     {
+        $script = $this->getPluginScript($name, $element, $callback, $callbackCon);
+        if (!empty($script)) {
+            $view = $this->getView();
+            $view->registerJs($script);
+        }
+    }
+
+    /**
+     * Returns the plugin registration script
+     *
+     * @param string $name the name of the plugin
+     * @param string $element the plugin target element
+     * @param string $callback the javascript callback function to be called after plugin loads
+     * @param string $callbackCon the javascript callback function to be passed to the plugin constructor
+     * @return the generated plugin script
+     */
+    protected function getPluginScript($name, $element = null, $callback = null, $callbackCon = null) {
         $id = $element == null ? "jQuery('#" . $this->options['id'] . "')" : $element;
-        $view = $this->getView();
+        $script = '';
         if ($this->pluginOptions !== false) {
             $this->registerPluginOptions($name, View::POS_HEAD);
             $script = "{$id}.{$name}({$this->_hashVar})";
@@ -239,22 +310,35 @@ class InputWidget extends \yii\widgets\InputWidget
                 $script = "{$id}.{$name}({$this->_hashVar}, {$callbackCon})";
             }
             if ($callback != null) {
-                $script = "jQuery.when({$script}).done({$callback});";
+                $script = "jQuery.when({$script}).done({$callback})";
             }
-            $view->registerJs($script);
+            $script .= ";\n";
         }
-
         if (!empty($this->pluginEvents)) {
             $js = [];
             foreach ($this->pluginEvents as $event => $handler) {
                 $function = new JsExpression($handler);
                 $js[] = "{$id}.on('{$event}', {$function});";
             }
-            $js = implode("\n", $js);
-            $view->registerJs($js);
+            $script .= implode("\n", $js) . "\n";
         }
+        return $script;
     }
 
+    /**
+     * Validates and sets disabled or readonly inputs
+     * @param array $options the HTML attributes for the input
+     */
+    protected function initDisability(&$options)
+    {
+        if ($this->disabled && !isset($options['disabled'])) {
+            $options['disabled'] = true;
+        }
+        if ($this->readonly && !isset($options['readonly'])) {
+            $options['readonly'] = true;
+        }
+    }
+    
     /**
      * Automatically convert the date format from PHP DateTime to Javascript DateTime format
      *
@@ -265,6 +349,7 @@ class InputWidget extends \yii\widgets\InputWidget
      */
     protected static function convertDateFormat($format)
     {
+        
         return strtr($format, [
             // meridian lowercase
             'a' => 'p',
@@ -317,8 +402,9 @@ class InputWidget extends \yii\widgets\InputWidget
             return;
         }
         if (isset($this->pluginOptions['format'])) {
-            $format = static::convertDateFormat($this->pluginOptions['format']);
-            $this->pluginOptions['format'] = $format;
+            $format = $this->pluginOptions['format'];
+            $format = strncmp($format, 'php:', 4) === 0 ?  substr($format, 4) : FormatConverter::convertDateIcuToPhp($format, $type);
+            $this->pluginOptions['format'] = static::convertDateFormat($format);
             return;
         }
         $attrib = $type . 'Format';

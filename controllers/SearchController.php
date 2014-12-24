@@ -1,7 +1,7 @@
 <?php
 
 namespace app\controllers;
-use app\models\SearchEventForm;
+use app\models\forms\EventSearchForm;
 use Yii;
 use yii\data\Pagination;
 use yii\web\Controller;
@@ -16,7 +16,7 @@ class SearchController extends Controller
     }
 
     public function actionSearch(){
-        $searchModel = new SearchEventForm;
+        $searchModel = new EventSearchForm;
 
         if ($searchModel->load(Yii::$app->request->post()) && $searchModel->validate()){
             if (($searchModel->type_site == 1) && ($searchModel->type_goabase == 0)) {

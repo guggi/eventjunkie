@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\EventSearch;
 use app\models\apis\SocialMediaApi;
 use app\models\apis\GoaBaseApi;
 
@@ -9,7 +10,6 @@ use app\models\SocialMedia;
 use Yii;
 use app\models\Event;
 use yii\helpers\Json;
-use yii\base\Exception;
 use yii\base\Model;
 use yii\db\IntegrityException;
 use yii\db\Query;
@@ -20,8 +20,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\data\Pagination;
-use app\models\SearchEventForm;
-use yii\web\UploadedFile;
+use app\models\forms\EventSearchForm;
 
 /**
  * EventController implements the CRUD actions for Event model.
@@ -40,11 +39,11 @@ class EventController extends Controller
             ],
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['create', 'update', 'delete'],
+                'only' => ['create', 'update', 'delete', 'list', 'admin'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'update', 'delete'],
+                        'actions' => ['create', 'update', 'delete', 'list', 'admin'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -58,7 +57,7 @@ class EventController extends Controller
     public function actionIndex()
     {
         Yii::$app->cache->gc(true);
-        $searchModel = new SearchEventForm();
+        $searchModel = new EventSearchForm();
 
         $query = Event::find()->where(['>=', 'UNIX_TIMESTAMP(end_date)', time()]);
 
@@ -139,7 +138,6 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
         $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
-
 
         //Yii::$app->cache->delete('socialmedia' . $id);
         $this->findSocialMedia($id, $socialMediaModels);
@@ -392,13 +390,48 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (!Yii::$app->user->can('admin') || Yii::$app->user->id != $model->user_id) {
+        if (!Yii::$app->user->can('admin') && Yii::$app->user->id != $model->user_id) {
             throw new ForbiddenHttpException('You are not allowed to perform this action.');
         }
 
         $model->deleteImage($model->image);
         $model->delete();
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @throws ForbiddenHttpException
+     * @return string
+     */
+    public function actionList() {
+        if (Yii::$app->user->can('admin')) {
+            throw new ForbiddenHttpException('You are not allowed to perform this action.');
+        }
+
+        $searchModel = new EventSearch();
+
+        $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), Yii::$app->user->id);
+        return $this->render('list', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+        ]);
+    }
+
+    /**
+     * @throws ForbiddenHttpException
+     * @return string
+     */
+    public function actionAdmin() {
+        if (!Yii::$app->user->can('admin')) {
+            throw new ForbiddenHttpException('You are not allowed to perform this action.');
+        }
+
+        $searchModel = new EventSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), '');
+        return $this->render('list', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+        ]);
     }
 
     /**

@@ -8,7 +8,7 @@ This is a base library with set of foundation classes and components used by all
 To ensure a leaner code base / foundation component for use in all Krajee extensions (e.g. yii2-widgets, yii2-datecontrol, yii2-grid, yii2-dynagrid etc.). This should allow most developers to plug and play components only they need, without needing the complete suite of widgets. For example, this mitigates [this issue](https://github.com/kartik-v/yii2-grid/issues/123). 
 
 ## Latest Release
-The latest version of the extension is v1.3.0 released on 25-Nov-2014. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-krajee-base/blob/master/CHANGE.md) for details.
+The latest version of the extension is v1.6.0 released on 16-Dec-2014. Refer the [CHANGE LOG](https://github.com/kartik-v/yii2-krajee-base/blob/master/CHANGE.md) for details.
 
 ## Extension Classes
 
@@ -22,6 +22,9 @@ Extends [Yii InputWidget](https://github.com/yiisoft/yii2/blob/master/framework/
 	
 ### [AssetBundle](https://github.com/kartik-v/yii2-krajee-base/blob/master/AssetBundle.php)
 Extends [Yii AssetBundle](https://github.com/yiisoft/yii2/blob/master/framework/web/AssetBundle.php) class for Krajee's Yii2 widgets with enhancements for using minimized CSS and JS based on debug mode.
+
+### [PluginAssetBundle](https://github.com/kartik-v/yii2-krajee-base/blob/master/PluginAssetBundle.php)
+Extension of the above [AssetBundle](https://github.com/kartik-v/yii2-krajee-base/blob/master/AssetBundle.php) to include dependency on Bootstrap javascript plugins.
 
 ### [AnimateAsset](https://github.com/kartik-v/yii2-krajee-base/blob/master/AnimateAsset.php)
 An asset bundle for loading various CSS3 animations and effects.

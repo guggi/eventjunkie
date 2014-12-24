@@ -11,6 +11,8 @@ $this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<link rel="stylesheet" href="css/blueimp-gallery.min.css">
+
 <?php $jsonMarkerList[0] = [
     "id" => $model->id,
     "name" => $model->name,
@@ -50,12 +52,12 @@ $this->params['breadcrumbs'][] = $this->title;
             </p>
 
             <!-- image -->
-	    <div style="max-width:750px;max-height:300px;height:300px;">
-		    <?php if ($model->image) { ?>
-		        <img class="img-responsive" style="max-height:100%; max-width:100%; "  src="<?= \Yii::$app->request->getBaseUrl() .'/'. Yii::$app->params['imagePath'] .
-		        Html::encode($model->image) ?>">
-		    <?php } ?>
-	    <div>
+            <div style="max-width:750px;max-height:300px;">
+                <?php if ($model->image) { ?>
+                    <img class="img-responsive" style="max-height:100%; max-width:100%; "  src="<?= \Yii::$app->request->getBaseUrl() .'/'. Yii::$app->params['imagePath'] .
+                    Html::encode($model->image) ?>">
+                <?php } ?>
+            </div>
 
             <hr>
 
@@ -94,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <hr>
 
             <!-- clicks -->
-            <p class="text-center"><b><?= Html::encode($model->clicks) ?></b> Aufrufe</p>
+            <p class="text-center"><b><?= Html::encode($model->clicks) ?></b> Views</p>
 
             <hr>
 
@@ -146,30 +148,27 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php } ?>
             <?php } ?>
         </div>
-        <div class="col-md-4" style="position:absolute;left:100%;top:0%;">
+        <div class="col-md-4">
 
             <!-- images from linked sites -->
             <?php
             if (isset($socialmedia['images'])) { ?>
+
                 <div class="col-md-12"><a href="<?= \Yii::$app->request->BaseUrl.'/index.php?r=event/gallery&id='.$model->id ?>">View Gallery</a>
                     <hr></div>
                 <div class="col-md-12">
-                <?php
-                $i = 0;
-                foreach ($socialmedia['images'] as $socialmedia_image) { ?>
-                    <div class="col-md-6">
-                        <a href="<?= $socialmedia_image['original'] ?>">
-                            <img class="thumbnail" src="<?= $socialmedia_image['thumbnail'] ?>" alt="<?= $socialmedia_image['thumbnail'] ?>" />
-                        </a>
+                    <div id="links">
+                        <?php
+                        $i = 0;
+                        $items = [];
+                        foreach ($socialmedia['images'] as $socialmedia_image) { ?>
+                            <div class="col-md-6">
+                                <a href="<?= $socialmedia_image['original'] ?>">
+                                    <img class="thumbnail" src="<?= $socialmedia_image['thumbnail'] ?>" alt="<?= $socialmedia_image['thumbnail'] ?>" />
+                                </a>
+                            </div>
+                        <?php } ?>
                     </div>
-                    <?php
-                    $i++;
-                    if ($i > 0 && ($i % 2 === 0)) { ?>
-                        </div>
-                        <div class="col-md-12">
-                    <?php }?>
-
-                <?php } ?>
                 </div>
             <?php } ?>
 
@@ -177,11 +176,32 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
+
+<!-- The Gallery as lightbox dialog, should be a child element of the document body -->
+<div id="blueimp-gallery" class="blueimp-gallery">
+    <div class="slides"></div>
+    <h3 class="title"></h3>
+    <a class="prev">‹</a>
+    <a class="next">›</a>
+    <a class="close">×</a>
+    <a class="play-pause"></a>
+    <ol class="indicator"></ol>
+</div>
+
+
 <script>
     var jsonMarkerList = JSON.parse('<?php echo json_encode($jsonMarkerList) ?>');
     var streetZoom = 15;
 </script>
 
-<script src="/lightbox/js/jquery-1.11.0.min.js"></script>
-<script src="/lightbox/js/lightbox.min.js"></script>
-<link href="/lightbox/css/lightbox.css" rel="stylesheet" />
+<script src="js/blueimp-gallery.min.js"></script>
+<script>
+    document.getElementById('links').onclick = function (event) {
+        event = event || window.event;
+        var target = event.target || event.srcElement,
+            link = target.src ? target.parentNode : target,
+            options = {index: link, event: event},
+            links = this.getElementsByTagName('a');
+        blueimp.Gallery(links, options);
+    };
+</script>

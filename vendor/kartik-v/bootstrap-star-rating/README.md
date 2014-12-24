@@ -1,7 +1,7 @@
 bootstrap-star-rating
 =====================
 
-> NOTE: Version 3.3.0 has been released. Refer [change log](https://github.com/kartik-v/bootstrap-star-rating/blob/master/CHANGE.md) for details.
+> NOTE: Version 3.4.0 has been released. Refer [change log](https://github.com/kartik-v/bootstrap-star-rating/blob/master/CHANGE.md) for details.
 
 A simple yet powerful JQuery star rating plugin for Bootstrap which supports advanced features like fractional star fill and RTL input support. 
 Developed with a focus on utlizing pure CSS-3 styling to render the control. The plugin uses Bootstrap markup and styling by default, but it 
@@ -353,6 +353,18 @@ $('#input-id').rating('reset');
 Clear the rating.
 ```js
 $('#input-id').rating('clear');
+```
+
+#### destroy
+Destroys the rating.
+```js
+$('#input-id').rating('destroy');
+```
+
+#### create
+Re-creates the rating (after a destroy).
+```js
+$('#input-id').rating('create');
 ```
 
 ## License

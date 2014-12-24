@@ -52,19 +52,21 @@ AppAsset::register($this);
                                     ['label' => 'About', 'url' => ['/site/about']],
                                     ['label' => 'Contact', 'url' => ['/site/contact']],*/
                 //['label' => 'Create event',  'url' =>  Yii::$app->user->isGuest ?  Yii::$app->request->BaseUrl.'/index.php?r=user/login' :  \Yii::$app->request->BaseUrl.'/index.php?r=event/create' ],
-                ['label' => 'Create event',  'url' => \Yii::$app->request->BaseUrl.'/index.php?r=event/create', 'visible' => !Yii::$app->user->isGuest && !Yii::$app->user->can('admin')],
                 // not logged in
-                ['label' => 'Register', 'url' => ['/user/register'], 'visible'=>  Yii::$app->user->isGuest ? true : false],
-                ['label' => 'Login', 'url' => ['/user/login'], 'visible' => Yii::$app->user->isGuest ? true : false],
+                ['label' => 'Register', 'url' => ['/user/register'], 'visible'=>  Yii::$app->user->isGuest],
+                ['label' => 'Login', 'url' => ['/user/login'], 'visible' => Yii::$app->user->isGuest],
                 // admin
-                ['label' => 'Manage Users', 'url' => ['/user/admin'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->can('admin') ? true : false],
-                ['label' => 'Manage Events', 'url' => ['/event/admin'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->can('admin') ? true : false],
-                // logged is
-                ['label' => Yii::$app->user->displayName, 'url' => ['/user/account'], 'visible'=>  !Yii::$app->user->isGuest ? true : false],
+                ['label' => 'Manage users', 'url' => ['/user/admin'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->can('admin')],
+                ['label' => 'Manage events', 'url' => ['/event/admin'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->can('admin')],
+                // user
+                ['label' => 'My events', 'url' => ['/event/list'], 'visible' => !Yii::$app->user->isGuest && !Yii::$app->user->can('admin')],
+                ['label' => 'Create event',  'url' => ['/event/create'], 'visible' => !Yii::$app->user->isGuest && !Yii::$app->user->can('admin')],
+                // logged in
+                ['label' => Yii::$app->user->displayName, 'url' => ['/user/account'], 'visible'=>  !Yii::$app->user->isGuest],
                 ['label' => 'Logout (' . Yii::$app->user->displayName . ')',
                     'url' => ['/user/logout'],
                     'linkOptions' => ['data-method' => 'post'],
-                    'visible' => !Yii::$app->user->isGuest ? true : false],
+                    'visible' => !Yii::$app->user->isGuest],
  /*               Yii::$app->user->isGuest ?
                     ['label' => 'Login', 'url' => ['/user/login']] :
                     ['label' => 'Logout (' . Yii::$app->user->displayName . ')',
