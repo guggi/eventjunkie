@@ -1,0 +1,1 @@
+*/5 * * * * wget -O - -q -t 1 http://eventjunkie.funatika.org/index.php?r=event/cron

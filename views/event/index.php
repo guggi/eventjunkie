@@ -90,7 +90,7 @@ $initScript = "
                         'options' => ['placeholder' => date('d.m.Y G:i', time())],
                         'convertFormat' => true,
                         'pluginOptions' => [
-                            'format' => 'd.m.Y G:i',
+                            'format' => 'php:d.m.Y G:i',
                             'todayHighlight' => true
                         ]
                     ]) ?>
@@ -98,7 +98,7 @@ $initScript = "
                         'options' => ['placeholder' => date('d.m.Y G:i', time())],
                         'convertFormat' => true,
                         'pluginOptions' => [
-                            'format' => 'd.m.Y G:i',
+                            'format' => 'php:d.m.Y G:i',
                             'todayHighlight' => true
                         ]
                     ]) ?>

@@ -201,15 +201,6 @@ return array (
       '@kartik/widgets' => $vendorDir . '/kartik-v/yii2-widgets',
     ),
   ),
-  'demogorgorn/yii2-ajax-submit-button' => 
-  array (
-    'name' => 'demogorgorn/yii2-ajax-submit-button',
-    'version' => '9999999-dev',
-    'alias' => 
-    array (
-      '@demogorgorn/ajax' => $vendorDir . '/demogorgorn/yii2-ajax-submit-button',
-    ),
-  ),
   'yiisoft/yii2-swiftmailer' => 
   array (
     'name' => 'yiisoft/yii2-swiftmailer',
@@ -280,6 +271,15 @@ return array (
     'alias' => 
     array (
       '@kartik/base' => $vendorDir . '/kartik-v/yii2-krajee-base',
+    ),
+  ),
+  'demogorgorn/yii2-ajax-submit-button' => 
+  array (
+    'name' => 'demogorgorn/yii2-ajax-submit-button',
+    'version' => '9999999-dev',
+    'alias' => 
+    array (
+      '@demogorgorn/ajax' => $vendorDir . '/demogorgorn/yii2-ajax-submit-button',
     ),
   ),
 );

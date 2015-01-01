@@ -1534,53 +1534,6 @@
         ]
     },
     {
-        "name": "demogorgorn/yii2-ajax-submit-button",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/demogorgorn/yii2-ajax-submit-button.git",
-            "reference": "526a6b807d43f69295e109d6deb28e1f8191bead"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/demogorgorn/yii2-ajax-submit-button/zipball/526a6b807d43f69295e109d6deb28e1f8191bead",
-            "reference": "526a6b807d43f69295e109d6deb28e1f8191bead",
-            "shasum": ""
-        },
-        "require": {
-            "yiisoft/yii2": "*"
-        },
-        "time": "2014-11-28 13:04:41",
-        "type": "yii2-extension",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "demogorgorn\\ajax\\": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Oleg Martemjanov",
-                "email": "demogorgorn@gmail.com",
-                "homepage": "http://foreign.by"
-            }
-        ],
-        "description": "AjaxSubmitButton renders an ajax button which is very similar to ajaxSubmitButton from Yii1.",
-        "homepage": "https://github.com/demogorgorn/yii2-ajax-submit-button",
-        "keywords": [
-            "ajax",
-            "button",
-            "extension",
-            "submit",
-            "widget"
-        ]
-    },
-    {
         "name": "j7mbo/twitter-api-php",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
@@ -2039,52 +1992,6 @@
         ]
     },
     {
-        "name": "kartik-v/bootstrap-checkbox-x",
-        "version": "v1.4.0",
-        "version_normalized": "1.4.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/kartik-v/bootstrap-checkbox-x.git",
-            "reference": "849ac5e0f1928e66ae6d1f8dfb17c6aad622dd11"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/bootstrap-checkbox-x/zipball/849ac5e0f1928e66ae6d1f8dfb17c6aad622dd11",
-            "reference": "849ac5e0f1928e66ae6d1f8dfb17c6aad622dd11",
-            "shasum": ""
-        },
-        "time": "2014-11-08 07:14:47",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "kartik\\plugins\\checkbox\\": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD 3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Kartik Visweswaran",
-                "email": "kartikv2@gmail.com",
-                "homepage": "http://www.krajee.com/"
-            }
-        ],
-        "description": "An extended checkbox plugin for bootstrap with three states and additional styles.",
-        "homepage": "https://github.com/kartik-v/bootstrap-checkbox-x",
-        "keywords": [
-            "bootstrap",
-            "checkbox",
-            "indeterminate",
-            "jquery",
-            "null",
-            "state",
-            "three"
-        ]
-    },
-    {
         "name": "kartik-v/yii2-checkbox-x",
         "version": "v1.0.0",
         "version_normalized": "1.0.0.0",
@@ -2207,57 +2114,6 @@
         "keywords": [
             "jQuery UI",
             "yii2"
-        ]
-    },
-    {
-        "name": "facebook/php-sdk-v4",
-        "version": "4.0.13",
-        "version_normalized": "4.0.13.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/facebook/facebook-php-sdk-v4.git",
-            "reference": "ba732909485ae25484584a11202927ef2c70acd3"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/facebook/facebook-php-sdk-v4/zipball/ba732909485ae25484584a11202927ef2c70acd3",
-            "reference": "ba732909485ae25484584a11202927ef2c70acd3",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.4.0"
-        },
-        "require-dev": {
-            "guzzlehttp/guzzle": "~4.0",
-            "mockery/mockery": "dev-master",
-            "phpunit/phpunit": "3.7.*"
-        },
-        "suggest": {
-            "guzzlehttp/guzzle": "Allows for implementation of the Guzzle HTTP client"
-        },
-        "time": "2014-12-12 19:49:23",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Facebook\\": "src/Facebook/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "Facebook Platform"
-        ],
-        "authors": [
-            {
-                "name": "Facebook",
-                "homepage": "https://github.com/facebook/facebook-php-sdk-v4/contributors"
-            }
-        ],
-        "description": "Facebook SDK for PHP",
-        "homepage": "https://github.com/facebook/facebook-php-sdk-v4",
-        "keywords": [
-            "facebook",
-            "sdk"
         ]
     },
     {
@@ -2451,21 +2307,118 @@
         ]
     },
     {
-        "name": "kartik-v/bootstrap-fileinput",
-        "version": "v4.1.3",
-        "version_normalized": "4.1.3.0",
+        "name": "facebook/php-sdk-v4",
+        "version": "4.0.14",
+        "version_normalized": "4.0.14.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/kartik-v/bootstrap-fileinput.git",
-            "reference": "53260a53958b7da9cc2d7e898e813867c3746047"
+            "url": "https://github.com/facebook/facebook-php-sdk-v4.git",
+            "reference": "566c4ea8df82ba8bdd18abf5c0b66c23fe79b3e9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/bootstrap-fileinput/zipball/53260a53958b7da9cc2d7e898e813867c3746047",
-            "reference": "53260a53958b7da9cc2d7e898e813867c3746047",
+            "url": "https://api.github.com/repos/facebook/facebook-php-sdk-v4/zipball/566c4ea8df82ba8bdd18abf5c0b66c23fe79b3e9",
+            "reference": "566c4ea8df82ba8bdd18abf5c0b66c23fe79b3e9",
             "shasum": ""
         },
-        "time": "2014-12-20 18:27:29",
+        "require": {
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "guzzlehttp/guzzle": "~4.0",
+            "mockery/mockery": "dev-master",
+            "phpunit/phpunit": "3.7.*"
+        },
+        "suggest": {
+            "guzzlehttp/guzzle": "Allows for implementation of the Guzzle HTTP client"
+        },
+        "time": "2014-12-29 22:43:17",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Facebook\\": "src/Facebook/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Facebook Platform"
+        ],
+        "authors": [
+            {
+                "name": "Facebook",
+                "homepage": "https://github.com/facebook/facebook-php-sdk-v4/contributors"
+            }
+        ],
+        "description": "Facebook SDK for PHP",
+        "homepage": "https://github.com/facebook/facebook-php-sdk-v4",
+        "keywords": [
+            "facebook",
+            "sdk"
+        ]
+    },
+    {
+        "name": "kartik-v/bootstrap-checkbox-x",
+        "version": "v1.5.0",
+        "version_normalized": "1.5.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/kartik-v/bootstrap-checkbox-x.git",
+            "reference": "199cd981ad3bfd646900be15539e2d0865ad88eb"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/kartik-v/bootstrap-checkbox-x/zipball/199cd981ad3bfd646900be15539e2d0865ad88eb",
+            "reference": "199cd981ad3bfd646900be15539e2d0865ad88eb",
+            "shasum": ""
+        },
+        "time": "2014-12-29 08:50:42",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "kartik\\plugins\\checkbox\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD 3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Kartik Visweswaran",
+                "email": "kartikv2@gmail.com",
+                "homepage": "http://www.krajee.com/"
+            }
+        ],
+        "description": "An extended checkbox plugin for bootstrap with three states and additional styles.",
+        "homepage": "https://github.com/kartik-v/bootstrap-checkbox-x",
+        "keywords": [
+            "bootstrap",
+            "checkbox",
+            "indeterminate",
+            "jquery",
+            "null",
+            "state",
+            "three"
+        ]
+    },
+    {
+        "name": "kartik-v/bootstrap-fileinput",
+        "version": "v4.1.4",
+        "version_normalized": "4.1.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/kartik-v/bootstrap-fileinput.git",
+            "reference": "83221139d13972f7cef598a844534bee2276dc3d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/kartik-v/bootstrap-fileinput/zipball/83221139d13972f7cef598a844534bee2276dc3d",
+            "reference": "83221139d13972f7cef598a844534bee2276dc3d",
+            "shasum": ""
+        },
+        "time": "2014-12-27 16:06:27",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -2498,6 +2451,53 @@
             "preview",
             "progress",
             "upload"
+        ]
+    },
+    {
+        "name": "demogorgorn/yii2-ajax-submit-button",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/demogorgorn/yii2-ajax-submit-button.git",
+            "reference": "b0a8d2c4925eb898c1120568e168b271c6d4ad16"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/demogorgorn/yii2-ajax-submit-button/zipball/b0a8d2c4925eb898c1120568e168b271c6d4ad16",
+            "reference": "b0a8d2c4925eb898c1120568e168b271c6d4ad16",
+            "shasum": ""
+        },
+        "require": {
+            "yiisoft/yii2": "*"
+        },
+        "time": "2014-12-29 13:13:47",
+        "type": "yii2-extension",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "demogorgorn\\ajax\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Oleg Martemjanov",
+                "email": "demogorgorn@gmail.com",
+                "homepage": "http://foreign.by"
+            }
+        ],
+        "description": "AjaxSubmitButton renders an ajax button which is very similar to ajaxSubmitButton from Yii1.",
+        "homepage": "https://github.com/demogorgorn/yii2-ajax-submit-button",
+        "keywords": [
+            "ajax",
+            "button",
+            "extension",
+            "submit",
+            "widget"
         ]
     }
 ]

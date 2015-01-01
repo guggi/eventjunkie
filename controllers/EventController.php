@@ -9,6 +9,7 @@ use app\models\apis\GoaBaseApi;
 use app\models\SocialMedia;
 use Yii;
 use app\models\Event;
+use yii\base\Exception;
 use yii\helpers\Json;
 use yii\base\Model;
 use yii\db\IntegrityException;
@@ -129,6 +130,16 @@ class EventController extends Controller
         echo Json::encode($out);
     }
 
+
+    /**
+     * Load Goa party from goabase api
+     */
+    public function actionLoadgoaparty($id){
+        $goaBaseApi = new GoaBaseApi();
+        $goaParty = $goaBaseApi->getParty($id);
+        return $this->render('goaparty', ['party' => $goaParty]);
+    }
+
     /**
      * Displays a single Event model.
      * @param integer $id
@@ -138,9 +149,6 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
         $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
-
-        //Yii::$app->cache->delete('socialmedia' . $id);
-        $this->findSocialMedia($id, $socialMediaModels);
 
         ++$model->clicks;
 
@@ -200,7 +208,7 @@ class EventController extends Controller
 
         $socialMediaModels = [];
 
-        $model->max_num_socialMedia = 5;
+        $model->max_num_socialMedia = 20;
         $model->num_socialMedia = 1;
 
         for ($i = 0; $i < $model->max_num_socialMedia; $i++) {
@@ -435,6 +443,30 @@ class EventController extends Controller
     }
 
     /**
+     * Is called by the cron job, checks if a cronjob is running and reloads all social media content.
+     */
+    public function actionCron() {
+        if (!Yii::$app->cache->get('cron')) {
+            Yii::$app->cache->set('cron', true);
+            try {
+                $eventModels = Event::find()->all();
+                foreach ($eventModels as $eventModel) {
+                    $socialMediaModels = SocialMedia::find()->where(['event_id' => $eventModel->id])->orderBy('id')->all();
+                    Yii::$app->cache->delete('socialmedia' . $eventModel->id);
+                    $this->findSocialMedia($eventModel->id, $socialMediaModels);
+                }
+            } catch (Exception $e) {
+                Yii::$app->cache->delete('cron');
+                return $e;
+            }
+            Yii::$app->cache->delete('cron');
+            return 'Cron-job successful.';
+        } else {
+            return 'Cron-job already running.';
+        }
+    }
+
+    /**
      * Finds the Event model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
@@ -454,23 +486,14 @@ class EventController extends Controller
      * Checks if socialmedia is in the cache, else loads social media content.
      */
     public function findSocialMedia($id, $socialMediaModels) { //todo als Cron-Job oder ähnliches
-        Yii::$app->cache->gc(true);
+        //Yii::$app->cache->gc(true);
         if (!Yii::$app->cache->get('socialmedia' . $id)) {
             $socialMediaApi = new SocialMediaApi();
             foreach ($socialMediaModels as $key => $socialMediaModel) {
                 $socialMediaApi->loadSocialMedia($socialMediaModels[$key]);
             }
-            Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia(), 300);
+            Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia());
         }
-    }
-
-    /**
-     * Load Goa party from goabase api
-     */
-    public function actionLoadgoaparty($id){
-        $goaBaseApi = new GoaBaseApi();
-        $goaParty = $goaBaseApi->getParty($id);
-        return $this->render('goaparty', ['party' => $goaParty]);
     }
 
     //Sort date from eventList 
