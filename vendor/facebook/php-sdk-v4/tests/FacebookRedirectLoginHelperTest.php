@@ -25,13 +25,26 @@ class FacebookRedirectLoginHelperTest extends PHPUnit_Framework_TestCase
       'sdk' => 'php-sdk-' . FacebookRequest::VERSION,
       'scope' => implode(',', array())
     );
-    $expectedUrl = 'https://www.facebook.com/v2.0/dialog/oauth?';
-    $this->assertTrue(strpos($loginUrl, $expectedUrl) !== false);
+    $expectedUrl = 'https://www.facebook.com/' . FacebookRequest::GRAPH_API_VERSION . '/dialog/oauth?';
+    $this->assertTrue(strpos($loginUrl, $expectedUrl) === 0, 'Unexpected base login URL returned from getLoginUrl().');
     foreach ($params as $key => $value) {
-      $this->assertTrue(
-        strpos($loginUrl, $key . '=' . urlencode($value)) !== false
-      );
+      $this->assertContains($key . '=' . urlencode($value), $loginUrl);
     }
+  }
+
+  public function testReRequestUrlContainsState()
+  {
+    $helper = new FacebookRedirectLoginHelper(
+      self::REDIRECT_URL,
+      FacebookTestCredentials::$appId,
+      FacebookTestCredentials::$appSecret
+    );
+    $helper->disableSessionStatusCheck();
+
+    $reRequestUrl = $helper->getReRequestUrl();
+    $state = $_SESSION['FBRLH_state'];
+
+    $this->assertContains('state=' . urlencode($state), $reRequestUrl);
   }
 
   public function testLogoutURL()

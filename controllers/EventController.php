@@ -2,14 +2,15 @@
 
 namespace app\controllers;
 
+use app\models\EventSearch;
 use app\models\apis\SocialMediaApi;
 use app\models\apis\GoaBaseApi;
 
 use app\models\SocialMedia;
 use Yii;
 use app\models\Event;
-use yii\helpers\Json;
 use yii\base\Exception;
+use yii\helpers\Json;
 use yii\base\Model;
 use yii\db\IntegrityException;
 use yii\db\Query;
@@ -20,8 +21,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\data\Pagination;
-use app\models\SearchEventForm;
-use yii\web\UploadedFile;
+use app\models\forms\EventSearchForm;
 
 /**
  * EventController implements the CRUD actions for Event model.
@@ -40,11 +40,11 @@ class EventController extends Controller
             ],
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['create', 'update', 'delete'],
+                'only' => ['create', 'update', 'delete', 'list', 'admin'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create', 'update', 'delete'],
+                        'actions' => ['create', 'update', 'delete', 'list', 'admin'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -58,7 +58,7 @@ class EventController extends Controller
     public function actionIndex()
     {
         Yii::$app->cache->gc(true);
-        $searchModel = new SearchEventForm();
+        $searchModel = new EventSearchForm();
 
         $query = Event::find()->where(['>=', 'UNIX_TIMESTAMP(end_date)', time()]);
 
@@ -130,6 +130,16 @@ class EventController extends Controller
         echo Json::encode($out);
     }
 
+
+    /**
+     * Load Goa party from goabase api
+     */
+    public function actionLoadgoaparty($id){
+        $goaBaseApi = new GoaBaseApi();
+        $goaParty = $goaBaseApi->getParty($id);
+        return $this->render('goaparty', ['party' => $goaParty]);
+    }
+
     /**
      * Displays a single Event model.
      * @param integer $id
@@ -140,17 +150,13 @@ class EventController extends Controller
         $model = $this->findModel($id);
         $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
 
-
-        //Yii::$app->cache->delete('socialmedia' . $id);
-        $this->findSocialMedia($id, $socialMediaModels);
-
         ++$model->clicks;
 
         $model->update();
 
         // make "linked" link for hashtags
         foreach ($socialMediaModels as $socialMediaModel) {
-            if ($socialMediaModel->site_name === 'twitter') {
+            if ($socialMediaModel->site_name == 'twitter') {
                 $url_regex = '/(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/[a-zA-Z0-9\_\-]*\?src=hash/';
                 $user_regex = '/(\@)[a-zA-Z0-9\_\-]*/';
                 if (!preg_match($url_regex, $socialMediaModel->url)) {
@@ -202,7 +208,7 @@ class EventController extends Controller
 
         $socialMediaModels = [];
 
-        $model->max_num_socialMedia = 5;
+        $model->max_num_socialMedia = 20;
         $model->num_socialMedia = 1;
 
         for ($i = 0; $i < $model->max_num_socialMedia; $i++) {
@@ -219,12 +225,12 @@ class EventController extends Controller
             // image
             $image = $model->uploadImage();
             if ($model->save()) {
-                if ($image !== null) {
+                if ($image != null) {
                     $image->saveAs($model->getImagePath());
                 }
 
                 foreach ($socialMediaModels as $socialMediaModel) {
-                    if ($socialMediaModel->url === '') {
+                    if ($socialMediaModel->url == '') {
                         $socialMediaModel->delete();
                     } else {
                         $socialMediaModel->event_id = $model->id;
@@ -260,7 +266,7 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (Yii::$app->user->can('admin') || (Yii::$app->user->id !== $model->user_id)) {
+        if (Yii::$app->user->can('admin') || (Yii::$app->user->id != $model->user_id)) {
             throw new ForbiddenHttpException('You are not allowed to perform this action.');
         }
 
@@ -286,18 +292,18 @@ class EventController extends Controller
             // image
             $image = $model->uploadImage();
 
-            if ($image === null) {
+            if ($image == null) {
                 $model->image = $old_image;
             }
 
-            if ($model->update() !== false) {
-                if ($image !== null) { // delete old and overwrite
+            if ($model->update() != false) {
+                if ($image != null) { // delete old and overwrite
                     $model->deleteImage($old_image);
                     $image->saveAs($model->getImagePath());
                 }
 
                 foreach ($socialMediaModels as $socialMediaModel) {
-                    if ($socialMediaModel->url === '') {
+                    if ($socialMediaModel->url == '') {
                         $socialMediaModel->delete();
                     } else {
                         $socialMediaModel->event_id = $model->id;
@@ -333,7 +339,7 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (Yii::$app->user->id === $model->user_id) {
+        if (Yii::$app->user->id == $model->user_id) {
             return $this->redirect(['update', 'id' => $id]);
         }
 
@@ -341,7 +347,7 @@ class EventController extends Controller
 
         // make "linked" link for hashtags
         foreach ($socialMediaModels as $socialMediaModel) {
-            if ($socialMediaModel->site_name === 'twitter') {
+            if ($socialMediaModel->site_name == 'twitter') {
                 $url_regex = '/(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/[a-zA-Z0-9\_\-]*\?src=hash/';
                 if (!preg_match($url_regex, $socialMediaModel->url)) {
                     $socialMediaModel->url = preg_replace(
@@ -357,7 +363,7 @@ class EventController extends Controller
         $postData = Yii::$app->request->post();
 
         if ($linkModel->load($postData) && $linkModel->validate()) {
-            if ($linkModel->url === '') {
+            if ($linkModel->url == '') {
                 $linkModel->delete();
             } else {
                 $linkModel->event_id = $model->id;
@@ -392,13 +398,72 @@ class EventController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (!Yii::$app->user->can('admin') || Yii::$app->user->id !== $model->user_id) {
+        if (!Yii::$app->user->can('admin') && Yii::$app->user->id != $model->user_id) {
             throw new ForbiddenHttpException('You are not allowed to perform this action.');
         }
 
         $model->deleteImage($model->image);
         $model->delete();
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @throws ForbiddenHttpException
+     * @return string
+     */
+    public function actionList() {
+        if (Yii::$app->user->can('admin')) {
+            throw new ForbiddenHttpException('You are not allowed to perform this action.');
+        }
+
+        $searchModel = new EventSearch();
+
+        $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), Yii::$app->user->id);
+        return $this->render('list', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+        ]);
+    }
+
+    /**
+     * @throws ForbiddenHttpException
+     * @return string
+     */
+    public function actionAdmin() {
+        if (!Yii::$app->user->can('admin')) {
+            throw new ForbiddenHttpException('You are not allowed to perform this action.');
+        }
+
+        $searchModel = new EventSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), '');
+        return $this->render('list', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+        ]);
+    }
+
+    /**
+     * Is called by the cron job, checks if a cronjob is running and reloads all social media content.
+     */
+    public function actionCron() {
+        if (!Yii::$app->cache->get('cron')) {
+            Yii::$app->cache->set('cron', true);
+            try {
+                $eventModels = Event::find()->all();
+                foreach ($eventModels as $eventModel) {
+                    $socialMediaModels = SocialMedia::find()->where(['event_id' => $eventModel->id])->orderBy('id')->all();
+                    Yii::$app->cache->delete('socialmedia' . $eventModel->id);
+                    $this->findSocialMedia($eventModel->id, $socialMediaModels);
+                }
+            } catch (Exception $e) {
+                Yii::$app->cache->delete('cron');
+                return $e;
+            }
+            Yii::$app->cache->delete('cron');
+            return 'Cron-job successful.';
+        } else {
+            return 'Cron-job already running.';
+        }
     }
 
     /**
@@ -410,7 +475,7 @@ class EventController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Event::findOne($id)) !== null) {
+        if (($model = Event::findOne($id)) != null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -421,23 +486,14 @@ class EventController extends Controller
      * Checks if socialmedia is in the cache, else loads social media content.
      */
     public function findSocialMedia($id, $socialMediaModels) { //todo als Cron-Job oder ähnliches
-        Yii::$app->cache->gc(true);
+        //Yii::$app->cache->gc(true);
         if (!Yii::$app->cache->get('socialmedia' . $id)) {
             $socialMediaApi = new SocialMediaApi();
             foreach ($socialMediaModels as $key => $socialMediaModel) {
                 $socialMediaApi->loadSocialMedia($socialMediaModels[$key]);
             }
-            Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia(), 300);
+            Yii::$app->cache->set('socialmedia' . $id, $socialMediaApi->getSocialMedia());
         }
-    }
-
-    /**
-     * Load Goa party from goabase api
-     */
-    public function actionLoadgoaparty($id){
-        $goaBaseApi = new GoaBaseApi();
-        $goaParty = $goaBaseApi->getParty($id);
-        return $this->render('goaparty', ['party' => $goaParty]);
     }
 
     //Sort date from eventList 

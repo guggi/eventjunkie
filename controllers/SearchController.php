@@ -1,7 +1,7 @@
 <?php
 
 namespace app\controllers;
-use app\models\SearchEventForm;
+use app\models\forms\EventSearchForm;
 use Yii;
 use yii\data\Pagination;
 use yii\web\Controller;
@@ -16,7 +16,7 @@ class SearchController extends Controller
     }
 
     public function actionSearch(){
-        $searchModel = new SearchEventForm;
+        $searchModel = new EventSearchForm;
 
         if ($searchModel->load(Yii::$app->request->post()) && $searchModel->validate()){
             if (($searchModel->type_site == 1) && ($searchModel->type_goabase == 0)) {
@@ -61,7 +61,7 @@ class SearchController extends Controller
         $query = Event::find()->where(['like', 'name', $searchModel->name]);
         if (isset($searchModel->latitude)) {
             $query = $query->andWhere('acos(sin('.$searchModel->latitude . ') * sin(Latitude) + cos('.$searchModel->latitude . ') * cos(Latitude) * cos(Longitude - ('.$searchModel->longitude . '))) * 6371 <= ' .
-                $searchModel->radius);
+                $searchModel->radius*1000);
         }
         if ($searchModel->from_date !== "") {
             $query = $query->andWhere(['>=', 'UNIX_TIMESTAMP(start_date)', strtotime($searchModel->from_date)]);

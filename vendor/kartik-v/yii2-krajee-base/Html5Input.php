@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-krajee-base
- * @version 1.3.0
+ * @version 1.6.0
  */
 
 namespace kartik\base;
@@ -19,7 +19,7 @@ use yii\helpers\ArrayHelper;
  * @since 1.0
  * @see http://twitter.github.com/typeahead.js/examples
  */
-class Html5Input extends \kartik\base\InputWidget
+class Html5Input extends InputWidget
 {
     /**
      * @var string the HTML 5 input type
@@ -47,10 +47,10 @@ class Html5Input extends \kartik\base\InputWidget
     public $html5Container = [];
 
     /**
-     * @var string/boolean the message shown for unsupported browser. If set to false
+     * @var string|boolean the message shown for unsupported browser. If set to false
      * will not be displayed
      */
-    public $noSupport = 'Its recommended you use an upgraded browser to display the {type} control properly.';
+    public $noSupport;
 
     /**
      * @var string array the HTML attributes for container displaying unsupported browser message
@@ -100,6 +100,7 @@ class Html5Input extends \kartik\base\InputWidget
 
     protected function initInput()
     {
+        $this->initDisability($this->html5Options);
         if (in_array($this->type, self::$_specialInputs)) {
             $this->html5Options['id'] = $this->options['id'] . '-source';
             $this->registerAssets();
@@ -147,11 +148,12 @@ class Html5Input extends \kartik\base\InputWidget
         $prepend .= Html::tag('span', $input, $this->html5Container);
         $content = Html::tag('div', $prepend . $preCaption . $caption . $append, $this->containerOptions);
         Html::addCssClass($this->noSupportOptions, 'alert alert-warning');
-        if ($this->noSupport == false) {
+        if ($this->noSupport === false) {
             $message = '';
         } else {
-            $message = "\n<br>" . Html::tag('div', Yii::t('app', $this->noSupport, ['type' => $this->type]),
-                    $this->noSupportOptions);
+            $noSupport = !empty($this->noSupport) ? $this->noSupport : 
+                Yii::t('app', 'It is recommended you use an upgraded browser to display the {type} control properly.', ['type' => $this->type]);
+            $message = "\n<br>" . Html::tag('div', $noSupport, $this->noSupportOptions);
         }
         return "<!--[if lt IE 10]>\n{$caption}{$message}\n<![endif]--><![if gt IE 9]>\n{$content}\n<![endif]>";
     }
@@ -187,8 +189,8 @@ class Html5Input extends \kartik\base\InputWidget
         Html5InputAsset::register($view);
         $caption = 'jQuery("#' . $this->options['id'] . '")';
         $input = 'jQuery("#' . $this->html5Options['id'] . '")';
-        $js = "{$caption}.change(function(){{$input}.val(this.value)});\n" .
-            "{$input}.change(function(){{$caption}.val(this.value); {$caption}.trigger('change');});";
+        $js = "{$caption}.change(function(){ {$input}.val(this.value)} );\n" .
+            "{$input}.change(function(){ {$caption}.val(this.value); {$caption}.trigger('change');} );";
         $view->registerJs($js);
     }
 }

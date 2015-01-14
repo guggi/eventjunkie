@@ -1,3 +1,39 @@
+version 1.6.0
+=============
+**Date:** 16-Dec-2014
+
+- (bug #16): variable `$short` in `InputWidget` in method `setLanguage` set without `$prefix`.
+- (bug #17): Enhance `parseDateFormat` to convert formats rightly to PHP DateTime format.
+- (bug #18): Better `noSupport` message translation in `Html5Input`.
+- (enh #19): Avoid inspect errors in IDE for `Html5Input`.
+- (enh #20): Add new PluginAssetBundle for bootstrap JS dependent plugins.
+
+version 1.5.0
+=============
+**Date:** 06-Dec-2014
+
+- (enh #11): Added new properties `disabled` and `readonly` to `InputWidget` and `Html5Input`.
+    - a new method `initDisability` is been created for disability validation across Input Widgets
+    - this will automatically set the input's `disabled` or `readonly` option
+    - it will also automatically be used to validate disability and style complex widgets like `DatePicker` or `DateTimePicker`
+- (enh #12): Enhance `InputWidget` to include `getPluginScript` method.    
+- (enh #13): Enhancements to Config helper and change `self` methods to `static`.
+- (bug #14): Fix line terminators and new lines in `getPluginScript`.
+
+version 1.4.0
+=============
+**Date:** 29-Nov-2014
+
+- (enh #9): Enhanced language validation for combined ISO-639 and ISO-3166 codes
+    - Auto detect and generate the plugin language and its related locale file using a new `setLanguage` method in `InputWidget`
+    - Enhance `initLanguage` method to include a parameter `full` which defaults to `false` to use the ISO-639 language code.
+- (enh #10): Enhanced language and directory methods in Config
+
+    Two new methods is added to Config helper class:
+
+    - `getCurrentDir` - gets the current directory of the extended class object
+    - `fileExists` - modified file_exists method after replacing the slashes with right directory separator
+
 version 1.3.0
 =============
 **Date:** 25-Nov-2014
