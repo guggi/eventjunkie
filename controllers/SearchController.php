@@ -66,7 +66,7 @@ class SearchController extends Controller
         if ($searchModel->from_date !== "") {
             $query = $query->andWhere(['>=', 'UNIX_TIMESTAMP(start_date)', strtotime($searchModel->from_date)]);
         } else {
-            $query = $query->andWhere(['>=', 'UNIX_TIMESTAMP(start_date)', time()]);
+            $query = $query->andWhere(['>=', 'UNIX_TIMESTAMP(end_date)', time()]);
         }
         if ($searchModel->to_date !== "") {
             $query = $query->andWhere(['<=', 'UNIX_TIMESTAMP(start_date)', strtotime($searchModel->to_date)]);

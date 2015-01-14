@@ -33,14 +33,6 @@ class EventSearch extends Event
             'query' => $query,
         ]);
 
-        // enable sorting for the related columns
-/*        $addSortAttributes = ["profile.full_name"];
-        foreach ($addSortAttributes as $addSortAttribute) {
-            $dataProvider->sort->attributes[$addSortAttribute] = [
-                'asc'   => [$addSortAttribute => SORT_ASC],
-                'desc'  => [$addSortAttribute => SORT_DESC],
-            ];
-        }*/
         if ($user_id != '') {
             $query->andFilterWhere(['=', 'user_id', Yii::$app->user->id]);
         }

@@ -249,6 +249,13 @@ class EventController extends Controller
 
                 return $this->redirect(['view', 'id' => $model->id]);
             }
+        } else {
+            if (strtotime($model->start_date) != 0) {
+                $model->start_date = date('d.m.Y G:i', strtotime($model->start_date));
+            }
+            if (strtotime($model->end_date) != 0) {
+                $model->end_date = date('d.m.Y G:i', strtotime($model->end_date));
+            }
         }
         return $this->render('create', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
     }
@@ -323,9 +330,12 @@ class EventController extends Controller
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
-            $model->start_date = date('d.m.Y G:i', strtotime($model->start_date));
-            $model->end_date = date('d.m.Y G:i', strtotime($model->end_date));
-
+            if (strtotime($model->start_date) != 0) {
+                $model->start_date = date('d.m.Y G:i', strtotime($model->start_date));
+            }
+            if (strtotime($model->end_date) != 0) {
+                $model->end_date = date('d.m.Y G:i', strtotime($model->end_date));
+            }
         }
         return $this->render('update', ['model' => $model, 'socialMediaModels' => $socialMediaModels]);
     }

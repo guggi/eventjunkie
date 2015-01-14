@@ -134,19 +134,21 @@ $initScript = "
 
                 <?php foreach ($eventList as $event): ?>
                     <!-- Marker for Google Map -->
-		
-                    <?php 
-                    try { //ohne try catch block -> trying to get property of non-object
-			if( $event->id == NULL ) continue; 
-                        $jsonMarkerList[] = [
-                            "id" => $event->id,
-                            "name" => $event->name,
-                            "start_date" => $event->start_date,
-                            "end_date" => $event->end_date,
-                            "address" => $event->address,
-                            "latitude" => $event->latitude,
-                            "longitude" => $event->longitude
-                        ] ?>
+
+                    <?php
+                    if ($event != null) {
+                        if (substr($event->id, 0, 7) != "goabase") {
+                            $jsonMarkerList[] = [
+                                "id" => $event->id,
+                                "name" => $event->name,
+                                "start_date" => $event->start_date,
+                                "end_date" => $event->end_date,
+                                "address" => $event->address,
+                                "latitude" => $event->latitude,
+                                "longitude" => $event->longitude
+                            ];
+                        }
+                        ?>
                         <div class="col-md-6">
                             <div class="list-group">
                                 <a href="<?= (substr($event->id, 0, 7) == "goabase") ? \Yii::$app->request->getBaseUrl().'/index.php?r=event/loadgoaparty&id='.$event->id : \Yii::$app->request->getBaseUrl().'/index.php?r=event/view&id='.$event->id ?>" class="list-group-item">
@@ -170,7 +172,8 @@ $initScript = "
                         </div>
                     <?php
 
-                    }catch(Exception $e){}
+                    }
+
                 endforeach; ?>
 
 

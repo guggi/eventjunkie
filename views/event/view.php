@@ -52,9 +52,9 @@ $this->params['breadcrumbs'][] = $this->title;
             </p>
 
             <!-- image -->
-            <div style="max-width:750px;max-height:300px;">
+            <div class="col-md-12">
                 <?php if ($model->image) { ?>
-                    <img class="img-responsive" style="max-height:100%; max-width:100%; "  src="<?= \Yii::$app->request->getBaseUrl() .'/'. Yii::$app->params['imagePath'] .
+                    <img class="img-responsive" src="<?= \Yii::$app->request->getBaseUrl() .'/'. Yii::$app->params['imagePath'] .
                     Html::encode($model->image) ?>">
                 <?php } ?>
             </div>
@@ -62,91 +62,94 @@ $this->params['breadcrumbs'][] = $this->title;
             <hr>
 
             <!-- data -->
-            <p>
-                <strong>Organizer:</strong>
-                <?= Html::encode($model->user["username"]) ?> <tiny><?= Html::encode(date("d.m.Y G:i", strtotime($model->creation_date))) ?></tiny>
-            </p>
-            <p>
-                <strong>Date:</strong>
-                <?= date("d.m.Y G:i",
-                    strtotime($model->start_date)) ?>
-                <?= $model->start_date !== $model->end_date ? "-" : ""?>
-                <?= $model->start_date !== $model->end_date ?
-                    Html::encode(date("d.m.Y G:i", strtotime($model->end_date))) : "" ?>
-            </p>
-            <p>
-                <strong>Address:</strong>
-                <?= Html::encode($model->address) ?>
-            </p>
 
-            <hr>
-
-            <!-- google map -->
-            <div class="span12 map_searchEvent" id="map"></div>
-
-            <hr>
-
-            <!-- description -->
-            <p><strong>Description:</strong></p>
-            <p><?= Html::encode($model->description) ?></p>
-            <br>
-            <p><i>Note:</i></p>
-            <p><?= Html::encode($model->description) ?></p>
-
-            <hr>
-
-            <!-- clicks -->
-            <p class="text-center"><b><?= Html::encode($model->clicks) ?></b> Views</p>
-
-            <hr>
-
-            <!-- Only show if event is linked with either facebook, flickr or twitter -->
-            <?php if ($socialMediaModels) { ?>
-
-                <p class="tiny text-center">Linked with:
-                    <?php foreach ($socialMediaModels as $socialMediaModel) {?>
-                        <?php if ($socialMediaModel->site_name === 'facebook') {?>
-                            <a class="btn btn-social-icon btn-facebook" href="<?= $socialMediaModel->url ?>">
-                                <i class="fa fa-facebook"></i>
-                            </a>
-                        <?php } ?>
-                        <?php if ($socialMediaModel->site_name === 'flickr') {?>
-                            <a class="btn btn-social-icon btn-flickr" href="<?= $socialMediaModel->url ?>">
-                                <i class="fa fa-flickr"></i>
-                            </a>
-                        <?php } ?>
-                        <?php if ($socialMediaModel->site_name === 'twitter') {?>
-                            <a class="btn btn-social-icon btn-twitter" href="<?= $socialMediaModel->url ?>">
-                                <i class="fa fa-twitter"></i>
-                            </a>
-                        <?php } ?>
-                    <?php } ?>
+            <div class="col-md-12">
+                <p>
+                    <strong>Organizer:</strong>
+                    <?= Html::encode($model->user["username"]) ?> <tiny><?= Html::encode(date("d.m.Y G:i", strtotime($model->creation_date))) ?></tiny>
+                </p>
+                <p>
+                    <strong>Date:</strong>
+                    <?= date("d.m.Y G:i",
+                        strtotime($model->start_date)) ?>
+                    <?= $model->start_date !== $model->end_date ? "-" : ""?>
+                    <?= $model->start_date !== $model->end_date ?
+                        Html::encode(date("d.m.Y G:i", strtotime($model->end_date))) : "" ?>
+                </p>
+                <p>
+                    <strong>Address:</strong>
+                    <?= Html::encode($model->address) ?>
                 </p>
 
-            <?php }?>
-            <!-- -->
+                <hr>
 
-            <hr>
+                <!-- google map -->
+                <div class="span12 map_searchEvent" id="map"></div>
 
-            <h4>Comments</h4>
+                <hr>
 
-            <!-- comments from linked sites -->
-            <?php
-            if (isset($socialmedia['comments'])) { ?>
-                <?php foreach ($socialmedia['comments'] as $socialmedia_comment) { ?>
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <strong><a href="<?= $socialmedia_comment['url'] ?>"><?= $socialmedia_comment['title'] ?></a></strong><br>
-                            <small class="text-muted"><?= date("d.m.Y G:i",
-                                    $socialmedia_comment['date']) ?></small>
-                            <p><?= $socialmedia_comment['text'] ?>
-                            </p>
-                            <small> – <a href="<?= $socialmedia_comment['author_url'] ?>"><?= $socialmedia_comment['author'] ?></a>
-                                on <a href="<?= $socialmedia_comment['socialmedia_url'] ?>"><cite title="source"><?= $socialmedia_comment['site_name'] ?></cite></a></small>
+                <!-- description -->
+                <p><strong>Description:</strong></p>
+                <p><?= Html::encode($model->description) ?></p>
+                <br>
+                <p><i>Note:</i></p>
+                <p><?= Html::encode($model->description) ?></p>
+
+                <hr>
+
+                <!-- clicks -->
+                <p class="text-center"><b><?= Html::encode($model->clicks) ?></b> Views</p>
+
+                <hr>
+
+                <!-- Only show if event is linked with either facebook, flickr or twitter -->
+                <?php if ($socialMediaModels) { ?>
+
+                    <p class="tiny text-center">Linked with:
+                        <?php foreach ($socialMediaModels as $socialMediaModel) {?>
+                            <?php if ($socialMediaModel->site_name === 'facebook') {?>
+                                <a class="btn btn-social-icon btn-facebook" href="<?= $socialMediaModel->url ?>">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                            <?php } ?>
+                            <?php if ($socialMediaModel->site_name === 'flickr') {?>
+                                <a class="btn btn-social-icon btn-flickr" href="<?= $socialMediaModel->url ?>">
+                                    <i class="fa fa-flickr"></i>
+                                </a>
+                            <?php } ?>
+                            <?php if ($socialMediaModel->site_name === 'twitter') {?>
+                                <a class="btn btn-social-icon btn-twitter" href="<?= $socialMediaModel->url ?>">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            <?php } ?>
+                        <?php } ?>
+                    </p>
+
+                <?php }?>
+                <!-- -->
+
+                <hr>
+
+                <h4>Comments</h4>
+
+                <!-- comments from linked sites -->
+                <?php
+                if (isset($socialmedia['comments'])) { ?>
+                    <?php foreach ($socialmedia['comments'] as $socialmedia_comment) { ?>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <strong><a href="<?= $socialmedia_comment['url'] ?>"><?= $socialmedia_comment['title'] ?></a></strong><br>
+                                <small class="text-muted"><?= date("d.m.Y G:i",
+                                        $socialmedia_comment['date']) ?></small>
+                                <p><?= $socialmedia_comment['text'] ?>
+                                </p>
+                                <small> – <a href="<?= $socialmedia_comment['author_url'] ?>"><?= $socialmedia_comment['author'] ?></a>
+                                    on <a href="<?= $socialmedia_comment['socialmedia_url'] ?>"><cite title="source"><?= $socialmedia_comment['site_name'] ?></cite></a></small>
+                            </div>
                         </div>
-                    </div>
+                    <?php } ?>
                 <?php } ?>
-            <?php } ?>
+            </div>
         </div>
         <div class="col-md-4">
 
