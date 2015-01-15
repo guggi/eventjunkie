@@ -23,8 +23,9 @@ class SocialMediaApi {
             $this->pushImages($twitterApi->getImages());
         } else if ($link->site_name === 'facebook') {
             $facebookApi = new FacebookApi($link->url);
+            $this->pushComments($facebookApi->getComments());
+            $this->pushImages($facebookApi->getImages());
         }
-
     }
 
     public function validateSocialMedia($link) {
@@ -38,18 +39,23 @@ class SocialMediaApi {
         }
         if ($link->site_name === 'facebook') {
             $facebookApi = new FacebookApi($link->url);
+            $facebookApi->getComments();
         }
     }
 
     public function pushImages($loadedImages) {
-        foreach ($loadedImages as $loadedImage) {
-            $this->socialmedia['images'][] = $loadedImage;
+        if (isset($loadedImages)) {
+            foreach ($loadedImages as $loadedImage) {
+                $this->socialmedia['images'][] = $loadedImage;
+            }
         }
     }
 
     public function pushComments($loadedComments) {
-        foreach ($loadedComments as $loadedComment) {
-            $this->socialmedia['comments'][] = $loadedComment;
+        if (isset($loadedComments)) {
+            foreach ($loadedComments as $loadedComment) {
+                $this->socialmedia['comments'][] = $loadedComment;
+            }
         }
     }
 

@@ -1,3 +1,18 @@
+version 1.7.1
+=============
+**Date:** 14-Jan-2015
+
+- (enh #23): Enhance AssetBundle for over riding empty assets from AssetManager.
+
+version 1.7.0
+=============
+**Date:** 12-Jan-2015
+
+- Fix kartik-v/yii2-widget-datepicker#10 - Language definition in pluginOptions
+- (enh #21): Implement TranslationTrait and i18N configuration.
+- (enh #22): Implement base Module class.
+- Code formatting updates as per Yii2 coding style.
+
 version 1.6.0
 =============
 **Date:** 16-Dec-2014

@@ -24,8 +24,8 @@
         "yiisoft/yii2-authclient": "*",
         "j7mbo/twitter-api-php": "dev-master",
         "yiisoft/yii2-jui": "*",
-        "facebook/php-sdk-v4" : "4.0.*",
-        "kartik-v/yii2-checkbox-x": "*"
+        "kartik-v/yii2-checkbox-x": "*",
+        "facebook/php-sdk-v4" : "4.0.*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

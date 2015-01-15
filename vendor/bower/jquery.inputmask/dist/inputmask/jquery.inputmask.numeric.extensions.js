@@ -1,9 +1,9 @@
 /*!
 * jquery.inputmask.numeric.extensions.js
 * http://github.com/RobinHerbots/jquery.inputmask
-* Copyright (c) 2010 - 2014 Robin Herbots
+* Copyright (c) 2010 - 2015 Robin Herbots
 * Licensed under the MIT license (http://www.opensource.org/licenses/mit-license.php)
-* Version: 3.1.49
+* Version: 3.1.56
 */
 !function(factory) {
     "function" == typeof define && define.amd ? define([ "jquery", "./jquery.inputmask" ], factory) : factory(jQuery);
@@ -23,7 +23,7 @@
                     var seps = Math.floor(opts.integerDigits / opts.groupSize), mod = opts.integerDigits % opts.groupSize;
                     opts.integerDigits = parseInt(opts.integerDigits) + (0 == mod ? seps - 1 : seps);
                 }
-                opts.definitions[";"] = opts.definitions["~"];
+                opts.radixFocus = opts.radixFocus && "0" == opts.placeholder, opts.definitions[";"] = opts.definitions["~"];
                 var mask = autoEscape(opts.prefix);
                 return mask += "[+]", mask += "~{1," + opts.integerDigits + "}", void 0 != opts.digits && (isNaN(opts.digits) || parseInt(opts.digits) > 0) && (mask += opts.digitsOptional ? "[" + (opts.decimalProtect ? ":" : opts.radixPoint) + ";{" + opts.digits + "}]" : (opts.decimalProtect ? ":" : opts.radixPoint) + ";{" + opts.digits + "}"), 
                 mask += autoEscape(opts.suffix), opts.greedy = !1, mask;
@@ -44,6 +44,8 @@
             suffix: "",
             rightAlign: !0,
             decimalProtect: !0,
+            min: void 0,
+            max: void 0,
             postFormat: function(buffer, pos, reformatOnly, opts) {
                 pos = pos >= buffer.length ? buffer.length - 1 : pos < opts.prefix.length ? opts.prefix.length : pos;
                 var needsRefresh = !1, charAtPos = buffer[pos];
@@ -53,7 +55,7 @@
                 var cbuf = buffer.slice();
                 charAtPos == opts.groupSeparator && (cbuf.splice(pos--, 1), charAtPos = cbuf[pos]), 
                 reformatOnly ? cbuf[pos] = "?" : cbuf.splice(pos, 0, "?");
-                var bufVal = cbuf.join("");
+                var bufVal = cbuf.join(""), bufValOrigin = bufVal;
                 if (bufVal.length > 0 && opts.autoGroup || reformatOnly && -1 != bufVal.indexOf(opts.groupSeparator)) {
                     var escapedGroupSeparator = $.inputmask.escapeRegex.call(this, opts.groupSeparator);
                     needsRefresh = 0 == bufVal.indexOf(opts.groupSeparator), bufVal = bufVal.replace(new RegExp(escapedGroupSeparator, "g"), "");
@@ -62,16 +64,21 @@
                     bufVal = bufVal.replace(opts.groupSeparator + opts.groupSeparator, opts.groupSeparator);
                     "" != opts.radixPoint && radixSplit.length > 1 && (bufVal += opts.radixPoint + radixSplit[1]);
                 }
-                needsRefresh = buffer.join("") != bufVal, buffer.length = bufVal.length;
+                needsRefresh = bufValOrigin != bufVal, buffer.length = bufVal.length;
                 for (var i = 0, l = bufVal.length; l > i; i++) buffer[i] = bufVal.charAt(i);
                 var newPos = $.inArray("?", buffer);
                 return reformatOnly ? buffer[newPos] = charAtPos : buffer.splice(newPos, 1), {
                     pos: newPos,
-                    refreshFromBuffer: needsRefresh
+                    refreshFromBuffer: needsRefresh,
+                    buffer: buffer
                 };
             },
             onBeforeWrite: function(e, buffer, caretPos, opts) {
                 if (e && "blur" == e.type) {
+                    var maskedValue = buffer.join(""), processValue = maskedValue.replace(opts.prefix, "");
+                    if (processValue = processValue.replace(opts.suffix, ""), processValue = processValue.replace(new RegExp($.inputmask.escapeRegex.call(this, opts.groupSeparator), "g"), ""), 
+                    processValue = processValue.replace($.inputmask.escapeRegex.call(this, opts.radixPoint), "."), 
+                    isFinite(processValue) && isFinite(opts.min) && parseFloat(processValue) < parseFloat(opts.min)) return opts.postFormat((opts.prefix + opts.min).split(""), 0, !0, opts);
                     var tmpBufSplit = "" != opts.radixPoint ? buffer.join("").split(opts.radixPoint) : [ buffer.join("") ], matchRslt = tmpBufSplit[0].match(opts.regex.integerPart(opts)), matchRsltDigits = 2 == tmpBufSplit.length ? tmpBufSplit[1].match(opts.regex.integerNPart(opts)) : void 0;
                     matchRslt && "-0" == matchRslt[0] && (void 0 == matchRsltDigits || matchRsltDigits[0].match(/^0+$/)) && buffer.splice(matchRslt.index, 1);
                     var radixPosition = $.inArray(opts.radixPoint, buffer);
@@ -85,7 +92,7 @@
                 }
                 if (opts.autoGroup) {
                     var rslt = opts.postFormat(buffer, caretPos - 1, !0, opts);
-                    return rslt.caret = rslt.pos + 1, rslt;
+                    return rslt.caret = 0 == caretPos ? caretPos : rslt.pos + 1, rslt;
                 }
             },
             regex: {
@@ -136,7 +143,7 @@
                 var matchRslt = maskset.buffer.join("").match(opts.regex.integerNPart(opts)), radixPosition = $.inArray(opts.radixPoint, maskset.buffer);
                 if (matchRslt && !strict && (-1 == radixPosition || radixPosition >= pos)) if (0 == matchRslt[0].indexOf("0")) {
                     pos < opts.prefix.length && (pos = matchRslt.index);
-                    var _radixPosition = $.inArray(opts.radixPoint, maskset._buffer), digitsMatch = maskset._buffer && maskset.buffer.slice(radixPosition).join("") == maskset._buffer.slice(_radixPosition).join(""), integerMatch = maskset._buffer && maskset.buffer.slice(matchRslt.index, radixPosition).join("") == maskset._buffer.slice(opts.prefix.length, _radixPosition).join("");
+                    var _radixPosition = $.inArray(opts.radixPoint, maskset._buffer), digitsMatch = maskset._buffer && maskset.buffer.slice(radixPosition).join("") == maskset._buffer.slice(_radixPosition).join("") || 0 == parseInt(maskset.buffer.slice(radixPosition + 1).join("")), integerMatch = maskset._buffer && maskset.buffer.slice(matchRslt.index, radixPosition).join("") == maskset._buffer.slice(opts.prefix.length, _radixPosition).join("") || "0" == maskset.buffer.slice(matchRslt.index, radixPosition).join("");
                     if (-1 == radixPosition || digitsMatch && integerMatch) return maskset.buffer.splice(matchRslt.index, 1), 
                     pos = pos > matchRslt.index ? pos - 1 : matchRslt.index, {
                         pos: pos,
@@ -149,6 +156,13 @@
                     };
                 } else if ("0" === chrs && pos <= matchRslt.index) return !1;
                 return !0;
+            },
+            postValidation: function(buffer, opts) {
+                var isValid = !0, maskedValue = buffer.join(""), processValue = maskedValue.replace(opts.prefix, "");
+                return processValue = processValue.replace(opts.suffix, ""), processValue = processValue.replace(new RegExp($.inputmask.escapeRegex.call(this, opts.groupSeparator), "g"), ""), 
+                processValue = processValue.replace($.inputmask.escapeRegex.call(this, opts.radixPoint), "."), 
+                isFinite(processValue) && isFinite(opts.max) && (isValid = parseFloat(processValue) <= parseFloat(opts.max)), 
+                isValid;
             },
             definitions: {
                 "~": {
@@ -223,15 +237,21 @@
                 return 0 == opts.digits && (-1 != initialValue.indexOf(".") ? initialValue = initialValue.substring(0, initialValue.indexOf(".")) : -1 != initialValue.indexOf(",") && (initialValue = initialValue.substring(0, initialValue.indexOf(",")))), 
                 initialValue;
             },
-            canClearPosition: function(maskset, position, lvp, opts) {
-                var canClear = maskset.validPositions[position].input != opts.radixPoint || position == lvp;
-                if (canClear) {
-                    var matchRslt = maskset.buffer.join("").match(opts.regex.integerNPart(opts)), radixPosition = $.inArray(opts.radixPoint, maskset.buffer);
-                    matchRslt && (-1 == radixPosition || radixPosition >= position) && (0 == matchRslt[0].indexOf("0") ? canClear = matchRslt.index != position : -1 != radixPosition && 1 == matchRslt[0].length && matchRslt.index == position && (maskset.validPositions[position].input = "0", 
-                    canClear = !1));
+            canClearPosition: function(maskset, position, lvp, strict, opts) {
+                var positionInput = maskset.validPositions[position].input, canClear = positionInput != opts.radixPoint && isFinite(positionInput) || position == lvp || positionInput == opts.groupSeparator;
+                if (canClear && isFinite(positionInput)) {
+                    if (!strict) for (var pos = position + 1; maskset.validPositions[pos] && (maskset.validPositions[pos].input == opts.groupSeparator || "0" == maskset.validPositions[pos].input); ) delete maskset.validPositions[pos], 
+                    pos++;
+                    var buffer = [];
+                    for (var vp in maskset.validPositions) buffer.push(maskset.validPositions[vp].input);
+                    var matchRslt = buffer.join("").match(opts.regex.integerNPart(opts)), radixPosition = $.inArray(opts.radixPoint, maskset.buffer);
+                    if (matchRslt && (-1 == radixPosition || radixPosition >= position)) if (0 == matchRslt[0].indexOf("0")) canClear = matchRslt.index != position || -1 == radixPosition; else {
+                        var intPart = parseInt(matchRslt[0].replace(new RegExp($.inputmask.escapeRegex.call(this, opts.groupSeparator), "g"), ""));
+                        -1 != radixPosition && 10 > intPart && "0" == opts.placeholder.charAt(0) && (maskset.validPositions[position].input = "0", 
+                        maskset.p = opts.prefix.length + 1, canClear = !1);
+                    }
                 }
-                return canClear && maskset.validPositions[position + 1] && maskset.validPositions[position + 1].input == opts.groupSeparator && delete maskset.validPositions[position + 1], 
-                canClear;
+                return canClear;
             }
         },
         currency: {

@@ -113,6 +113,12 @@ a.desc:after {
     margin-left: 25%;*/
 }
 
+.thumbnail-image{
+    width: 150px;
+    height: 150px;
+    overflow: auto;
+}
+
 
 .table.table-borderless td, .table.table-borderless th {
     border: 0 !important;

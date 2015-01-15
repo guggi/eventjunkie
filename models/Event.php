@@ -4,6 +4,7 @@ namespace app\models;
 
 use amnah\yii2\user\models\User;
 use Yii;
+use yii\base\Exception;
 use yii\db\ActiveRecord;
 use yii\web\UploadedFile;
 

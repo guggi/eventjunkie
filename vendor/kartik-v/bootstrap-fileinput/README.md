@@ -7,7 +7,7 @@ The plugin incorporates a simple HTML markup with enhanced CSS styling of a HTML
 
 ![File Input Screenshot](https://lh3.googleusercontent.com/-3FiEmc_okc4/VBw_d2LBAJI/AAAAAAAAAL8/KbVj5X9Dus0/w596-h454-no/FileInput.jpg)
 
-> NOTE: The latest version of the plugin v4.1.4 has been released. Refer the [CHANGE LOG](https://github.com/kartik-v/bootstrap-fileinput/blob/master/CHANGE.md) for details. 
+> NOTE: The latest version of the plugin v4.1.5 has been released. Refer the [CHANGE LOG](https://github.com/kartik-v/bootstrap-fileinput/blob/master/CHANGE.md) for details. 
 
 ## Features  
 
@@ -15,9 +15,9 @@ The plugin incorporates a simple HTML markup with enhanced CSS styling of a HTML
 
 1. The plugin will convert a simple HTML file input to an advanced file picker control. Will help fallback to a normal HTML file input for browsers not supporting JQuery or Javascript.
 2. The file input consists of the following three sections with options and templates to control the display:
-   - file caption section: to display a brief information of the file(s) selected
-   - file action buttons section: to browse, remove, and upload files.
-   - file preview section: to display the selected files on client for preview (supports preview of image, text, flash, and video file types). Other file types will be displayed as normal thumbnails.
+   - **_file caption section_**: to display a brief information of the file(s) selected
+   - **_file action buttons section_**: to browse, remove, and upload files.
+   - **_file preview section_**: to display the selected files on client for preview (supports preview of image, text, flash, and video file types). Other file types will be displayed as normal thumbnails.
 3. The plugin automatically converts an input with `type = file` to an advanced file picker input if you set its `class = file`. All options to the input can be passed as HTML5 `data` attributes.
 4. Ability to select and preview multiple files. Uses HTML 5 File reader API to read and preview files. Displays the progress of files being being loaded onto the preview zone, in case many files are chosen.
 5. Offers predefined templates and CSS classes which can be changed to style your file-input display as per your needs.
@@ -36,9 +36,7 @@ The plugin incorporates a simple HTML markup with enhanced CSS styling of a HTML
 11. Upload action defaults to form submit. Supports an upload route/server action parameter for custom ajax based upload.
 12. Triggers JQuery events for advanced development. Events currently available are `filereset`, `fileclear`, `filecleared`, `fileloaded`, and `fileerror`.
 13. Disabled and readonly file input support.
-14. Dynamically auto size the file captions for long file names exceeding container width. New property `autoFitCaption` 
-  is added which defaults to `true`. When this is `true` the plugin will auto fit caption text within the container dynamically
-  and responsively based on window size.
+14. Dynamically auto size the file captions for long file names exceeding container width. 
 15. Raise new `fileimageuploaded` event that fires after image is completely loaded on the preview container.
 16. Autosize preview images when they exceed the size of the preview container.
 17. Completely templatized and extensible to allow configuration of the file-input the way the developer wants.
@@ -155,9 +153,6 @@ _boolean_ whether to display the file upload button. Defaults to `true`. This wi
 
 #### showCancel
 _boolean_ whether to display the file upload cancel button. Defaults to `true`. This will be only enabled and displayed when an AJAX upload is in process.
-
-#### autoFitCaption
-_boolean_ whether to automatically size the file caption text to fit the container for long file names overflowing the container. Defaults to `true`. When set to true, the caption text will be dynamically sized. Shrunk file names will be appended with ellipsis, and the complete filename will be displayed as a title on hover.
 
 #### captionClass
 _string_ any additional CSS class to append to the caption container.
@@ -317,6 +312,7 @@ The `layoutTemplates` if not set will default to:
         '</div>',
     icon: '<span class="glyphicon glyphicon-file kv-caption-icon"></span>',
     caption: '<div tabindex="-1" class="form-control file-caption {class}">\n' +
+        '   <span class="file-caption-ellipsis">&hellip;</span>\n' +
         '   <div class="file-caption-name"></div>\n' +
         '</div>',
     modal: '<div id="{id}" class="modal fade">\n' +
@@ -333,7 +329,7 @@ The `layoutTemplates` if not set will default to:
         '  </div>\n' +
         '</div>',
     progress: '<div class="progress">\n' +
-        '    <div class="progress-bar progress-bar-success progress-bar-striped text-center" role="progressbar" aria-valuenow="{percent}" aria-valuemin="0" aria-valuemax="100" style="width:{percent}%;">\n' +
+        '    <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{percent}" aria-valuemin="0" aria-valuemax="100" style="width:{percent}%;">\n' +
         '        {percent}%\n' +
         '     </div>\n' +
         '</div>',
@@ -343,14 +339,13 @@ The `layoutTemplates` if not set will default to:
         '</div>',
     actions: '<div class="file-actions">\n' +
         '    <div class="file-footer-buttons">\n' +
-        '        {upload}{delete}' +
+        '        {upload}{delete}{other}' +
         '    </div>\n' +
         '    <div class="file-upload-indicator" tabindex="-1" title="{indicatorTitle}">{indicator}</div>\n' +
         '    <div class="clearfix"></div>\n' +
         '</div>',
     actionDelete: '<button type="button" class="kv-file-remove {removeClass}" title="{removeTitle}"{dataUrl}{dataKey}>{removeIcon}</button>\n',
     actionUpload: '<button type="button" class="kv-file-upload {uploadClass}" title="{uploadTitle}">{uploadIcon}</button>\n'
-
 };
 ```
 
@@ -440,17 +435,17 @@ The `previewTemplates` if not set will default to:
 
 The values of the constants used in the above templates are as follows:
 
-```
+```js
 STYLE_SETTING = 'style="width:{width};height:{height};"',
-OBJECT_PARAMS = '      &lt;param name="controller" value="true" />\n' +
-    '      &lt;param name="allowFullScreen" value="true" />\n' +
-    '      &lt;param name="allowScriptAccess" value="always" />\n' +
-    '      &lt;param name="autoPlay" value="false" />\n' +
-    '      &lt;param name="autoStart" value="false" />\n'+
-    '      &lt;param name="quality" value="high" />\n',
-DEFAULT_PREVIEW = '&lt;div class="file-preview-other">\n' +
-    '       &lt;i class="glyphicon glyphicon-file">&lt;/i>\n' +
-    '   &lt;/div>'
+OBJECT_PARAMS = '      <param name="controller" value="true" />\n' +
+    '      <param name="allowFullScreen" value="true" />\n' +
+    '      <param name="allowScriptAccess" value="always" />\n' +
+    '      <param name="autoPlay" value="false" />\n' +
+    '      <param name="autoStart" value="false" />\n'+
+    '      <param name="quality" value="high" />\n',
+DEFAULT_PREVIEW = '<div class="file-preview-other">\n' +
+    '       <i class="glyphicon glyphicon-file"></i>\n' +
+    '   </div>'
 ```
 
 #### allowedFileTypes
@@ -866,6 +861,7 @@ Additional parameters available are:
 - `previewId`: the identifier for the preview file container
 - `index`: the zero-based sequential index of the loaded file in the preview list
 - `reader`: the FileReader instance if available
+- `jqXHR`: the `jQuery XMLHttpRequest` object used for this transaction (if available).
 
 **Example:**
 ```js
@@ -961,9 +957,10 @@ $('#input-id').on('fileunlock', function(event, filestack, extraData) {
 This event is triggered before deletion of each thumbnail file in the `initialPreview` content set. Additional parameters available are: 
 
 - `key`: the key passed within `initialPreviewConfig` for the selected file for delete.
+- `jqXHR`: the `jQuery XMLHttpRequest` object used for this transaction (if available).
 
 ```js
-$('#input-id').on('filepredelete', function(event, key) {
+$('#input-id').on('filepredelete', function(event, key, jqXHR) {
     console.log('Key = ' + key);
 });
 ```
@@ -972,6 +969,7 @@ $('#input-id').on('filepredelete', function(event, key) {
 This event is triggered after deletion of each thumbnail file in the `initialPreview` content set. Additional parameters available are: 
 
 - `key`: the key passed within `initialPreviewConfig` for the selected file that will be passed as POST data to the `url`.
+- `jqXHR`: the `jQuery XMLHttpRequest` object used for this transaction (if available).
 
 ```js
 $('#input-id').on('filedelete', function(event, key) {
@@ -992,6 +990,7 @@ This event is triggered when an error is faced in deletion of each thumbnail fil
 - `data`: this is always null for `filedeleteerror`.
 - `previewId`: the identifier of the preview thumbnail container.
 - `index`: the zero-based index of the file in the preview container.
+- `jqXHR`: the `jQuery XMLHttpRequest` object used for this transaction (if available).
 
 ```js
 $('#input-id').on('filedeleteerror', function(event, data, preview, index) {
@@ -1008,11 +1007,12 @@ This event is triggered before upload of each thumbnail file. Additional paramet
     - `extra`: the `uploadExtraData` settings for the plugin (or empty object if not available).
     - `response`: the data sent via ajax response (or empty object if not available).
     - `reader`: the FileReader instance if available
+    - `jqXHR`: the `jQuery XMLHttpRequest` object used for this transaction (if available).
 - `previewId`: the identifier of the preview thumbnail container.
 - `index`: the zero-based index of the file in the preview container.
 
 ```js
-$('#input-id').on('filepreupload', function(event, data, previewId, index) {
+$('#input-id').on('filepreupload', function(event, data, previewId, index, jqXHR) {
     var form = data.form, files = data.files, extra = data.extra, 
         response = data.response, reader = data.reader;
     console.log('File pre upload triggered');
@@ -1029,6 +1029,7 @@ asynchronous batch uploads after each file in the selection is uploaded via ajax
     - `extra`: the `uploadExtraData` settings for the plugin (or empty object if not available).
     - `response`: the data sent via ajax response (or empty object if not available).
     - `reader`: the FileReader instance if available
+    - `jqXHR`: the `jQuery XMLHttpRequest` object used for this transaction (if available).
 - `previewId`: the identifier of each file's parent thumbnail div element in the preview window.
 - `index`: the zero-based index of the file in the file stack.
 
@@ -1049,6 +1050,7 @@ This event is triggered when an upload or file input validation error is encount
     - `extra`: the `uploadExtraData` settings for the plugin (or empty object if not available).
     - `response`: the data sent via ajax response (or empty object if not available).
     - `reader`: the FileReader instance if available
+    - `jqXHR`: the `jQuery XMLHttpRequest` object used for this transaction (if available).
 - `previewId`: the identifier of each file's parent thumbnail div element in the preview window.
 - `index`: the zero-based index of the file in the file stack.
 
@@ -1070,9 +1072,10 @@ Additional parameters available are:
     - `extra`: the `uploadExtraData` settings for the plugin (or empty object if not available).
     - `response`: the data sent via ajax response (or empty object if not available).
     - `reader`: the FileReader instance if available
+    - `jqXHR`: the `jQuery XMLHttpRequest` object used for this transaction (if available).
 
 ```js
-$('#input-id').on('filebatchpreupload', function(event, data) {
+$('#input-id').on('filebatchpreupload', function(event, data, jqXHR) {
     var form = data.form, files = data.files, extra = data.extra, 
         response = data.response, reader = data.reader;
     console.log('File batch pre upload triggered');
@@ -1106,6 +1109,7 @@ This event is triggered when any error is faced in the synchronous batch upload 
     - `extra`: the `uploadExtraData` settings for the plugin (or empty object if not available).
     - `response`: the data sent via ajax response (or empty object if not available).
     - `reader`: the FileReader instance if available
+    - `jqXHR`: the `jQuery XMLHttpRequest` object used for this transaction (if available).
 
 ```js
 $('#input-id').on('filebatchuploaderror', function(event, data) {
@@ -1118,17 +1122,11 @@ $('#input-id').on('filebatchuploaderror', function(event, data) {
 #### filebatchuploadcomplete
 This event is triggered after completion of either the synchronous OR asynchronous ajax batch upload. Additional parameters available are: 
 
-- `data`: This is a data object (associative array) that sends the following information, whose keys are:
-    - `form`: the FormData object which is passed via XHR2 (or empty object if not available).
-    - `files`: the file stack array (or empty object if not available).
-    - `extra`: the `uploadExtraData` settings for the plugin (or empty object if not available).
-    - `response`: the data sent via ajax response (or empty object if not available).
-    - `reader`: the FileReader instance if available
+- `files`: the file stack array (or empty object if not available).
+- `extra`: the `uploadExtraData` settings for the plugin (or empty object if not available).
 
 ```js
-$('#input-id').on('filebatchuploadcomplete', function(event, data) {
-    var form = data.form, files = data.files, extra = data.extra, 
-        response = data.response, reader = data.reader;
+$('#input-id').on('filebatchuploadcomplete', function(event, files, extra) {
     console.log('File batch upload complete');
 });
 ```

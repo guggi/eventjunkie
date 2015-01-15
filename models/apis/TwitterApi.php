@@ -52,13 +52,13 @@ class TwitterApi
         }
     }
 
-    public function getHashtagFromUrl() {
+    private function getHashtagFromUrl() {
         $hashtag_regex = '/[^(http|https)?:?(\/\/)?(w*\.)?twitter\.com\/hashtag\/)][a-zA-Z0-9\_\-]+/';
         preg_match($hashtag_regex, $this->url, $match);
         return $match[0];
     }
 
-    public function parseTweet($tweet_text) {
+    private function parseTweet($tweet_text) {
         $parsed_tweet_text = preg_replace(
             '@(https?://([-\w\.]+)+(/([\w/_\.]*(\?\S+)?(#\S+)?)?)?)@',
             '<a href="$1">$1</a>',
@@ -74,7 +74,7 @@ class TwitterApi
         return $parsed_tweet_text;
     }
 
-    public function getTweetsPerHashtag($hashtag) {
+    private function getTweetsPerHashtag($hashtag) {
         if (substr($hashtag, 0, 1) === '#') {
             $hashtag = substr($hashtag, 1);
         }
@@ -115,7 +115,7 @@ class TwitterApi
         }
     }
 
-    public function getTweetsPerUser($user) {
+    private function getTweetsPerUser($user) {
         if (substr($user, 0, 1) === '@') {
             $user = substr($user, 1);
         }

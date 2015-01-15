@@ -136,15 +136,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php
                 if (isset($socialmedia['comments'])) { ?>
                     <?php foreach ($socialmedia['comments'] as $socialmedia_comment) { ?>
-                        <div class="panel panel-default">
+                        <div class="<?= ($socialmedia_comment['site_name'] == 'Twitter') ? 'panel panel-info' : 'panel panel-primary' ?>">
                             <div class="panel-body">
-                                <strong><a href="<?= $socialmedia_comment['url'] ?>"><?= $socialmedia_comment['title'] ?></a></strong><br>
-                                <small class="text-muted"><?= date("d.m.Y G:i",
-                                        $socialmedia_comment['date']) ?></small>
-                                <p><?= $socialmedia_comment['text'] ?>
-                                </p>
-                                <small> – <a href="<?= $socialmedia_comment['author_url'] ?>"><?= $socialmedia_comment['author'] ?></a>
-                                    on <a href="<?= $socialmedia_comment['socialmedia_url'] ?>"><cite title="source"><?= $socialmedia_comment['site_name'] ?></cite></a></small>
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <div class="btn btn-social-icon btn-<?= strtolower($socialmedia_comment['site_name']) ?>">
+                                            <i class="fa fa-<?= strtolower($socialmedia_comment['site_name']) ?>">
+                                            </i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-11">
+                                        <strong><a href="<?= $socialmedia_comment['url'] ?>"><?= $socialmedia_comment['title'] ?></a></strong><br>
+                                        <small class="text-muted"><?= date("d.m.Y G:i",
+                                                $socialmedia_comment['date']) ?></small>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <p><?= $socialmedia_comment['text'] ?>
+                                        </p>
+                                        <small> – <a href="<?= $socialmedia_comment['author_url'] ?>"><?= $socialmedia_comment['author'] ?></a>
+                                            on <a href="<?= $socialmedia_comment['socialmedia_url'] ?>"><cite title="source"><?= $socialmedia_comment['site_name'] ?></cite></a></small>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     <?php } ?>
@@ -167,7 +180,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         foreach ($socialmedia['images'] as $socialmedia_image) { ?>
                             <div class="col-md-6">
                                 <a href="<?= $socialmedia_image['original'] ?>">
-                                    <img class="thumbnail" src="<?= $socialmedia_image['thumbnail'] ?>" alt="<?= $socialmedia_image['thumbnail'] ?>" />
+                                    <img class="thumbnail thumbnail-image" src="<?= $socialmedia_image['thumbnail'] ?>" alt="<?= $socialmedia_image['thumbnail'] ?>" />
                                 </a>
                             </div>
                         <?php } ?>

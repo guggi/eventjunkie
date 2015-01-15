@@ -110,7 +110,7 @@ class EventController extends Controller
 
     public function actionAsyncloading($search = null, $id = null) {
         $out = ['more' => false];
-        
+
         if (!is_null($search)) {
             $query = new Query;
             $query->select('id, name AS text')
@@ -120,10 +120,10 @@ class EventController extends Controller
             $command = $query->createCommand();
             $data = $command->queryAll();
             $out['results'] = array_values($data);
-        
+
         } else if ($id > 0) {
             $out['results'] = ['id' => $id, 'text' => Event::find($id)->name];
-        
+
         } else {
             $out['results'] = ['id' => 0, 'text' => 'No matching records found'];
         }
@@ -162,7 +162,7 @@ class EventController extends Controller
                 if (!preg_match($url_regex, $socialMediaModel->url)) {
                     if (preg_match($user_regex, $socialMediaModel->url)) {
                         $socialMediaModel->url = preg_replace(
-                        '/\@(\w+)/i',
+                            '/\@(\w+)/i',
                             'https://twitter.com/$1',
                             $socialMediaModel->url);
                     } else {
@@ -308,27 +308,27 @@ class EventController extends Controller
                     $model->deleteImage($old_image);
                     $image->saveAs($model->getImagePath());
                 }
+            }
 
-                foreach ($socialMediaModels as $socialMediaModel) {
-                    if ($socialMediaModel->url == '') {
-                        $socialMediaModel->delete();
-                    } else {
-                        $socialMediaModel->event_id = $model->id;
-                        try {
-                            $socialMediaModel->save();
-                        } catch (IntegrityException $e) {
-                            throw new \InvalidArgumentException('Url/Hashtag already exists');
-                        }
+            foreach ($socialMediaModels as $socialMediaModel) {
+                if ($socialMediaModel->url == '') {
+                    $socialMediaModel->delete();
+                } else {
+                    $socialMediaModel->event_id = $model->id;
+                    try {
+                        $socialMediaModel->save();
+                    } catch (IntegrityException $e) {
+                        throw new \InvalidArgumentException('Url/Hashtag already exists');
                     }
                 }
-
-                // delete cache of this event and create new cache
-                Yii::$app->cache->delete('socialmedia' . $id);
-                $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
-                $this->findSocialMedia($id, $socialMediaModels);
-
-                return $this->redirect(['view', 'id' => $model->id]);
             }
+
+            // delete cache of this event and create new cache
+            Yii::$app->cache->delete('socialmedia' . $id);
+            $socialMediaModels = SocialMedia::find()->where(['event_id' => $id])->orderBy('id')->all();
+            $this->findSocialMedia($id, $socialMediaModels);
+
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             if (strtotime($model->start_date) != 0) {
                 $model->start_date = date('d.m.Y G:i', strtotime($model->start_date));

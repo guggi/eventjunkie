@@ -3,7 +3,7 @@
 /**
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-krajee-base
- * @version 1.6.0
+ * @version 1.7.1
  */
 
 namespace kartik\base;
@@ -16,6 +16,9 @@ namespace kartik\base;
  */
 class Html5InputAsset extends \kartik\base\AssetBundle
 {
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         $this->setSourcePath(__DIR__ . '/assets');

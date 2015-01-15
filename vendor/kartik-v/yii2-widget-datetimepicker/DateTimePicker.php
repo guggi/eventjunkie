@@ -4,7 +4,7 @@
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014
  * @package yii2-widgets
  * @subpackage yii2-widget-datetimepicker
- * @version 1.0.0
+ * @version 1.3.0
  */
 
 namespace kartik\datetime;
@@ -24,10 +24,13 @@ use yii\base\InvalidConfigException;
  */
 class DateTimePicker extends \kartik\base\InputWidget
 {
+    const CALENDAR_ICON = '<i class="glyphicon glyphicon-calendar"></i>';
+
     const TYPE_INPUT = 1;
     const TYPE_COMPONENT_PREPEND = 2;
     const TYPE_COMPONENT_APPEND = 3;
     const TYPE_INLINE = 4;
+    const TYPE_BUTTON = 5;
 
     /**
      * @var string the markup type of widget markup
@@ -40,11 +43,19 @@ class DateTimePicker extends \kartik\base\InputWidget
      * @var string The size of the input - 'lg', 'md', 'sm', 'xs'
      */
     public $size;
+    
+    /**
+     * @var array the HTML attributes for the button that is rendered for [[DateTimePicker::TYPE_BUTTON]].
+     * Defaults to `['class'=>'btn btn-default']`. The following special options are recognized:
+     * - 'label': string the button label. Defaults to `<i class="glyphicon glyphicon-calendar"></i>`
+     */
+    public $buttonOptions = [];
+    
     /**
      * @var array the HTML attributes for the input tag.
      */
     public $options = [];
-
+    
     /**
      * @var mixed the calendar/time picker button configuration.
      * - if this is passed as a string, it will be displayed as is (will not be HTML encoded).
@@ -84,11 +95,13 @@ class DateTimePicker extends \kartik\base\InputWidget
      */
     public function init()
     {
+        $this->_msgCat = 'kvdatetime';
         parent::init();
-        if ($this->type < 1 || $this->type > 4 || !is_int($this->type)) {
-            throw new InvalidConfigException("Invalid value for the property 'type'. Must be an integer between 1 and 4.");
+        if ($this->type < 1 || $this->type > 5 || !is_int($this->type)) {
+            throw new InvalidConfigException("Invalid value for the property 'type'. Must be an integer between 1 and 5.");
         }
-        $this->initLanguage();
+        $this->initI18N();
+        $this->setLanguage('bootstrap-datetimepicker.', __DIR__ . '/assets/');
         $this->parseDateFormat('datetime');
         $this->_id = ($this->type == self::TYPE_INPUT) ? 'jQuery("#' . $this->options['id'] . '")' : 'jQuery("#' . $this->options['id'] . '").parent()';
         $this->registerAssets();
@@ -112,7 +125,8 @@ class DateTimePicker extends \kartik\base\InputWidget
         } else {
             Html::addCssClass($this->options, 'form-control');
         }
-        return $this->parseMarkup($this->getInput('textInput'));
+        $input = $this->type == self::TYPE_BUTTON ? 'hiddenInput' : 'textInput';
+        return $this->parseMarkup($this->getInput($input));
     }
 
     /**
@@ -134,7 +148,7 @@ class DateTimePicker extends \kartik\base\InputWidget
         $icon = ($type === 'picker') ? 'calendar' : 'remove';
         $icon = '<span class="glyphicon glyphicon-' . ArrayHelper::remove($options, 'icon', $icon) . '"></span>';
         if (empty($options['title'])) {
-            $title = ($type === 'picker') ? Yii::t('app', 'Select date & time') : Yii::t('app', 'Clear field');
+            $title = ($type === 'picker') ? Yii::t('kvdatetime', 'Select date & time') : Yii::t('kvdatetime', 'Clear field');
             if ($title != false) {
                 $options['title'] = $title;
             }
@@ -150,14 +164,15 @@ class DateTimePicker extends \kartik\base\InputWidget
      */
     protected function parseMarkup($input)
     {
+        $css = $this->disabled ? ' disabled' : '';
         if ($this->type == self::TYPE_INPUT || $this->type == self::TYPE_INLINE) {
             if (isset($this->size)) {
-                Html::addCssClass($this->options, 'input-' . $this->size);
+                Html::addCssClass($this->options, 'input-' . $this->size . $css);
             }
-        } elseif (isset($this->size)) {
-            Html::addCssClass($this->_container, 'input-group input-group-' . $this->size);
-        } else {
-            Html::addCssClass($this->_container, 'input-group');
+        } elseif ($this->type != self::TYPE_BUTTON && isset($this->size)) {
+            Html::addCssClass($this->_container, 'input-group input-group-' . $this->size . $css);
+        } elseif ($this->type != self::TYPE_BUTTON) {
+            Html::addCssClass($this->_container, 'input-group' . $css);
         }
         if ($this->type == self::TYPE_INPUT) {
             return $input;
@@ -172,21 +187,37 @@ class DateTimePicker extends \kartik\base\InputWidget
             $addon = $this->renderAddon($this->removeButton, 'remove') . $this->renderAddon($this->pickerButton);
             return Html::tag('div', $input . $addon, $this->_container);
         }
+        if ($this->type == self::TYPE_BUTTON) {
+            Html::addCssClass($this->_container, 'date');
+            $label = ArrayHelper::remove($this->buttonOptions, 'label', self::CALENDAR_ICON);
+            if (!isset($this->buttonOptions['disabled'])) {
+                $this->buttonOptions['disabled'] = $this->disabled;
+            }
+            if (empty($this->buttonOptions['class'])) {
+                $this->buttonOptions['class'] = 'btn btn-default';
+            }
+            $button = Html::button($label, $this->buttonOptions);
+            Html::addCssStyle($this->_container, 'display:block');
+            return Html::tag('span', "{$input}{$button}", $this->_container);
+        }
         if ($this->type == self::TYPE_INLINE) {
             $this->_id = $this->options['id'] . '-inline';
             $this->_container['id'] = $this->_id;
             return Html::tag('div', '', $this->_container) . $input;
         }
     }
-
+    
     /**
      * Registers the needed assets
      */
     public function registerAssets()
     {
+        if ($this->disabled) {
+            return;
+        }
         $view = $this->getView();
-        if (!empty($this->pluginOptions['language'])) {
-            DateTimePickerAsset::register($view)->js[] = 'js/locales/bootstrap-datetimepicker.' . $this->pluginOptions['language'] . '.js';
+        if (!empty($this->_langFile)) {
+            DateTimePickerAsset::register($view)->js[] = $this->_langFile;
         } else {
             DateTimePickerAsset::register($view);
         }

@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = 'Gallery';
                         foreach ($socialmedia['images'] as $socialmedia_image) { ?>
                             <div class="col-md-2">
                                 <a href="<?= $socialmedia_image['original'] ?>">
-                                    <img class="thumbnail" src="<?= $socialmedia_image['thumbnail'] ?>" alt="<?= $socialmedia_image['thumbnail'] ?>" />
+                                    <img class="thumbnail thumbnail-image" src="<?= $socialmedia_image['thumbnail'] ?>" alt="<?= $socialmedia_image['thumbnail'] ?>" />
                                 </a>
                             </div>
 
