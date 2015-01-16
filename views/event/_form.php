@@ -54,9 +54,9 @@ use yii\bootstrap\ActiveForm;
             ])?>
             <?= $form->field($model, 'start_date')->widget(DateTimePicker::classname(),[
                 'options' => ['placeholder' => date('d.m.Y G:i', time())],
-                'convertFormat' => true,
+                'convertFormat' => false,
                 'pluginOptions' => [
-                    'format' => 'php:d.m.Y G:i',
+                    'format' => 'd.mm.yyyy h:ii',
                     'todayHighlight' => true
                 ]
             ]) ?>

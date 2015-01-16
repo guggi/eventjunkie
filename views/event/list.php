@@ -32,39 +32,6 @@ $this->params['breadcrumbs'][] = 'List';
             'creation_date',
             'start_date',
             'end_date',
-            /*        'id',
-                    [
-                        'attribute' => 'role_id',
-                        'label' => Yii::t('user', 'Role'),
-                        'filter' => $role::dropdown(),
-                        'value' => function($model, $index, $dataColumn) use ($role) {
-                            $roleDropdown = $role::dropdown();
-                            return $roleDropdown[$model->role_id];
-                        },
-                    ],
-                    [
-                        'attribute' => 'status',
-                        'label' => Yii::t('user', 'Status'),
-                        'filter' => $user::statusDropdown(),
-                        'value' => function($model, $index, $dataColumn) use ($user) {
-                            $statusDropdown = $user::statusDropdown();
-                            return $statusDropdown[$model->status];
-                        },
-                    ],*/
-
-            //'profile.full_name',
-            // 'new_email:email',
-            // 'username',
-            // 'password',
-            // 'auth_key',
-            // 'api_key',
-            // 'login_ip',
-            // 'login_time',
-            // 'create_ip',
-            // 'create_time',
-            // 'update_time',
-            // 'ban_time',
-            // 'ban_reason',
             ['class' => 'yii\grid\ActionColumn',
                 'template' => '{view}{update}{delete}',
                 'buttons' => [
