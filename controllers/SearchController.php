@@ -48,7 +48,6 @@ class SearchController extends Controller
             } else {
                 $results = $this->findEvent($searchModel->name, $searchModel->address);
                 $results = $this->sortEventList($results);
-
                 return $this->render('index', ['results' => $results, 'searchModel' => $searchModel]);
             }
         } else {
@@ -76,8 +75,6 @@ class SearchController extends Controller
         return $query;
     }
 
-//Anmerkung: GoaBase Parties haben keine Adresse, nur Koordinaten. deshalb können bis auf weiteres nur interne events nach adresse gesucht werden
-
     private function findEvent($searchName, $searchAdress){
         $results[] =  Array();
         $eventList = $this->createEventList();
@@ -85,13 +82,13 @@ class SearchController extends Controller
 
         $counter=0;
         for($i=0; $i < count ($eventList)-1; $i++){
-            if ( strlen($searchName) > 0 && strpos(strtolower($eventList[$i]->name) , strtolower($searchName) ) != 0 ){ //search name
+            if ( strlen($searchName) > 0 && strpos(strtolower($eventList[$i]->name) , strtolower($searchName) ) > -1 ){ //search name
                 $results[$counter] = new Event;
-                $results[$counter] = $eventList[$i];
+                $results[$counter] = $eventList[$i]; //add event to findList
                 $counter++;
-            }else if( strlen($searchAdress) > 0 && strpos(strtolower($eventList[$i]->address) , strtolower($searchAdress) ) != 0 ){//search adress
+            }else if( strlen($searchAdress) > 0 && strpos(strtolower($eventList[$i]->address) , strtolower($searchAdress) ) > -1 ){//search adress
                 $results[$counter] = new Event;
-                $results[$counter] = $eventList[$i];
+                $results[$counter] = $eventList[$i]; //add event to findList
                 $counter++;
             }
         }
