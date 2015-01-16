@@ -5,13 +5,13 @@ namespace app\models\apis;
 use Facebook\FacebookRequest;
 use Facebook\FacebookSession;
 use Yii;
-use yii\base\Exception;
 
 class FacebookApi {
     private $url;
     private $session;
     private $images = [];
     private $comments = [];
+    private $limit = 1;
 
     function __construct($url) {
         $this->url = $url;
@@ -52,35 +52,62 @@ class FacebookApi {
         $request = new FacebookRequest(
             $this->session,
             'GET',
-            '/' . $id . '/feed' . $feed_url
+            '/' . $id . '/feed?limit=99999' . $feed_url
         );
 
-        $response = $request->execute();
-        $graphObject = $response->getGraphObject();
+        $json = $request->execute()->getRawResponse();
+        $response = json_decode($json);
 
-        $data = $graphObject->getProperty('data');
-        $dataArray = $data->asArray();
+        $data = $response->{'data'};
 
-        foreach($dataArray as $commentData) {
-            array_push($this->comments,
-                [
-                    'title' => $commentData->{'to'}->{'data'}[0]->{'name'},
-                    'date' => strtotime($commentData->{"created_time"}),
-                    'author' => $commentData->{'from'}->{'name'},
-                    'text' => $this->parseMessage($commentData->{"message"}),
-                    'site_name' => 'Facebook',
-                    'url' => 'https://www.facebook.com/events/' . $id,
-                    'author_url' => 'https://www.facebook.com/' . $commentData->{'from'}->{'id'},
-                    'socialmedia_url' => 'https://www.facebook.com/events/' . $id,
-                ]);
+        foreach($data as $commentData) {
+            if (isset($commentData->{"message"})) { // wegen Exceptions
+                array_push($this->comments,
+                    [
+                        'title' => $commentData->{'to'}->{'data'}[0]->{'name'},
+                        'date' => strtotime($commentData->{"created_time"}),
+                        'author' => $commentData->{'from'}->{'name'},
+                        'text' => $this->parseMessage($commentData->{"message"}),
+                        'site_name' => 'Facebook',
+                        'url' => 'https://www.facebook.com/events/' . $id,
+                        'author_url' => 'https://www.facebook.com/' . $commentData->{'from'}->{'id'},
+                        'socialmedia_url' => 'https://www.facebook.com/events/' . $id,
+                        'answers' => $this->getAnswers($commentData),
+                    ]);
+            }
         }
-        /*
-                $paging= $graphObject->getProperty('paging');
-                $pagingArray = $paging->asAry();
 
-                /*if ($counter++ < $this->limit) {
-                    $this->getComment('?' . strpos($pagingArray['next'], '__paging_token'), $counter);
-                }*/
+        /*if (isset($response->{'paging'})) {
+            $paging = $response->{'paging'};
+
+            if (++$counter < $this->limit) {
+                $this->getComment('&' . strpos($paging['next'], 'until'), $counter);
+            }
+        }*/
+    }
+
+    private function getAnswers($commentData) {
+
+        $answers = [];
+        if (isset($commentData->{'comments'})) {
+
+
+            $data = $commentData->{'comments'}->{'data'};
+
+            foreach($data as $answerData) {
+                if (isset($answerData->{"message"})) { // wegen Exceptions
+                    array_push($answers,
+                        [
+                            'date' => strtotime($answerData->{"created_time"}),
+                            'author' => $answerData->{'from'}->{'name'},
+                            'text' => $this->parseMessage($answerData->{"message"}),
+                            'author_url' => 'https://www.facebook.com/' . $answerData->{'from'}->{'id'},
+                        ]);
+                }
+            }
+        }
+
+        return $answers;
     }
 
     public function getImages() {
@@ -107,4 +134,4 @@ class FacebookApi {
 
         return $this->images;
     }
-}
+} 

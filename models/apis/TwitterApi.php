@@ -2,6 +2,7 @@
 
 namespace app\models\apis;
 
+
 use Exception;
 use TwitterAPIExchange;
 use Yii;
@@ -100,6 +101,7 @@ class TwitterApi
                     'url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"} .'/status/'.$tweet->{"id"},
                     'author_url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"},
                     'socialmedia_url' => 'https://twitter.com/hashtag/'. $hashtag . '?src=hash',
+                    'answers' => [],
                 ]);
 
             if (isset($tweet->{"entities"}->{"media"})) {
@@ -113,6 +115,12 @@ class TwitterApi
                 }
             }
         }
+    }
+
+    private function getAnswers($id) {
+        /*$acTwitterConversation = new acTwitterConversation;
+        $conversation = $acTwitterConversation->fetchConversion($id, 'data', CONVERSATE_AFTER);
+        var_dump($conversation);*/
     }
 
     private function getTweetsPerUser($user) {
@@ -131,6 +139,8 @@ class TwitterApi
         $data = json_decode($json);
 
         foreach ($data as $tweet) {
+
+            $this->getAnswers($tweet->{"id"});
             array_push($this->comments,
                 [
                     'title' => '@'.$user,
