@@ -81,7 +81,7 @@ class TwitterApi
         }
 
         $url = 'https://api.twitter.com/1.1/search/tweets.json';
-        $getfield = '?q=#' . $hashtag . '&result_type=recent&count=100';
+        $getfield = '?q=#' . $hashtag . '&count=100&result_type=recent';
         $requestMethod = 'GET';
 
         $json = $this->twitter->setGetfield($getfield)
@@ -91,36 +91,8 @@ class TwitterApi
         $data = json_decode($json);
 
         foreach ($data->{"statuses"} as $tweet) {
-            array_push($this->comments,
-                [
-                    'title' => '#'.$hashtag,
-                    'date' => strtotime($tweet->{"created_at"}),
-                    'author' => $tweet->{"user"}->{"screen_name"},
-                    'text' => $this->parseTweet($tweet->{"text"}),
-                    'site_name' => 'Twitter',
-                    'url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"} .'/status/'.$tweet->{"id"},
-                    'author_url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"},
-                    'socialmedia_url' => 'https://twitter.com/hashtag/'. $hashtag . '?src=hash',
-                    'answers' => [],
-                ]);
-
-            if (isset($tweet->{"entities"}->{"media"})) {
-                foreach ($tweet->{"entities"}->{"media"} as $media) {
-                    array_push($this->images,
-                        [
-                            'thumbnail' => $media->{"media_url"} . ':thumb',
-                            'original' => $media->{"media_url"},
-                        ]);
-
-                }
-            }
+            $this->pushTweet($tweet, '#'.$hashtag, null);
         }
-    }
-
-    private function getAnswers($id) {
-        /*$acTwitterConversation = new acTwitterConversation;
-        $conversation = $acTwitterConversation->fetchConversion($id, 'data', CONVERSATE_AFTER);
-        var_dump($conversation);*/
     }
 
     private function getTweetsPerUser($user) {
@@ -129,7 +101,7 @@ class TwitterApi
         }
 
         $url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-        $getfield = '?screen_name=' . $user . '&count=100';
+        $getfield = '?screen_name=' . $user . '&count=100&result_type=recent';
         $requestMethod = 'GET';
 
         $json = $this->twitter->setGetfield($getfield)
@@ -139,29 +111,73 @@ class TwitterApi
         $data = json_decode($json);
 
         foreach ($data as $tweet) {
+            $this->pushTweet($tweet, '@'.$user, $data);
+        }
+    }
 
-            $this->getAnswers($tweet->{"id"});
-            array_push($this->comments,
-                [
-                    'title' => '@'.$user,
-                    'date' => strtotime($tweet->{"created_at"}),
-                    'author' => $tweet->{"user"}->{"screen_name"},
-                    'text' => $this->parseTweet($tweet->{"text"}),
-                    'site_name' => 'Twitter',
-                    'url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"} .'/status/'.$tweet->{"id"},
-                    'author_url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"},
-                    'socialmedia_url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"},
-                ]);
 
-            if (isset($tweet->{"entities"}->{"media"})) {
-                foreach ($tweet->{"entities"}->{"media"} as $media) {
-                    array_push($this->images,
-                        [
-                            'thumbnail' => $media->{"media_url"} . ':thumb',
-                            'original' => $media->{"media_url"},
-                        ]);
 
+    private function getAnswers($id, $author, $data) { // not implemented by the twitter api and too slow like this
+        if ($data == null) {
+            $url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
+            $getfield = '?screen_name=' . $author . '&count=100&result_type=recent';
+            $requestMethod = 'GET';
+
+            $json = $this->twitter->setGetfield($getfield)
+                ->buildOauth($url, $requestMethod)
+                ->performRequest();
+
+            $data = json_decode($json);
+        }
+
+        $answers = [];
+
+        foreach ($data as $tweet) {
+            if ($tweet->{"in_reply_to_status_id"} == $id) {
+                array_push($location,
+                    [
+                        'title' => '@' . $author,
+                        'date' => strtotime($tweet->{"created_at"}),
+                        'author' => $tweet->{"user"}->{"screen_name"},
+                        'text' => $this->parseTweet($tweet->{"text"}),
+                        'url' => 'https://twitter.com/' . $tweet->{"user"}->{"screen_name"} . '/status/' . $tweet->{"id"},
+                        'author_url' => 'https://twitter.com/' . $tweet->{"user"}->{"screen_name"},
+                        'socialmedia_url' => 'https://twitter.com/' . $tweet->{"user"}->{"screen_name"},
+                    ]);
+                if (isset($tweet->{"entities"}->{"media"})) {
+                    foreach ($tweet->{"entities"}->{"media"} as $media) {
+                        array_push($this->images,
+                            [
+                                'thumbnail' => $media->{"media_url"} . ':thumb',
+                                'original' => $media->{"media_url"},
+                            ]);
+                    }
                 }
+            }
+        }
+
+        return $answers;
+    }
+
+    private function pushTweet($tweet, $title, $data) {
+        array_push($this->comments,
+            [
+                'title' => $title,
+                'date' => strtotime($tweet->{"created_at"}),
+                'author' => $tweet->{"user"}->{"screen_name"},
+                'text' => $this->parseTweet($tweet->{"text"}),
+                'site_name' => 'Twitter',
+                'url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"} .'/status/'.$tweet->{"id"},
+                'author_url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"},
+                'socialmedia_url' => 'https://twitter.com/'. $tweet->{"user"}->{"screen_name"},
+            ]);
+        if (isset($tweet->{"entities"}->{"media"})) {
+            foreach ($tweet->{"entities"}->{"media"} as $media) {
+                array_push($this->images,
+                    [
+                        'thumbnail' => $media->{"media_url"} . ':thumb',
+                        'original' => $media->{"media_url"},
+                    ]);
             }
         }
     }

@@ -4,6 +4,7 @@ namespace app\models\apis;
 
 use Facebook\FacebookRequest;
 use Facebook\FacebookSession;
+use Faker\Provider\DateTime;
 use Yii;
 
 class FacebookApi {
@@ -48,11 +49,13 @@ class FacebookApi {
 
     private function getComment($feed_url = '', $counter = 0) {
         $id = $this->getId();
+        $until = strtotime('+1 days');
+        $since = strtotime('-9 days');
 
         $request = new FacebookRequest(
             $this->session,
             'GET',
-            '/' . $id . '/feed?limit=99999' . $feed_url
+            '/' . $id . '/feed?since=' . $since . '&until=' . $until . $feed_url
         );
 
         $json = $request->execute()->getRawResponse();
