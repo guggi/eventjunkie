@@ -88,17 +88,17 @@ $initScript = "
                     ]) ?>
                     <?= $form->field($searchModel, 'from_date')->widget(DateTimePicker::classname(),[
                         'options' => ['placeholder' => date('d.m.Y G:i', time())],
-                        'convertFormat' => true,
+                        'convertFormat' => false,
                         'pluginOptions' => [
-                            'format' => 'php:d.m.Y G:i',
+                            'format' => 'dd.mm.yyyy hh:ii',
                             'todayHighlight' => true
                         ]
                     ]) ?>
                     <?= $form->field($searchModel, 'to_date')->widget(DateTimePicker::classname(),[
                         'options' => ['placeholder' => date('d.m.Y G:i', time())],
-                        'convertFormat' => true,
+                        'convertFormat' => false,
                         'pluginOptions' => [
-                            'format' => 'php:d.m.Y G:i',
+                            'format' => 'dd.mm.yyyy hh:ii',
                             'todayHighlight' => true
                         ]
                     ]) ?>

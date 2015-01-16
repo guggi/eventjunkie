@@ -56,16 +56,16 @@ use yii\bootstrap\ActiveForm;
                 'options' => ['placeholder' => date('d.m.Y G:i', time())],
                 'convertFormat' => false,
                 'pluginOptions' => [
-                    'format' => 'd.mm.yyyy h:ii',
+                    'format' => 'dd.mm.yyyy hh:ii',
                     'todayHighlight' => true
                 ]
             ]) ?>
 
             <?= $form->field($model, 'end_date')->widget(DateTimePicker::classname(),[
                 'options' => ['placeholder' => date('d.m.Y G:i', time())],
-                'convertFormat' => true,
+                'convertFormat' => false, // für true php:d.m.Y G:i - konvertiert zu php Timestamp
                 'pluginOptions' => [
-                    'format' => 'php:d.m.Y G:i',
+                    'format' => 'dd.mm.yyyy hh:ii',
                     'todayHighlight' => true
                 ],
             ]) ?>
